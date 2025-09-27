@@ -68,3 +68,7 @@ coverage/
 
 # CSV data files
 *.csv
+# Large video files (>100MB) stored separately
+premeeting-video.mp4
+premeetingvid3.mp4
+videos/*.mp4

@@ -1,0 +1,191 @@
+/* Mobile Overflow Fixes - Prevents content from shifting right */
+
+/* 1. Global overflow prevention */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+/* 2. Fix for elements using 100vw - removed universal selector that was breaking layout */
+/* Target only specific elements that actually cause overflow */
+
+/* 3. Ensure proper box-sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 4. Fix specific problematic elements */
+.page-wrapper {
+  overflow-x: hidden !important;
+  position: relative;
+}
+
+/* Fix for the element at line 1292 that uses 100vw */
+[style*="width: 100vw"],
+[style*="width:100vw"] {
+  width: 100% !important;
+}
+
+/* Target the specific utility-page-wrap class */
+.utility-page-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Fix Webflow lightbox components that use 100vw */
+.w-lightbox-view {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.w-lightbox-image {
+  max-width: 100% !important;
+}
+
+/* 5. Container fixes for mobile - preserve centering */
+@media screen and (max-width: 991px) {
+  .container-large,
+  .container-medium,
+  .container-small,
+  .padding-global,
+  .w-layout-blockcontainer {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    /* Removed max-width override to preserve container centering */
+  }
+  
+  /* Ensure the main container stays centered */
+  .container {
+    max-width: 940px !important; /* Preserve original max-width */
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  /* Ensure containers don't overflow */
+  .container-large,
+  .container-medium,
+  .container-small,
+  .padding-global {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
+  
+  /* Maintain container centering on tablets */
+  .container {
+    max-width: 728px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  
+  /* Fix navigation on mobile */
+  .navbar,
+  .nav-wrapper,
+  .nav-menu {
+    max-width: 100% !important;
+  }
+  
+  /* Fix any absolute positioned elements */
+  [style*="position: absolute"],
+  [style*="position:absolute"] {
+    max-width: 100vw !important;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  /* Extra small mobile fixes */
+  .container-large,
+  .container-medium,
+  .container-small,
+  .padding-global {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  /* Override Webflow's max-width: none on mobile */
+  .container {
+    max-width: 100% !important; /* Full width on mobile but still contained */
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 6. Fix for logo carousel/slider if present */
+.logo-list,
+.carousel-wrapper,
+[class*="logo-slide"] {
+  overflow: hidden !important;
+  max-width: 100% !important;
+}
+
+/* Ensure logo animation container works on mobile */
+.div-block-32 {
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* 7. Prevent horizontal scroll from specific overflow-prone elements */
+/* Removed blanket div selector that was breaking container widths */
+section, nav, header, footer, main {
+  overflow-x: hidden;
+}
+
+/* 8. Fix for images that might be too wide */
+img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* 9. Fix text that might overflow */
+h1, h2, h3, h4, h5, h6, p {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+
+/* 10. Production overflow prevention - all elements constrained */
+/* * {
+  outline: 1px solid red !important;
+} */
+
+/* 11. iOS Form Field Fixes - Professional Mobile UX */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+textarea,
+select {
+  font-size: 16px !important; /* Prevents zoom on iOS */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0 !important; /* Remove iOS default curved edges */
+  background-clip: padding-box;
+}
+
+/* Cal.com iframe form fixes */
+#my-cal-inline-30min iframe {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 12. Professional Mobile Touch Handling */
+@media (max-width: 767px) {
+  /* Remove iOS touch highlights and improve button responsiveness */
+  a, button, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    touch-action: manipulation;
+  }
+  
+  /* Prevent overscroll bounce on iOS for professional feel */
+  body {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* 13. Button CSS Removed - Using Webflow's Native Mobile Handling */
+/* Webflow CSS already optimizes buttons perfectly for mobile */
+/* Lines 189-240 removed to match working backup configuration */

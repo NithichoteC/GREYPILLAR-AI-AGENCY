@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "buildCommand": "",
+  "devCommand": "",
+  "installCommand": "",
+  "outputDirectory": ".",
+  "public": true,
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ]
+}

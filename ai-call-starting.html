@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Your AI Call is Starting - Nithichote</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-192.png">
+
+  <style>
+    /* Your Site's Design System */
+    :root {
+      --primary-black: #0f0f0f;
+      --white: white;
+      --border: rgba(180, 180, 180, 0.08);
+      --grey: #b4b4b4;
+      /* Professional State Colors - Single Grey Theme */
+      --state-grey: #6b7280;
+      --state-grey-soft: rgba(107, 114, 128, 0.1);
+      --state-grey-border: rgba(107, 114, 128, 0.2);
+      --state-grey-glow: rgba(107, 114, 128, 0.3);
+      /* Success Green - Only for actual call success */
+      --success-green: #059669;
+      --success-green-soft: rgba(5, 150, 105, 0.1);
+      --success-green-border: rgba(5, 150, 105, 0.2);
+      --success-green-glow: rgba(5, 150, 105, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--primary-black);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      padding: 2rem;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+    }
+
+    /* Phone Icon Container */
+    .phone-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 3rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Pulsing Ring Animation - Professional Grey Loading */
+    .phone-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid rgba(107, 114, 128, 0.3);
+      border-radius: 50%;
+      animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .phone-ring:nth-child(2) {
+      animation-delay: 0.5s;
+    }
+
+    .phone-ring:nth-child(3) {
+      animation-delay: 1s;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Phone SVG */
+    .phone-svg {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      z-index: 1;
+      animation: phoneRing 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes phoneRing {
+      0% {
+        transform: rotate(-5deg);
+      }
+      100% {
+        transform: rotate(5deg);
+      }
+    }
+
+    /* Typography - Apple/Vercel Hierarchy */
+    .heading {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 0.75rem;
+      animation: fadeInUp 0.8s ease-out;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--grey);
+      margin-bottom: 1rem;
+      animation: fadeInUp 0.8s ease-out;
+      font-weight: 400;
+    }
+
+    /* Countdown Timer */
+    .countdown {
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 2rem 0;
+      font-variant-numeric: tabular-nums;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .countdown-label {
+      font-size: 0.875rem;
+      color: var(--grey);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: -1rem;
+      margin-bottom: 3rem;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+      margin: 3rem 0 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--white);
+      width: 0%;
+      animation: progress 30s linear;
+    }
+
+    @keyframes progress {
+      to {
+        width: 100%;
+      }
+    }
+
+    /* Helper Text */
+    .helper-text {
+      font-size: 0.875rem;
+      color: var(--grey);
+      animation: fadeInUp 0.8s ease-out;
+      opacity: 0.8;
+      font-weight: 400;
+      line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Fade In Animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Fallback Message (hidden initially) */
+    .fallback {
+      display: none;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 0;
+    }
+
+    .fallback.show {
+      display: block;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .fallback-text {
+      color: var(--grey);
+      margin-bottom: 1rem;
+    }
+
+    .fallback-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: var(--white);
+      color: var(--primary-black);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s ease;
+    }
+
+    .fallback-button:hover {
+      opacity: 0.8;
+    }
+
+    /* Section Divider - Match Dynamic Confirmation */
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      width: 80%;
+      margin: 1rem auto;
+    }
+
+    /* Footer Section - Premium Dark - Exact Match from Calendar */
+    .confirmation-footer {
+      padding: 2rem 1.5rem 2rem 1.5rem;
+      background: var(--primary-black);
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Link Button Styles from Calendar */
+    .link-button {
+      grid-column-gap: 3px;
+      grid-row-gap: 3px;
+      flex-flow: column;
+      justify-content: flex-start;
+      align-items: center;
+      text-decoration: none;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .button-link-wrapper {
+      grid-column-gap: 5px;
+      grid-row-gap: 5px;
+      flex-flow: row;
+      justify-content: flex-start;
+      align-items: center;
+      display: flex;
+      position: relative;
+    }
+
+    .button-text-block {
+      flex-flow: column;
+      justify-content: flex-start;
+      align-items: center;
+      height: 14px;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .button-text {
+      color: var(--grey);
+      text-transform: uppercase;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1;
+      transition: transform 0.3s ease;
+      transform: translateY(0);
+    }
+
+    .button-text.is-hover {
+      color: var(--grey);
+      transition: transform 0.3s ease;
+      transform: translateY(-100%);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .arrow-button-block {
+      justify-content: center;
+      align-items: center;
+      width: 1rem;
+      height: 1rem;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .arrow-button {
+      color: var(--grey);
+      width: 1rem;
+      height: 1rem;
+      display: block;
+      position: absolute;
+      inset: 0%;
+      transition: transform .3s cubic-bezier(.165, .84, .44, 1);
+    }
+
+    .arrow-button._02 {
+      color: var(--white);
+      transform: translateX(-100%);
+    }
+
+    .link-button:hover .arrow-button._01 {
+      transform: translateX(100%);
+    }
+
+    .link-button:hover .arrow-button._02 {
+      transform: translateX(0);
+    }
+
+    .underline {
+      background-color: var(--grey);
+      width: 100%;
+      height: 1px;
+      margin-top: 1px;
+      transform: scaleX(1);
+      transform-origin: right;
+      transition: transform 0.3s ease;
+    }
+
+    .underline.is-nav {
+      background-color: var(--grey);
+    }
+
+    .link-button:hover .underline {
+      transform: scaleX(0);
+      transform-origin: right;
+    }
+
+    .link-button:hover .button-text {
+      transform: translateY(100%);
+    }
+
+    .link-button:hover .button-text.is-hover {
+      transform: translateY(0);
+    }
+
+    /* Success State Animations - Vercel Style */
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+    }
+
+    @keyframes successPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.03);
+        opacity: 0.95;
+      }
+    }
+
+    @keyframes successGlow {
+      0%, 100% {
+        box-shadow: 0 0 15px var(--success-green-glow);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--success-green-glow);
+      }
+    }
+
+    @keyframes professionalPulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.03);
+        opacity: 0.95;
+      }
+    }
+
+    @keyframes professionalGlow {
+      0%, 100% {
+        box-shadow: 0 0 15px var(--state-grey-glow);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--state-grey-glow);
+      }
+    }
+
+    /* Success state for phone icon - calling only */
+    .phone-icon.success {
+      animation: successPulse 3s ease-in-out infinite;
+    }
+
+    .phone-icon.success .phone-ring {
+      border-color: var(--success-green-border) !important;
+      animation: successGlow 3s ease-in-out infinite;
+    }
+
+    .phone-icon.success .phone-svg {
+      animation: none;
+      filter: drop-shadow(0 0 6px var(--success-green-glow));
+    }
+
+    /* Professional grey state for all other states */
+    .phone-icon.professional {
+      animation: professionalPulse 3s ease-in-out infinite;
+    }
+
+    .phone-icon.professional .phone-ring {
+      border-color: var(--state-grey-border) !important;
+      animation: professionalGlow 3s ease-in-out infinite;
+    }
+
+    .phone-icon.professional .phone-svg {
+      animation: none;
+      filter: drop-shadow(0 0 6px var(--state-grey-glow));
+    }
+
+    /* Success text styling - calling only */
+    .heading.success {
+      color: var(--success-green);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .subtitle.success {
+      color: var(--success-green);
+      opacity: 0.9;
+    }
+
+    /* Professional text styling - white headers, grey subtitles */
+    .heading.professional {
+      color: var(--white);
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .subtitle.professional {
+      color: var(--state-grey);
+      opacity: 0.9;
+    }
+
+    .helper-text.redirect {
+      color: var(--grey);
+      opacity: 0.7;
+      font-style: italic;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* Mobile Optimizations - Match Dynamic Confirmation */
+    @media (max-width: 768px) {
+      .phone-icon {
+        width: 90px;
+        height: 90px;
+      }
+
+      .phone-svg {
+        width: 45px;
+        height: 45px;
+      }
+
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      .helper-text {
+        font-size: 0.8rem;
+        white-space: normal;
+        text-align: center;
+        padding: 0 1rem;
+      }
+
+      .confirmation-footer {
+        padding: 1.5rem 1rem 1.5rem 1rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .link-button {
+        transform: scale(0.9);
+        margin: 0.25rem 0;
+      }
+
+      .button-text {
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .phone-icon {
+        width: 80px;
+        height: 80px;
+      }
+
+      .phone-svg {
+        width: 40px;
+        height: 40px;
+      }
+
+      .container {
+        padding: 1rem 0.75rem;
+      }
+
+      .helper-text {
+        font-size: 0.75rem;
+        line-height: 1.3;
+      }
+
+      .link-button {
+        transform: scale(0.8);
+      }
+
+      .button-text {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Phone Icon with Pulse Effect -->
+    <div class="phone-icon">
+      <div class="phone-ring"></div>
+      <div class="phone-ring"></div>
+      <div class="phone-ring"></div>
+      <svg class="phone-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <!-- Main Content -->
+    <h1 class="heading">Your AI call is starting...</h1>
+    <p class="subtitle">Please keep your phone nearby</p>
+
+    <!-- Section Divider -->
+    <div class="section-divider"></div>
+
+    <!-- Helper Text -->
+    <p class="helper-text">
+      Make sure your ringer is on • We'll call from <span style="white-space: nowrap;">+1 (415) 909-5948</span>
+    </p>
+
+    <!-- Fallback Message (hidden initially) -->
+    <div class="fallback">
+      <p class="fallback-text">
+        The AI call is taking longer than expected. We'll contact you at your scheduled meeting time instead.
+      </p>
+      <a href="/booking-confirmed.html" class="fallback-button">Continue to Confirmation</a>
+    </div>
+  </div>
+
+  <!-- Footer - Exact Match from Calendar -->
+  <footer class="confirmation-footer">
+    <div class="footer-links">
+      <a href="/" class="link-button w-inline-block">
+        <div class="button-link-wrapper">
+          <div class="button-text-block">
+            <div class="button-text is-hover">BACK TO HOMEPAGE</div>
+            <div class="button-text">BACK TO HOMEPAGE</div>
+          </div>
+          <div class="arrow-button-block">
+            <div class="arrow-button _01 w-embed">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+              </svg>
+            </div>
+            <div class="arrow-button _02 w-embed">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="underline is-nav"></div>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // Professional AI Call State Handler - Direct-to-Page Flow with Webhook Calls
+    // Function to initiate AI call via n8n webhook with signed URL support
+    async function initiateAICall(bookingId, expires = null, signature = null) {
+      try {
+        console.log('📞 Calling n8n webhook for booking:', bookingId);
+
+        // Build URL with signature parameters if provided
+        let webhookUrl = `https://n8n.umbryth.com/webhook/9442592c-a59b-41c1-8704-2848ed602b49?booking_id=${bookingId}`;
+        if (expires && signature) {
+          webhookUrl += `&expires=${expires}&sig=${signature}`;
+          console.log('🔒 Using signed URL for security');
+        } else {
+          console.log('⚠️ Using legacy unsigned URL (less secure)');
+        }
+
+        const response = await fetch(webhookUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('📞 n8n Response:', data);
+
+        if (data.success) {
+          // Success - AI call initiated with premium timing delay
+          console.log('✅ AI call initiated successfully');
+
+          // Premium UX: 3-second minimum delay for substantial feel (Vercel/Linear standard)
+          setTimeout(() => {
+            showStateMessage('calling', 'Connected!');
+          }, 3000);
+        } else {
+          // Handle error states from n8n
+          console.log('⚠️ n8n returned error state:', data.state);
+          if (data.state === 'already_completed') {
+            showStateMessage('unavailable', 'AI prep session already completed.');
+          } else if (data.state === 'window_expired') {
+            showStateMessage('expired', 'Preparation window closed.');
+          } else if (data.state === 'meeting_passed') {
+            showStateMessage('reschedule', 'Meeting time has passed.');
+          } else if (data.state === 'invalid') {
+            showStateMessage('invalid', 'This link is invalid or has been tampered with.');
+          } else {
+            showStateMessage('error', 'There was an issue starting your call.');
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error calling n8n webhook:', error);
+        showStateMessage('error', 'There was an issue starting your call. Please try again or contact support.');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🎯 AI Call Starting Page - Direct-to-Page Flow with Signed URL Support');
+
+      // Parse URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingId = urlParams.get('booking_id');
+      const state = urlParams.get('state');
+      const expires = urlParams.get('expires');
+      const signature = urlParams.get('sig');
+
+      console.log('📋 Booking ID:', bookingId);
+      console.log('🎯 State:', state);
+      console.log('🔒 Signature present:', !!signature);
+      console.log('⏰ Expires at:', expires ? new Date(parseInt(expires)).toLocaleString() : 'N/A');
+
+      if (!bookingId) {
+        console.error('❌ No booking ID provided');
+        showStateMessage('error', 'Missing booking information. Please contact support.');
+        return;
+      }
+
+      // If there's already a state parameter, handle it directly (from old redirect flow)
+      if (state === 'unavailable') {
+        console.log('🎯 State: unavailable - showing professional loading then result');
+        setTimeout(() => {
+          showStateMessage('unavailable', 'AI prep session already completed.');
+        }, 3000);
+      } else if (state === 'reschedule') {
+        console.log('🎯 State: reschedule - showing professional loading then result');
+        setTimeout(() => {
+          showStateMessage('reschedule', 'Your meeting time has already passed.');
+        }, 3000);
+      } else {
+        // No state parameter - this is direct from email button, initiate AI call
+        console.log('🚀 Direct access from email - initiating AI call');
+        showStateMessage('preparing', 'Preparing your AI call...');
+        initiateAICall(bookingId, expires, signature);
+      }
+    });
+
+    // Handle different states with professional messaging
+    function showStateMessage(state, message) {
+      const heading = document.querySelector('.heading');
+      const subtitle = document.querySelector('.subtitle');
+      const phoneIcon = document.querySelector('.phone-icon');
+      const fallback = document.querySelector('.fallback');
+      const fallbackText = document.querySelector('.fallback-text');
+      const fallbackButton = document.querySelector('.fallback-button');
+
+      switch (state) {
+        case 'preparing':
+          // Initial loading state - grey professional styling
+          const helperTextPreparing = document.querySelector('.helper-text');
+
+          if (heading) {
+            heading.textContent = message || 'Preparing your AI call...';
+            heading.classList.add('professional');
+          }
+
+          if (subtitle) {
+            subtitle.textContent = 'This will only take a moment';
+            subtitle.classList.add('professional');
+          }
+
+          if (phoneIcon) {
+            phoneIcon.classList.add('professional');
+          }
+          break;
+
+        case 'calling':
+          // Connected state - white headers, green success styling for icon only
+          const helperText = document.querySelector('.helper-text');
+
+          if (heading) {
+            heading.textContent = message || 'Connected!';
+            heading.classList.remove('success');
+            heading.classList.add('professional'); // White header
+          }
+
+          if (subtitle) {
+            subtitle.style.display = 'none'; // Hide redundant subtitle - helper text below is sufficient
+          }
+
+          // Transform phone to success state only
+          if (phoneIcon) {
+            phoneIcon.classList.remove('professional');
+            phoneIcon.classList.add('success');
+          }
+
+          // Optional: Auto-redirect to homepage after 5 seconds
+          setTimeout(() => {
+            window.location.href = 'https://nithichote.com';
+          }, 5000);
+          break;
+
+        case 'reschedule':
+          // Meeting passed - clean simple messaging with standalone button
+          const helperTextReschedule = document.querySelector('.helper-text');
+          if (helperTextReschedule) helperTextReschedule.style.display = 'none';
+
+          if (heading) {
+            heading.textContent = 'Meeting Time Has Passed';
+            heading.classList.add('professional');
+          }
+          if (subtitle) {
+            subtitle.textContent = 'Please schedule a new consultation time.';
+            subtitle.classList.add('professional');
+          }
+          if (phoneIcon) {
+            phoneIcon.classList.add('professional');
+          }
+
+          // Create standalone button - hide container, show only button
+          if (fallback) {
+            fallback.style.display = 'none'; // Hide entire container
+          }
+
+          // Create standalone button after subtitle
+          const container = document.querySelector('.container');
+          let standaloneButton = document.querySelector('.standalone-reschedule-btn');
+          if (!standaloneButton && container) {
+            standaloneButton = document.createElement('a');
+            standaloneButton.href = 'https://nithichote.com';
+            standaloneButton.textContent = 'Reschedule Meeting';
+            standaloneButton.className = 'standalone-reschedule-btn fallback-button';
+            standaloneButton.style.marginTop = '2rem';
+            standaloneButton.style.display = 'inline-block';
+            container.appendChild(standaloneButton);
+          }
+          break;
+
+        case 'expired':
+          // Call window expired - clean simple messaging
+          const helperTextExpired = document.querySelector('.helper-text');
+          if (helperTextExpired) helperTextExpired.style.display = 'none';
+
+          if (heading) {
+            heading.textContent = 'Preparation Window Closed';
+            heading.classList.add('professional');
+          }
+          if (subtitle) {
+            subtitle.textContent = 'No worries! We\'ll connect at your scheduled meeting time.';
+            subtitle.classList.add('professional');
+          }
+          if (phoneIcon) {
+            phoneIcon.classList.add('professional');
+          }
+          // Hide fallback container and button for cleaner experience
+          if (fallback) fallback.style.display = 'none';
+          break;
+
+        case 'invalid':
+          // Invalid or tampered link - professional messaging
+          const helperTextInvalid = document.querySelector('.helper-text');
+          if (helperTextInvalid) helperTextInvalid.style.display = 'none';
+
+          if (heading) {
+            heading.textContent = 'Invalid Link';
+            heading.classList.add('professional');
+          }
+          if (subtitle) {
+            subtitle.textContent = 'This link appears to be invalid. Please use the original link from your email.';
+            subtitle.classList.add('professional');
+          }
+          if (phoneIcon) {
+            phoneIcon.classList.add('professional');
+          }
+          if (fallbackText) fallbackText.textContent = message || 'If you continue having issues, please reach out to support.';
+          if (fallbackButton) {
+            fallbackButton.href = 'mailto:hello@nithichote.com?subject=AI Call Link Issue';
+            fallbackButton.textContent = 'Contact Support';
+          }
+          if (fallback) fallback.classList.add('show');
+          break;
+
+        case 'error':
+          // Technical error - professional messaging
+          const helperTextError = document.querySelector('.helper-text');
+          if (helperTextError) helperTextError.style.display = 'none';
+
+          if (heading) {
+            heading.textContent = 'Technical Issue';
+            heading.classList.add('professional');
+          }
+          if (subtitle) {
+            subtitle.textContent = 'We encountered a technical issue. Please try again or contact support if the problem persists.';
+            subtitle.classList.add('professional');
+          }
+          if (phoneIcon) {
+            phoneIcon.classList.add('professional');
+          }
+          if (fallbackText) fallbackText.textContent = message || 'Our team will resolve this quickly.';
+          if (fallbackButton) {
+            fallbackButton.href = 'mailto:hello@nithichote.com?subject=AI Call Technical Issue';
+            fallbackButton.textContent = 'Contact Support';
+          }
+          if (fallback) fallback.classList.add('show');
+          break;
+
+        case 'unavailable':
+          // AI prep session already completed - simple positive messaging
+          const helperTextUnavailable = document.querySelector('.helper-text');
+          if (helperTextUnavailable) helperTextUnavailable.style.display = 'none';
+
+          if (heading) {
+            heading.textContent = 'Already Completed';
+            heading.classList.add('professional');
+          }
+          if (subtitle) {
+            subtitle.textContent = 'You\'re all set for your upcoming meeting.';
+            subtitle.classList.add('professional');
+          }
+          if (phoneIcon) {
+            phoneIcon.classList.add('professional');
+          }
+          // Hide fallback container for cleaner experience
+          if (fallback) fallback.style.display = 'none';
+          break;
+      }
+    }
+
+    // Enhanced error recovery
+    window.addEventListener('error', function(e) {
+      console.error('❌ AI Call Page Error:', e.error);
+      showStateMessage('expired', 'We encountered a technical issue. Please contact us directly or wait for your scheduled meeting.');
+    });
+  </script>
+</body>
+</html>

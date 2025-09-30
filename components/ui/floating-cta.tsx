@@ -104,7 +104,6 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
             Book Strategy Call
           </Link>
         </button>
-        <div className="glass-button-shadow rounded-full"></div>
       </div>
     </div>
   );

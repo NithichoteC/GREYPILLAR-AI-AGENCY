@@ -209,14 +209,14 @@ export default function HomePage() {
           zIndex: 2
         }} />
 
-        <div className="container relative text-center mx-auto px-6 md:px-8" style={{ zIndex: 10, maxWidth: '1200px' }}>
+        <div className="container relative text-center mx-auto px-4 md:px-8" style={{ zIndex: 10, maxWidth: '1200px' }}>
           {/* Headline */}
           <h2 className="text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[0.95] tracking-tight text-white mb-6">
             We Don't Sell AI.<br />We Engineer Revenue.
           </h2>
 
           {/* Subtitle - Ultra Concise */}
-          <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20 px-6 md:px-8">
+          <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20">
             Most "AI consultants" force technology onto broken processes. We start with a first-principles, engineering mindset.
           </p>
 

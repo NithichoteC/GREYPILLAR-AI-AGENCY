@@ -1223,7 +1223,7 @@ body {
 
     .problem-card {
         width: 100%;
-        max-width: 500px;
+        max-width: 360px; /* Reduced from 500px to fit within nav border constraints */
     }
 }
 
@@ -1243,7 +1243,7 @@ body {
         min-height: 350px;
         padding: var(--space-xl);
         width: 100%;
-        max-width: 100%;
+        max-width: 320px; /* Reduced from 100% for better proportions and nav border alignment */
     }
 
     .card-number {
@@ -1430,9 +1430,9 @@ body {
 
 /* Asymmetric dark layout with void visual */
 .visual-storytelling-container {
-    max-width: 1400px;
+    max-width: calc(1200px - 2 * var(--space-xl)); /* Match nav border width */
     margin: 0 auto;
-    padding: 0 var(--space-xl); /* Match nav-container: 32px */
+    padding: 0; /* Padding handled by max-width calc */
     position: relative;
     display: grid;
     grid-template-columns: 40% 60%;
@@ -1653,12 +1653,36 @@ body {
     box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
 }
 
+/* Responsive design for visual storytelling section - match nav border width */
+@media (min-width: 1440px) {
+    .visual-storytelling-container {
+        max-width: calc(1600px - 2 * var(--space-xl)); /* Match nav responsive width */
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+    .visual-storytelling-container {
+        max-width: calc(100vw - 4rem - 2 * var(--space-xl)); /* Match nav fluid width */
+    }
+}
+
+@media (min-width: 810px) and (max-width: 1023.98px) {
+    .visual-storytelling-container {
+        max-width: calc(100vw - 4rem - 2 * var(--space-xl)); /* Match nav fluid width */
+    }
+}
+
+@media (max-width: 809.98px) {
+    .visual-storytelling-container {
+        max-width: calc(100vw - 2rem - 2 * var(--space-md)); /* Match nav constraints */
+    }
+}
+
 /* Mobile responsive design for asymmetric void layout */
 @media (max-width: 1200px) {
     .visual-storytelling-container {
         grid-template-columns: 45% 55%;
         gap: 60px;
-        padding: 0 var(--space-xl); /* Consistent 32px */
     }
     .void-canvas {
         width: 450px; /* Increased from 350px */
@@ -1670,8 +1694,6 @@ body {
     .visual-storytelling-container {
         grid-template-columns: 1fr;
         gap: 40px;
-        max-width: 960px;
-        padding: 0 var(--space-xl); /* Consistent 32px */
     }
     .void-visual-container {
         height: 450px; /* Increased from 350px for larger graphic */

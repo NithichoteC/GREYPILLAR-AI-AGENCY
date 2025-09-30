@@ -236,10 +236,12 @@ export default function HomePage() {
             <div className="solution-step-row">
               <div className="solution-step-number">01</div>
               <div className="solution-step-content">
-                <h3 className="solution-step-title">Revenue Leak Analysis</h3>
-                <p className="solution-step-description">
-                  Identify your specific 60-80% opportunity gap
-                </p>
+                <div className="solution-step-text-wrapper">
+                  <h3 className="solution-step-title">Revenue Leak Analysis</h3>
+                  <p className="solution-step-description">
+                    Identify your specific 60-80% opportunity gap
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -247,10 +249,12 @@ export default function HomePage() {
             <div className="solution-step-row">
               <div className="solution-step-number">02</div>
               <div className="solution-step-content">
-                <h3 className="solution-step-title">Custom System Design</h3>
-                <p className="solution-step-description">
-                  Engineer AI that captures missed opportunities
-                </p>
+                <div className="solution-step-text-wrapper">
+                  <h3 className="solution-step-title">Custom System Design</h3>
+                  <p className="solution-step-description">
+                    Engineer AI that captures missed opportunities
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -258,10 +262,12 @@ export default function HomePage() {
             <div className="solution-step-row">
               <div className="solution-step-number">03</div>
               <div className="solution-step-content">
-                <h3 className="solution-step-title">Guaranteed Results</h3>
-                <p className="solution-step-description">
-                  Measurable revenue impact in 30 days
-                </p>
+                <div className="solution-step-text-wrapper">
+                  <h3 className="solution-step-title">Guaranteed Results</h3>
+                  <p className="solution-step-description">
+                    Measurable revenue impact in 30 days
+                  </p>
+                </div>
               </div>
             </div>
           </div>

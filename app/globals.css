@@ -1443,10 +1443,11 @@ body {
 .solution-step-row {
     position: relative;
     display: flex;
-    align-items: center;
-    padding: var(--space-2xl) 0;
+    align-items: flex-start;
+    padding: 48px 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     overflow: visible;
+    min-height: 180px;
 }
 
 .solution-step-row:last-child {
@@ -1455,8 +1456,9 @@ body {
 
 .solution-step-number {
     position: absolute;
+    top: -10px;
     left: 0;
-    font-size: 8rem;
+    font-size: 10rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.06);
     line-height: 1;
@@ -1467,45 +1469,90 @@ body {
 .solution-step-content {
     position: relative;
     z-index: 2;
-    margin-left: 120px;
-    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    padding-left: 160px;
+}
+
+.solution-step-text-wrapper {
+    display: flex;
+    gap: 60px;
+    width: 100%;
+    align-items: flex-start;
 }
 
 .solution-step-title {
-    font-size: var(--font-2xl);
+    flex: 0 0 40%;
+    font-size: 2rem;
     font-weight: 600;
     color: #FFFFFF;
-    margin-bottom: var(--space-sm);
     line-height: 1.2;
 }
 
 .solution-step-description {
+    flex: 1;
     font-size: var(--font-lg);
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.5;
+    padding-top: 4px;
 }
 
-/* Solution Steps Responsive */
-@media (max-width: 768px) {
+/* Solution Steps Responsive - Tablet */
+@media (max-width: 1024px) {
     .solution-step-row {
-        padding: var(--space-xl) 0;
+        padding: 40px 0;
+        min-height: 160px;
     }
 
     .solution-step-number {
-        font-size: 5rem;
-        left: -10px;
+        font-size: 8rem;
+        top: -8px;
     }
 
     .solution-step-content {
-        margin-left: 80px;
+        padding-left: 120px;
+    }
+
+    .solution-step-text-wrapper {
+        gap: 40px;
+    }
+
+    .solution-step-title {
+        font-size: 1.75rem;
+    }
+}
+
+/* Solution Steps Responsive - Mobile */
+@media (max-width: 768px) {
+    .solution-step-row {
+        padding: 32px 0;
+        min-height: 140px;
+    }
+
+    .solution-step-number {
+        font-size: 6rem;
+        top: 0;
+        left: 0;
+    }
+
+    .solution-step-content {
+        padding-left: 50px;
+    }
+
+    .solution-step-text-wrapper {
+        flex-direction: column;
+        gap: 12px;
     }
 
     .solution-step-title {
         font-size: var(--font-xl);
+        flex: none;
     }
 
     .solution-step-description {
         font-size: var(--font-base);
+        padding-top: 0;
     }
 }
 

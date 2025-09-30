@@ -54,13 +54,13 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         pointerEvents: isVisible ? 'auto' : 'none'
       }}
     >
-      <div className="glass-button-wrap">
-        <Link href="#audit" className="glass-button">
-          <span className="glass-button-text">
+      <div className="glass-button-wrap cursor-pointer rounded-full">
+        <button className="glass-button relative isolate all-unset cursor-pointer rounded-full transition-all">
+          <Link href="#audit" className="glass-button-text relative block select-none tracking-tighter">
             Book Strategy Call
-          </span>
-        </Link>
-        <div className="glass-button-shadow"></div>
+          </Link>
+        </button>
+        <div className="glass-button-shadow rounded-full"></div>
       </div>
     </div>
   );

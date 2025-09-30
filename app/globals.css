@@ -197,6 +197,114 @@ body {
 }
 
 /* =========================
+   ADAPTIVE NAVIGATION COLORS (Apple/Stripe Pattern)
+========================= */
+.glass-nav.nav-over-dark .logo,
+.glass-nav.nav-over-dark .nav-link,
+.glass-nav.nav-over-dark .nav-cta,
+.glass-nav.nav-over-dark .menu-text {
+    color: white;
+    transition: color 250ms ease-in-out;
+}
+
+.glass-nav.nav-over-dark .nav-cta .underline {
+    background-color: white;
+}
+
+.glass-nav.nav-over-dark .menu-line {
+    background: white;
+}
+
+/* =========================
+   SCROLL PROGRESS BAR (LinkedIn/Medium Pattern)
+========================= */
+.scroll-progress {
+    position: fixed;
+    top: 61px; /* Nav height */
+    left: 0;
+    right: 0;
+    height: 1px;
+    z-index: 999; /* Below nav */
+    pointer-events: none;
+}
+
+.scroll-progress::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: var(--scroll-progress, 0%);
+    background: rgba(33, 37, 41, 1); /* Black */
+    transform-origin: left;
+    transition: width 0.1s ease-out;
+}
+
+.scroll-progress.over-dark::before {
+    background: white; /* White when over dark section */
+    transition: background 250ms ease-in-out, width 0.1s ease-out;
+}
+
+/* =========================
+   GLASSMORPHISM FLOATING CTA (21st.dev Style + Fixed Shadow)
+========================= */
+.glass-button-wrap {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 9999px;
+}
+
+.glass-button {
+    position: relative;
+    isolation: isolate;
+    all: unset;
+    cursor: pointer;
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.glass-button-text {
+    position: relative;
+    display: block;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--darkest);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 9999px;
+    transition: all 0.3s ease;
+}
+
+.glass-button:hover .glass-button-text {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+}
+
+.glass-button-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -4px; /* FIXED: Closer to button (was -8px) */
+    background: rgba(0, 0, 0, 0.12);
+    filter: blur(12px); /* FIXED: Less spread (was 20px) */
+    border-radius: 9999px;
+    z-index: -1;
+    transition: all 0.3s ease;
+}
+
+.glass-button:hover .glass-button-shadow {
+    bottom: -6px;
+    filter: blur(16px);
+}
+
+/* =========================
    MOBILE MENU (Nitro Style)
 ========================= */
 .mobile-menu-toggle {

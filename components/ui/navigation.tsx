@@ -1,13 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOverDark, setIsOverDark] = useState(false);
+
+  // Intersection Observer for adaptive nav colors (Apple/Stripe pattern)
+  useEffect(() => {
+    const darkSection = document.querySelector('#solution');
+
+    if (!darkSection) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Nav is "over dark" when dark section intersects with top 80px (nav height)
+        setIsOverDark(entry.isIntersecting);
+      },
+      {
+        // Watch for intersection at nav height
+        rootMargin: '-80px 0px 0px 0px',
+        threshold: 0
+      }
+    );
+
+    observer.observe(darkSection);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <nav className="glass-nav">
+    <nav className={`glass-nav ${isOverDark ? 'nav-over-dark' : ''}`}>
       <div className="nav-container">
         <Link href="/" className="logo">
           GREYPILLAR

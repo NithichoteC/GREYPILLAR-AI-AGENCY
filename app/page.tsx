@@ -1,14 +1,21 @@
 'use client';
 
+import { useRef } from 'react';
 import Navigation from '@/components/ui/navigation';
 import { VoidHero } from '@/components/ui/void-hero';
 import GridCanvas from '@/components/ui/grid-canvas';
 import InfiniteShaderBg from '@/components/ui/infinite-shader-bg';
+import ScrollProgress from '@/components/ui/scroll-progress';
+import FloatingCTA from '@/components/ui/floating-cta';
 
 export default function HomePage() {
+  const heroCTARef = useRef<HTMLAnchorElement>(null);
+
   return (
     <div className="min-h-screen bg-lightest">
       <Navigation />
+      <ScrollProgress />
+      <FloatingCTA heroCTARef={heroCTARef} />
 
       {/* Hero Section */}
       <section className="section-hero pt-20">
@@ -107,7 +114,7 @@ export default function HomePage() {
 
             {/* CTA Button */}
             <div className="pixelflow-cta">
-              <a href="#audit" className="interactive-hover-button">
+              <a href="#audit" className="interactive-hover-button" ref={heroCTARef}>
                 <span className="button-text">Find My Revenue Leaks</span>
                 <div className="hover-content">
                   <span>Find My Revenue Leaks</span>

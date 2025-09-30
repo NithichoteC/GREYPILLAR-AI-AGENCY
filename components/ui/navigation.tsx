@@ -23,7 +23,8 @@ export default function Navigation() {
         console.log('🎨 Nav Over Dark:', isNavOverDark, '| Section Top:', rect.top.toFixed(0), '| Section Bottom:', rect.bottom.toFixed(0));
       },
       {
-        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+        // 2025 Standard: 101 thresholds (0.00 to 1.00) catches mobile momentum scrolling
+        threshold: Array.from({ length: 101 }, (_, i) => i / 100)
       }
     );
 

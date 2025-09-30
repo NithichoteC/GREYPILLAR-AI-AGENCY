@@ -206,11 +206,13 @@ body {
 ========================= */
 .scroll-progress {
     position: fixed;
-    top: 61px; /* Nav height */
-    left: 0;
-    right: 0;
-    height: 2px; /* Increased from 1px for visibility */
-    z-index: 999; /* Below nav */
+    top: 60px; /* Overlay nav bottom border (61px - 1px) */
+    left: 50%; /* Center positioning */
+    transform: translateX(-50%); /* Perfect centering */
+    width: calc(1200px - 2 * var(--space-xl)); /* Match nav content width */
+    max-width: calc(100vw - 2 * var(--space-xl)); /* Responsive */
+    height: 1px; /* Match nav border thickness */
+    z-index: 1001; /* Above nav border */
     pointer-events: none;
 }
 

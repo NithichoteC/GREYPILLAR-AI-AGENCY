@@ -16,9 +16,9 @@ export default function Navigation() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         const rect = entry.target.getBoundingClientRect();
-        // Only white when section top is at or above nav bottom (61px)
-        // AND section bottom is still visible (not scrolled past)
-        const isNavOverDark = rect.top <= 61 && rect.bottom >= 61;
+        // "Is this dark section below me now?"
+        // Triggers when section has scrolled up and is UNDER the navigation
+        const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
         setIsOverDark(isNavOverDark);
         console.log('🎨 Nav Over Dark:', isNavOverDark, '| Section Top:', rect.top.toFixed(0), '| Section Bottom:', rect.bottom.toFixed(0));
       },

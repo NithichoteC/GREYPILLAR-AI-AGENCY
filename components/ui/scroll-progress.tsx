@@ -36,7 +36,7 @@ export default function ScrollProgress() {
     return () => window.removeEventListener('scroll', updateProgress);
   }, []);
 
-  // Intersection Observer for color adaptation (matches navigation)
+  // Intersection Observer for color adaptation (SYNCHRONIZED with navigation)
   useEffect(() => {
     const darkSection = document.querySelector('#solution');
 
@@ -44,11 +44,14 @@ export default function ScrollProgress() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setIsOverDark(entry.isIntersecting);
+        const rect = entry.target.getBoundingClientRect();
+        // "Is this dark section below me now?" - IDENTICAL logic to navigation
+        const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
+        setIsOverDark(isNavOverDark);
+        console.log('📊 Progress Over Dark:', isNavOverDark, '| Section Top:', rect.top.toFixed(0));
       },
       {
-        rootMargin: '-80px 0px 0px 0px',
-        threshold: 0
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
       }
     );
 

@@ -273,12 +273,41 @@ body {
     letter-spacing: -0.025em; /* tracking-tighter */
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Stronger shadow for white text */
     text-decoration: none;
+    /* 21st.dev light glow effect */
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset, /* Inner light rim */
+        0 1px 3px rgba(0, 0, 0, 0.3), /* Depth shadow */
+        0 0 20px rgba(255, 255, 255, 0.15); /* Outer glow */
 }
 
 .glass-button:hover .glass-button-text {
     background: rgba(255, 255, 255, 0.25); /* More opaque on hover, still glass */
     border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+        0 2px 5px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.25); /* Enhanced glow on hover */
+}
+
+/* Adaptive color for light sections (same as navigation) */
+.glass-button.over-dark .glass-button-text {
+    color: var(--darkest);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+        0 2px 8px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(255, 255, 255, 0.5); /* Light glow for light button */
+}
+
+.glass-button.over-dark:hover .glass-button-text {
+    background: rgba(255, 255, 255, 1);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset,
+        0 3px 12px rgba(0, 0, 0, 0.15),
+        0 0 30px rgba(255, 255, 255, 0.7);
 }
 
 .glass-button-shadow {
@@ -297,6 +326,10 @@ body {
 .glass-button:hover .glass-button-shadow {
     bottom: -5px;
     filter: blur(12px);
+}
+
+.glass-button.over-dark .glass-button-shadow {
+    background: rgba(0, 0, 0, 0.08); /* Dark shadow for light button */
 }
 
 /* =========================

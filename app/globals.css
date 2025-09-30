@@ -1460,8 +1460,7 @@ body {
 .solution-step-number {
     position: absolute;
     top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 20%;
     font-size: 10rem;
     font-weight: 700;
     color: rgba(255, 255, 255, 0.1);

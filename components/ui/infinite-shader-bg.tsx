@@ -26,10 +26,10 @@ function ShaderPlane({
       material.uniforms.u_time.value = state.clock.elapsedTime * 0.5;
       material.uniforms.u_resolution.value.set(size.width, size.height, 1.0);
 
-      // Update responsive parameters
-      material.uniforms.u_brightness.value = isMobile ? 1.5 : 0.9;
-      material.uniforms.u_cameraZ.value = isMobile ? 2.0 : -1.0;
-      material.uniforms.u_terrainFreq.value = isMobile ? 0.4 : 0.25;
+      // Update responsive parameters - Award-winning mobile approach
+      material.uniforms.u_brightness.value = 1.5; // Consistent brightness everywhere
+      material.uniforms.u_cameraZ.value = isMobile ? -2.5 : -1.0; // Mobile zooms OUT for landscape view
+      material.uniforms.u_terrainFreq.value = isMobile ? 0.6 : 0.25; // Mobile shows more waves
       material.uniforms.u_terrainAmp.value = isMobile ? 0.8 : 0.5;
       material.uniforms.u_fogDist.value = isMobile ? 60.0 : 98.0;
     }
@@ -162,6 +162,11 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
         return normalize(nor);
     }
 
+    // Film grain dithering - eliminates gradient banding (Apple/Vercel technique)
+    float dither(vec2 uv) {
+        return fract(sin(dot(uv + u_time * 0.01, vec2(12.9898, 78.233))) * 43758.5453) * 0.015;
+    }
+
     void mainImage( out vec4 fragColor, in vec2 fragCoord )
     {
       vec2 uv = (fragCoord.xy-.5*u_resolution.xy)/u_resolution.y;
@@ -193,6 +198,10 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
         f = float(nbStep) / float(STEP);
 
         f *= u_brightness;
+
+        // Add film grain to eliminate banding (professional technique)
+        f += dither(fragCoord.xy);
+
         vec3 col = vec3(f);
 
         fragColor = vec4(col,1.0);
@@ -210,7 +219,7 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
     () => ({
       u_time: { value: 0 },
       u_resolution: { value: new THREE.Vector3(1, 1, 1) },
-      u_brightness: { value: 0.9 },
+      u_brightness: { value: 1.5 }, // Consistent brightness everywhere
       u_cameraZ: { value: -1.0 },
       u_terrainFreq: { value: 0.25 },
       u_terrainAmp: { value: 0.5 },

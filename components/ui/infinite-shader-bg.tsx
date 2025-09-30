@@ -26,10 +26,11 @@ function ShaderPlane({
       material.uniforms.u_time.value = state.clock.elapsedTime * 0.5;
       material.uniforms.u_resolution.value.set(size.width, size.height, 1.0);
 
-      // Update responsive parameters - Award-winning mobile approach
+      // Cinema-quality responsive parameters - Professional framing approach
       material.uniforms.u_brightness.value = 1.5; // Consistent brightness everywhere
-      material.uniforms.u_cameraZ.value = isMobile ? -2.5 : -1.0; // Mobile zooms OUT for landscape view
-      material.uniforms.u_terrainFreq.value = isMobile ? 0.6 : 0.25; // Mobile shows more waves
+      material.uniforms.u_cameraZ.value = isMobile ? -2.5 : -1.0; // Mobile pulls back for overview
+      material.uniforms.u_cameraY.value = isMobile ? 9.0 : 6.0; // Mobile frames higher - centers peaks
+      material.uniforms.u_terrainFreq.value = 0.25; // Same wave size all screens
       material.uniforms.u_terrainAmp.value = isMobile ? 0.8 : 0.5;
       material.uniforms.u_fogDist.value = isMobile ? 60.0 : 98.0;
     }
@@ -83,6 +84,7 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
     uniform vec3 u_resolution;
     uniform float u_brightness;
     uniform float u_cameraZ;
+    uniform float u_cameraY;
     uniform float u_terrainFreq;
     uniform float u_terrainAmp;
     uniform float u_fogDist;
@@ -162,16 +164,16 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
         return normalize(nor);
     }
 
-    // Film grain dithering - eliminates gradient banding (Apple/Vercel technique)
+    // Film grain dithering - eliminates gradient banding (cinema-quality)
     float dither(vec2 uv) {
-        return fract(sin(dot(uv + u_time * 0.01, vec2(12.9898, 78.233))) * 43758.5453) * 0.015;
+        return fract(sin(dot(uv + u_time * 0.01, vec2(12.9898, 78.233))) * 43758.5453) * 0.03;
     }
 
     void mainImage( out vec4 fragColor, in vec2 fragCoord )
     {
       vec2 uv = (fragCoord.xy-.5*u_resolution.xy)/u_resolution.y;
 
-        vec3 rayOrigin = vec3(uv + vec2(0.,6.), u_cameraZ);
+        vec3 rayOrigin = vec3(uv + vec2(0., u_cameraY), u_cameraZ);
 
         vec3 rayDir = normalize(vec3(uv , 1.));
 
@@ -221,6 +223,7 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
       u_resolution: { value: new THREE.Vector3(1, 1, 1) },
       u_brightness: { value: 1.5 }, // Consistent brightness everywhere
       u_cameraZ: { value: -1.0 },
+      u_cameraY: { value: 6.0 }, // Vertical framing
       u_terrainFreq: { value: 0.25 },
       u_terrainAmp: { value: 0.5 },
       u_fogDist: { value: 98.0 },

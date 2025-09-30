@@ -217,11 +217,16 @@ export default function HomePage() {
 
           {/* Subtitle */}
           <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20">
-            Most "AI consultants" try to sell you a flashy new tool. That's why 95% of AI projects fail to deliver ROI—they force technology onto a broken process. We do things differently.
+            Most "AI consultants" try to sell you a flashy new tool. That's why 95% of AI projects fail to deliver ROI—they force technology onto a broken process. We do things differently. Our approach is built on a first-principles, engineering mindset. This strategic thinking is our most valuable deliverable—it's what prevents costly mistakes and guarantees you a positive return.
           </p>
 
           {/* Apple-Style Minimal Steps - Tighter */}
           <div className="max-w-5xl mx-auto">
+            {/* Timeline Label */}
+            <div className="text-center mb-12">
+              <span className="inline-block text-white/40 text-sm font-medium tracking-wider uppercase mb-2">Your First 30 Days</span>
+            </div>
+
             <div className="relative">
               {/* Subtle connecting line */}
               <div className="absolute top-5 left-0 right-0 h-px" style={{
@@ -234,9 +239,9 @@ export default function HomePage() {
                   <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 mb-5 relative border border-white/10">
                     <span className="text-white/60 text-xs font-medium">01</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Identify what's costing you customers</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Diagnose the Bottleneck</h3>
                   <p className="text-white/50 text-sm leading-relaxed">
-                    We analyze where customers drop off in your process.
+                    We conduct a deep-dive analysis to find the single biggest point of failure in your customer journey.
                   </p>
                 </div>
 
@@ -245,9 +250,9 @@ export default function HomePage() {
                   <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 mb-5 relative border border-white/10">
                     <span className="text-white/60 text-xs font-medium">02</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Build a system that captures them</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Build Your Custom AI Engine</h3>
                   <p className="text-white/50 text-sm leading-relaxed">
-                    Custom automation that works 24/7 to convert opportunities.
+                    We construct a seamless, automated system designed to plug that specific leak.
                   </p>
                 </div>
 
@@ -256,12 +261,19 @@ export default function HomePage() {
                   <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 mb-5 relative border border-white/10">
                     <span className="text-white/60 text-xs font-medium">03</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">See real revenue growth in 30 days</h3>
+                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Deploy & Guarantee a Win</h3>
                   <p className="text-white/50 text-sm leading-relaxed">
-                    Measurable results or you pay nothing.
+                    We implement the system and guarantee a tangible, measurable revenue win. The risk is 100% on us.
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Continuation Signal */}
+            <div className="text-center mt-16">
+              <p className="text-white/50 text-sm italic">
+                Then, we scale your growth systematically.
+              </p>
             </div>
           </div>
         </div>

@@ -218,9 +218,9 @@ export default function HomePage() {
 
         <div className="container relative mx-auto" style={{ zIndex: 10 }}>
           {/* Header + Subheading Container - Same width as steps */}
-          <div className="max-w-5xl mx-auto px-8 text-center mb-20">
+          <div className="max-w-5xl mx-auto px-8 py-8 text-center mb-20">
             {/* Headline */}
-            <h2 className="text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[0.95] tracking-tight text-white mb-6">
+            <h2 className="solution-headline">
               We Don't Sell AI.<br />We Engineer Revenue.
             </h2>
 

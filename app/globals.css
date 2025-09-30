@@ -1148,7 +1148,7 @@ body {
 }
 
 .amplification-text {
-    font-size: 1.375rem;
+    font-size: clamp(1rem, 2vw, 1.125rem); /* Match problem-subtext for consistency */
     color: var(--medium-dark);
     margin-bottom: var(--space-md);
 }
@@ -1162,7 +1162,7 @@ body {
 }
 
 .amplification-closer {
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 2vw, 1.125rem); /* Match problem-subtext for consistency */
     color: var(--medium-dark);
 }
 

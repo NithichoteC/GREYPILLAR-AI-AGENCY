@@ -847,21 +847,23 @@ body {
     position: relative;
 }
 
-/* Add padding to problem section container for proper spacing */
-.problem-section .container {
-    padding: 0 var(--space-xl);
-}
-
-/* Divider Line (matches CTA button border style) */
+/* Divider Line (responsive positioning like navigation) */
 .problem-section::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 50%;
-    width: calc(1200px - 2 * var(--space-xl));
+    left: var(--space-xl);
+    right: var(--space-xl);
     height: 2px;
     background: var(--light);
-    transform: translateX(-50%);
+}
+
+/* Mobile divider uses smaller padding to match nav-container */
+@media (max-width: 809.98px) {
+    .problem-section::before {
+        left: var(--space-md);
+        right: var(--space-md);
+    }
 }
 
 .problem-header {

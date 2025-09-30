@@ -265,7 +265,7 @@ body {
     background: rgba(255, 255, 255, 0.25);  /* 25% for true glass effect */
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border: 1.5px solid rgba(0, 0, 0, 0.15); /* Dark border for proper contrast */
     border-radius: 9999px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     /* 21st.dev premium text styling */
@@ -276,7 +276,7 @@ body {
     text-decoration: none;
     /* 21st.dev multi-layer shadow for 3D depth */
     box-shadow:
-        0 0 0 1.5px rgba(255, 255, 255, 0.5) inset,  /* Inner bright rim */
+        0 0 0 1px rgba(0, 0, 0, 0.1) inset,           /* Subtle dark inner rim */
         0 2px 4px rgba(0, 0, 0, 0.08),                /* Small close shadow */
         0 8px 16px rgba(0, 0, 0, 0.12),               /* Medium depth */
         0 16px 32px rgba(0, 0, 0, 0.08);              /* Outer glow shadow */
@@ -285,10 +285,10 @@ body {
 .glass-button:hover .glass-button-text {
     color: #000000; /* Black on hover */
     background: rgba(255, 255, 255, 0.4);  /* More opaque glass on hover */
-    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    border: 1.5px solid rgba(0, 0, 0, 0.2); /* Darker border on hover */
     /* NO LIFT! Enhanced shadow depth on hover */
     box-shadow:
-        0 0 0 1.5px rgba(255, 255, 255, 0.6) inset,
+        0 0 0 1px rgba(0, 0, 0, 0.15) inset,         /* Darker inner rim on hover */
         0 4px 6px rgba(0, 0, 0, 0.1),
         0 10px 20px rgba(0, 0, 0, 0.15),
         0 20px 40px rgba(0, 0, 0, 0.1);
@@ -311,6 +311,7 @@ body {
 }
 
 .glass-button.over-dark:hover .glass-button-text {
+    color: #FFFFFF; /* Keep white text on dark background hover */
     background: rgba(255, 255, 255, 0.15); /* Slightly more opaque but still ultra-transparent */
     border: 1.5px solid rgba(255, 255, 255, 0.3);
     /* NO LIFT! Enhanced glow on hover */

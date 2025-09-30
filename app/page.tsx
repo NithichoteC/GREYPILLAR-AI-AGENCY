@@ -16,7 +16,7 @@ export default function HomePage() {
           <div className="hero-frame">
             <GridCanvas className="grid-canvas" />
           </div>
-          <div className="container max-w-6xl mx-auto px-6 md:px-8">
+          <div className="container max-w-[1200px] mx-auto px-6 md:px-8">
             <div className="hero-text-content">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 text-darkest">
                 Your Business is Leaking Revenue.<br />
@@ -29,7 +29,7 @@ export default function HomePage() {
 
       {/* Hero Subheading Section */}
       <section className="hero-subheading-section py-8">
-        <div className="container max-w-6xl mx-auto px-6 md:px-8">
+        <div className="container max-w-[1200px] mx-auto px-6 md:px-8">
           <p className="text-xl md:text-2xl text-left text-medium-dark leading-relaxed">
             No huge upfront investment. No complex tech to manage. Just results.<br />
             Trusted by teams in construction, medicine, and professional services.
@@ -125,7 +125,7 @@ export default function HomePage() {
 
       {/* Problem Section with Animated Leak Cards */}
       <section className="section problem-section">
-        <div className="container max-w-6xl mx-auto px-6 md:px-8">
+        <div className="container max-w-[1200px] mx-auto px-6 md:px-8">
           {/* Section Header */}
           <div className="problem-header">
             <h2 className="problem-headline">The Silent Killers of Growth<br />Are Already in Your Business</h2>

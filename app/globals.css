@@ -1224,6 +1224,8 @@ body {
     .problem-card {
         width: 100%;
         max-width: 300px; /* Reduced from 360px to prevent breaking at 481-775px */
+        padding: var(--space-xl); /* Reduce from 32px to 24px to fit content */
+        min-height: 380px; /* Reduce from 420px to accommodate smaller card */
     }
 
     .card-content {

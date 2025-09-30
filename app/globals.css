@@ -847,22 +847,23 @@ body {
     position: relative;
 }
 
-/* Divider Line (responsive positioning like navigation) */
+/* Divider Line (constrained to 1200px max-width like container) */
 .problem-section::before {
     content: '';
     position: absolute;
     top: 0;
-    left: var(--space-xl);
-    right: var(--space-xl);
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 1200px;
+    width: calc(100% - 2 * var(--space-xl));
     height: 2px;
     background: var(--light);
 }
 
-/* Mobile divider uses smaller padding to match nav-container */
+/* Mobile divider uses smaller spacing */
 @media (max-width: 809.98px) {
     .problem-section::before {
-        left: var(--space-md);
-        right: var(--space-md);
+        width: calc(100% - 2 * var(--space-md));
     }
 }
 

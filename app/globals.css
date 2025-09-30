@@ -260,23 +260,24 @@ body {
     display: block;
     /* 21st.dev default size: px-6 py-3.5 */
     padding: 14px 24px;
-    color: var(--darkest);
-    background: rgba(255, 255, 255, 0.9);
+    color: #FFFFFF; /* White text for glass effect */
+    background: rgba(255, 255, 255, 0.15); /* Semi-transparent for true glass */
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle white border */
     border-radius: 9999px;
     transition: all 0.3s ease;
     /* 21st.dev premium text styling */
     user-select: none;
     -webkit-user-select: none;
     letter-spacing: -0.025em; /* tracking-tighter */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); /* Stronger shadow for white text */
     text-decoration: none;
 }
 
 .glass-button:hover .glass-button-text {
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, 0.25); /* More opaque on hover, still glass */
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
 }
 
@@ -286,7 +287,7 @@ body {
     left: 0;
     right: 0;
     bottom: -2px;
-    background: rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.2); /* Light shadow for dark glass */
     filter: blur(10px);
     border-radius: 9999px;
     z-index: -1;

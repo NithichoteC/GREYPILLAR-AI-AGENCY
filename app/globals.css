@@ -1652,7 +1652,19 @@ body {
     box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1);
 }
 
-/* Responsive design for visual storytelling section - match nav border width */
+/* Mobile responsive design for asymmetric void layout (must come BEFORE width constraints) */
+@media (max-width: 1200px) {
+    .visual-storytelling-container {
+        grid-template-columns: 45% 55%;
+        gap: 60px;
+    }
+    .void-canvas {
+        width: 450px; /* Increased from 350px */
+        height: 450px;
+    }
+}
+
+/* Responsive design for visual storytelling section - match nav border width (must come AFTER layout changes) */
 @media (min-width: 1440px) {
     .visual-storytelling-container {
         max-width: calc(1600px - 2 * var(--space-xl)); /* Match nav responsive width */
@@ -1674,18 +1686,6 @@ body {
 @media (max-width: 809.98px) {
     .visual-storytelling-container {
         max-width: calc(100vw - 2rem - 2 * var(--space-md)); /* Match nav constraints */
-    }
-}
-
-/* Mobile responsive design for asymmetric void layout */
-@media (max-width: 1200px) {
-    .visual-storytelling-container {
-        grid-template-columns: 45% 55%;
-        gap: 60px;
-    }
-    .void-canvas {
-        width: 450px; /* Increased from 350px */
-        height: 450px;
     }
 }
 

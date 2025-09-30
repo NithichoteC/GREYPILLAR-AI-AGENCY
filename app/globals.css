@@ -1223,7 +1223,7 @@ body {
 
     .problem-card {
         width: 100%;
-        max-width: 360px; /* Reduced from 500px to fit within nav border constraints */
+        max-width: 300px; /* Reduced from 360px to prevent breaking at 481-775px */
     }
 }
 
@@ -1243,7 +1243,7 @@ body {
         min-height: 350px;
         padding: var(--space-xl);
         width: 100%;
-        max-width: 320px; /* Reduced from 100% for better proportions and nav border alignment */
+        max-width: 280px; /* Reduced from 320px to accommodate 01/02/03 numbers within nav width */
     }
 
     .card-number {
@@ -1406,7 +1406,7 @@ body {
 }
 
 .solution-headline {
-    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    font-size: clamp(2rem, 4vw, 2.75rem); /* Match problem-headline for consistent hierarchy */
     font-weight: 700;
     line-height: 1.05;
     color: #FFFFFF;
@@ -1684,9 +1684,9 @@ body {
     }
 }
 
-@media (max-width: 809.98px) {
+@media (max-width: 809px) {
     .visual-storytelling-container {
-        max-width: calc(100vw - 2rem - 2 * var(--space-md)); /* Match nav constraints */
+        max-width: calc(100vw - 2rem - 2 * var(--space-md)); /* Match nav & problem section exactly */
     }
 }
 

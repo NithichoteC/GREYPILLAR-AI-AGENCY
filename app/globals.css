@@ -261,7 +261,7 @@ body {
     /* 21st.dev default size: px-6 py-3.5 */
     padding: 14px 24px;
     /* DEFAULT = LIGHT SECTIONS: Grey text like "That's a leak" */
-    color: rgba(0, 0, 0, 0.85);
+    color: var(--darkest); /* #212529 - matches card-impact */
     background: rgba(255, 255, 255, 0.25);  /* 25% for true glass effect */
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -297,28 +297,38 @@ body {
 /* DARK SECTIONS: over-dark class triggers on #solution */
 .glass-button.over-dark .glass-button-text {
     color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.15); /* True glass - very transparent */
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.08); /* Ultra-transparent - no boxy appearance */
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     /* 21st.dev multi-layer light glow for dark backgrounds */
     box-shadow:
-        0 0 0 1.5px rgba(255, 255, 255, 0.2) inset,  /* Inner highlight */
+        0 0 0 1px rgba(255, 255, 255, 0.15) inset,   /* Subtle inner highlight */
         0 2px 4px rgba(0, 0, 0, 0.5),                 /* Close depth */
-        0 8px 16px rgba(255, 255, 255, 0.15),         /* Light glow */
-        0 16px 32px rgba(255, 255, 255, 0.1);         /* Outer light spread */
+        0 8px 16px rgba(255, 255, 255, 0.1),          /* Light glow */
+        0 16px 32px rgba(255, 255, 255, 0.08);        /* Outer light spread */
 }
 
 .glass-button.over-dark:hover .glass-button-text {
-    background: rgba(255, 255, 255, 0.25); /* More opaque but still glass */
-    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.15); /* Slightly more opaque but still ultra-transparent */
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
     /* NO LIFT! Enhanced glow on hover */
     box-shadow:
         0 0 0 1.5px rgba(255, 255, 255, 0.3) inset,
         0 4px 8px rgba(0, 0, 0, 0.6),
         0 12px 24px rgba(255, 255, 255, 0.2),
         0 20px 48px rgba(255, 255, 255, 0.15);
+}
+
+/* Floating CTA container - prevent transparent square artifact */
+.floating-cta {
+    background: transparent !important;
+}
+
+.floating-cta a {
+    background: transparent !important;
+    display: inline-block;
 }
 
 /* Shadow element (21st.dev uses separate shadow div) */

@@ -4,4 +4,3 @@
   "installCommand": "npm install",
   "framework": "nextjs"
 }
-# Trigger redeploy with Next.js config

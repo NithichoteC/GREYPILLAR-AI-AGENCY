@@ -215,64 +215,60 @@ export default function HomePage() {
             We Don't Sell AI.<br />We Engineer Revenue.
           </h2>
 
-          {/* Subtitle */}
+          {/* Subtitle - Concise */}
           <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20">
-            Most "AI consultants" try to sell you a flashy new tool. That's why 95% of AI projects fail to deliver ROI—they force technology onto a broken process. We do things differently. Our approach is built on a first-principles, engineering mindset. This strategic thinking is our most valuable deliverable—it's what prevents costly mistakes and guarantees you a positive return.
+            Most "AI consultants" try to sell you a flashy new tool. That's why 95% of AI projects fail to deliver ROI—they force technology onto a broken process. We do things differently. Our approach is built on a first-principles, engineering mindset.
           </p>
 
-          {/* Apple-Style Minimal Steps - Tighter */}
-          <div className="max-w-5xl mx-auto">
-            {/* Timeline Label */}
-            <div className="text-center mb-12">
-              <span className="inline-block text-white/40 text-sm font-medium tracking-wider uppercase mb-2">Your First 30 Days</span>
-            </div>
-
+          {/* Premium 3-Stage Process - Mobile Responsive */}
+          <div className="max-w-6xl mx-auto">
             <div className="relative">
-              {/* Subtle connecting line */}
-              <div className="absolute top-5 left-0 right-0 h-px" style={{
+              {/* Subtle connecting line - desktop only */}
+              <div className="hidden md:block absolute top-5 left-0 right-0 h-px" style={{
                 background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08) 50%, transparent)'
               }}></div>
 
-              <div className="grid grid-cols-3 gap-12">
-                {/* Step 1 */}
-                <div className="text-center relative">
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 mb-5 relative border border-white/10">
-                    <span className="text-white/60 text-xs font-medium">01</span>
+              {/* Responsive Grid: Mobile stack, Desktop 3-col */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+                {/* Step 1 - Audit */}
+                <div className="text-center relative px-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 mb-6 relative border border-white/10">
+                    <span className="text-white/70 text-sm font-semibold">01</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Diagnose the Bottleneck</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">
-                    We conduct a deep-dive analysis to find the single biggest point of failure in your customer journey.
+                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Audit</h3>
+                  <p className="text-white/60 text-base leading-relaxed">
+                    We analyze your customer journey to find the single biggest revenue leak costing you customers.
                   </p>
                 </div>
 
-                {/* Step 2 */}
-                <div className="text-center relative">
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 mb-5 relative border border-white/10">
-                    <span className="text-white/60 text-xs font-medium">02</span>
+                {/* Step 2 - Blueprint */}
+                <div className="text-center relative px-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 mb-6 relative border border-white/10">
+                    <span className="text-white/70 text-sm font-semibold">02</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Build Your Custom AI Engine</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">
-                    We construct a seamless, automated system designed to plug that specific leak.
+                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Blueprint</h3>
+                  <p className="text-white/60 text-base leading-relaxed">
+                    We design your custom AI system to capture those lost opportunities automatically.
                   </p>
                 </div>
 
-                {/* Step 3 */}
-                <div className="text-center relative">
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/5 mb-5 relative border border-white/10">
-                    <span className="text-white/60 text-xs font-medium">03</span>
+                {/* Step 3 - Guarantee */}
+                <div className="text-center relative px-4">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 mb-6 relative border border-white/10">
+                    <span className="text-white/70 text-sm font-semibold">03</span>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mb-2 tracking-tight">Deploy & Guarantee a Win</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">
-                    We implement the system and guarantee a tangible, measurable revenue win. The risk is 100% on us.
+                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Guarantee</h3>
+                  <p className="text-white/60 text-base leading-relaxed">
+                    We deliver a measurable revenue win in 30 days, or you don't pay. The risk is 100% on us.
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Continuation Signal */}
-            <div className="text-center mt-16">
-              <p className="text-white/50 text-sm italic">
-                Then, we scale your growth systematically.
+            {/* Subtle Partnership Signal */}
+            <div className="text-center mt-20">
+              <p className="text-white/40 text-sm font-light">
+                Then we grow together as your partner.
               </p>
             </div>
           </div>

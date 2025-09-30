@@ -1225,6 +1225,11 @@ body {
         width: 100%;
         max-width: 300px; /* Reduced from 360px to prevent breaking at 481-775px */
     }
+
+    .card-content {
+        margin-top: 150px; /* Reduce from 220px to fit 300px card */
+        margin-left: var(--space-md); /* Also reduce side margin */
+    }
 }
 
 /* Mobile Responsive */

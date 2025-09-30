@@ -27,6 +27,7 @@ export default function ScrollProgress() {
         document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100;
       setProgress(Math.min(scrolled, 100));
+      console.log('📊 Scroll Progress:', scrolled.toFixed(1) + '%');
     }, 16); // 60fps
 
     window.addEventListener('scroll', updateProgress, { passive: true });

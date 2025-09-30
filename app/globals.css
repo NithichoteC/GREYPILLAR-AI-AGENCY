@@ -79,21 +79,7 @@ body {
     overflow-x: hidden;
 }
 
-/* =========================
-   SCROLL PROGRESS BAR (Nitro Structure)
-========================= */
-.scroll-progress {
-    position: fixed;
-    top: 60px; /* Exactly at nav bottom border line */
-    left: 50%;
-    width: calc(1200px - 2 * var(--space-xl)); /* Base width - matches inner content */
-    height: 1px;
-    background: linear-gradient(90deg, var(--medium), var(--dark));
-    z-index: 1001; /* Above nav border */
-    transform: translateX(-50%) scaleX(0);
-    transform-origin: left;
-    transition: transform 0.1s ease-out;
-}
+/* REMOVED DUPLICATE - See correct implementation at line ~220 */
 
 /* =========================
    GLASS NAVIGATION (Nitro Style) - Fixed Height
@@ -223,7 +209,7 @@ body {
     top: 61px; /* Nav height */
     left: 0;
     right: 0;
-    height: 1px;
+    height: 2px; /* Increased from 1px for visibility */
     z-index: 999; /* Below nav */
     pointer-events: none;
 }
@@ -291,17 +277,17 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    bottom: -4px; /* FIXED: Closer to button (was -8px) */
-    background: rgba(0, 0, 0, 0.12);
-    filter: blur(12px); /* FIXED: Less spread (was 20px) */
+    bottom: -3px; /* Subtle shadow */
+    background: rgba(0, 0, 0, 0.08);
+    filter: blur(8px); /* Minimal spread */
     border-radius: 9999px;
     z-index: -1;
     transition: all 0.3s ease;
 }
 
 .glass-button:hover .glass-button-shadow {
-    bottom: -6px;
-    filter: blur(16px);
+    bottom: -5px;
+    filter: blur(12px);
 }
 
 /* =========================

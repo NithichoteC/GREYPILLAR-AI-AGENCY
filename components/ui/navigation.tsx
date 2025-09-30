@@ -15,13 +15,15 @@ export default function Navigation() {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // Nav is "over dark" when dark section intersects with top 80px (nav height)
-        setIsOverDark(entry.isIntersecting);
+        const rect = entry.target.getBoundingClientRect();
+        // Only white when section top is at or above nav bottom (61px)
+        // AND section bottom is still visible (not scrolled past)
+        const isNavOverDark = rect.top <= 61 && rect.bottom >= 61;
+        setIsOverDark(isNavOverDark);
+        console.log('🎨 Nav Over Dark:', isNavOverDark, '| Section Top:', rect.top.toFixed(0), '| Section Bottom:', rect.bottom.toFixed(0));
       },
       {
-        // Watch for intersection at nav height
-        rootMargin: '-80px 0px 0px 0px',
-        threshold: 0
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
       }
     );
 

@@ -55,7 +55,7 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
       }}
     >
       <div className="glass-button-wrap">
-        <Link href="/contact" className="glass-button">
+        <Link href="#audit" className="glass-button">
           <span className="glass-button-text">
             Book Strategy Call
           </span>

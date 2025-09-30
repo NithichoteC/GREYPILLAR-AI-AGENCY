@@ -1474,8 +1474,9 @@ body {
     z-index: 2;
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     margin-top: 80px;
+    padding-left: 80px;
 }
 
 .solution-step-text-wrapper {
@@ -1483,7 +1484,7 @@ body {
     flex-direction: column;
     gap: 12px;
     max-width: 600px;
-    text-align: center;
+    text-align: left;
 }
 
 .solution-step-title {

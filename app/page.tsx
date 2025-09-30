@@ -216,9 +216,9 @@ export default function HomePage() {
           zIndex: 2
         }} />
 
-        <div className="container relative mx-auto" style={{ zIndex: 10 }}>
-          {/* Header + Subheading Container - Same width as steps */}
-          <div className="max-w-5xl mx-auto px-8 py-8 text-center mb-20">
+        <div className="container max-w-[1200px] relative mx-auto px-6 md:px-8 py-8" style={{ zIndex: 10 }}>
+          {/* Header + Subheading Container */}
+          <div className="text-center mb-20">
             {/* Headline */}
             <h2 className="solution-headline">
               We Don't Sell AI.<br />We Engineer Revenue.
@@ -231,7 +231,7 @@ export default function HomePage() {
           </div>
 
           {/* McKinsey-Style Horizontal Process */}
-          <div className="max-w-5xl mx-auto px-8">
+          <div>
             {/* Step 1: AUDIT */}
             <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
               <div className="md:w-1/2 mb-4 md:mb-0">

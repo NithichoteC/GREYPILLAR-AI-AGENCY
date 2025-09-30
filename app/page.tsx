@@ -30,7 +30,7 @@ export default function HomePage() {
       {/* Hero Subheading Section */}
       <section className="hero-subheading-section py-8">
         <div className="container max-w-[1200px] mx-auto px-6 md:px-8">
-          <p className="text-xl md:text-2xl text-left text-medium-dark leading-relaxed">
+          <p className="text-base md:text-xl text-left text-medium-dark leading-relaxed">
             No huge upfront investment. No complex tech to manage. Just results.<br />
             Trusted by teams in construction, medicine, and professional services.
           </p>

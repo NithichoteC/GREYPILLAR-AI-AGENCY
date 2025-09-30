@@ -1297,7 +1297,7 @@ body {
     margin-bottom: 60px;
     position: relative;
     margin: 0 auto 60px auto;
-    max-width: 800px;
+    max-width: 600px; /* Reduced for better mobile wrapping */
     padding: 0 24px;
 }
 
@@ -1689,6 +1689,14 @@ body {
         line-height: 1.2;
         margin-bottom: 24px;
     }
+}
+
+/* Very small mobile - extra breathing room */
+@media (max-width: 400px) {
+    .visual-storytelling-container {
+        padding: 0 20px; /* Extra 4px breathing room on tiny screens */
+    }
+}
 
     .step-title {
         font-size: 1rem;

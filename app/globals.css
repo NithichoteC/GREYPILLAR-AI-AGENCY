@@ -267,6 +267,7 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.08);
     border-radius: 9999px;
     transition: all 0.3s ease;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle depth shadow */
 }
 
 .glass-button:hover .glass-button-text {
@@ -279,9 +280,9 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    bottom: -3px; /* Subtle shadow */
+    bottom: -2px; /* Closer to text */
     background: rgba(0, 0, 0, 0.08);
-    filter: blur(8px); /* Minimal spread */
+    filter: blur(10px); /* More blurry for sophistication */
     border-radius: 9999px;
     z-index: -1;
     transition: all 0.3s ease;

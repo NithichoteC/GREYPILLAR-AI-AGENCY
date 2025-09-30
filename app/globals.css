@@ -261,62 +261,64 @@ body {
     /* 21st.dev default size: px-6 py-3.5 */
     padding: 14px 24px;
     /* DEFAULT = LIGHT SECTIONS: Grey text like "That's a leak" */
-    color: rgba(0, 0, 0, 0.7);
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: rgba(0, 0, 0, 0.85);
+    background: rgba(255, 255, 255, 0.25);  /* 25% for true glass effect */
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
     border-radius: 9999px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     /* 21st.dev premium text styling */
     user-select: none;
     -webkit-user-select: none;
     letter-spacing: -0.025em; /* tracking-tighter */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
     text-decoration: none;
     /* 21st.dev multi-layer shadow for 3D depth */
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.8) inset,  /* Inner bright rim */
-        0 1px 2px rgba(0, 0, 0, 0.1),               /* Small close shadow */
-        0 4px 12px rgba(0, 0, 0, 0.15),             /* Large depth shadow */
-        0 8px 24px rgba(0, 0, 0, 0.08);             /* Outer glow shadow */
+        0 0 0 1.5px rgba(255, 255, 255, 0.5) inset,  /* Inner bright rim */
+        0 2px 4px rgba(0, 0, 0, 0.08),                /* Small close shadow */
+        0 8px 16px rgba(0, 0, 0, 0.12),               /* Medium depth */
+        0 16px 32px rgba(0, 0, 0, 0.08);              /* Outer glow shadow */
 }
 
 .glass-button:hover .glass-button-text {
     color: #000000; /* Black on hover */
-    background: rgba(255, 255, 255, 1);
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.4);  /* More opaque glass on hover */
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
     /* NO LIFT! Enhanced shadow depth on hover */
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.9) inset,
-        0 2px 4px rgba(0, 0, 0, 0.15),
-        0 6px 16px rgba(0, 0, 0, 0.2),
-        0 12px 32px rgba(0, 0, 0, 0.1);
+        0 0 0 1.5px rgba(255, 255, 255, 0.6) inset,
+        0 4px 6px rgba(0, 0, 0, 0.1),
+        0 10px 20px rgba(0, 0, 0, 0.15),
+        0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* DARK SECTIONS: over-dark class triggers on #solution */
 .glass-button.over-dark .glass-button-text {
     color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.2); /* Slightly more opaque glass */
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.15); /* True glass - very transparent */
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     /* 21st.dev multi-layer light glow for dark backgrounds */
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.3) inset,   /* Inner highlight */
-        0 2px 4px rgba(0, 0, 0, 0.4),                /* Close depth */
-        0 8px 16px rgba(255, 255, 255, 0.2),         /* Light glow */
-        0 12px 32px rgba(255, 255, 255, 0.15);       /* Outer light spread */
+        0 0 0 1.5px rgba(255, 255, 255, 0.2) inset,  /* Inner highlight */
+        0 2px 4px rgba(0, 0, 0, 0.5),                 /* Close depth */
+        0 8px 16px rgba(255, 255, 255, 0.15),         /* Light glow */
+        0 16px 32px rgba(255, 255, 255, 0.1);         /* Outer light spread */
 }
 
 .glass-button.over-dark:hover .glass-button-text {
-    background: rgba(255, 255, 255, 0.3); /* More opaque but still glass */
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.25); /* More opaque but still glass */
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
     /* NO LIFT! Enhanced glow on hover */
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.4) inset,
-        0 2px 5px rgba(0, 0, 0, 0.5),
-        0 10px 20px rgba(255, 255, 255, 0.25),
-        0 16px 40px rgba(255, 255, 255, 0.2);
+        0 0 0 1.5px rgba(255, 255, 255, 0.3) inset,
+        0 4px 8px rgba(0, 0, 0, 0.6),
+        0 12px 24px rgba(255, 255, 255, 0.2),
+        0 20px 48px rgba(255, 255, 255, 0.15);
 }
 
 /* Shadow element (21st.dev uses separate shadow div) */
@@ -2448,4 +2450,73 @@ body {
     padding: var(--space-2xl);
     text-align: center;
     color: var(--medium-dark);
+}
+
+
+
+@layer base {
+  :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 3.9%;
+        --primary: 0 0% 9%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 0 0% 96.1%;
+        --secondary-foreground: 0 0% 9%;
+        --muted: 0 0% 96.1%;
+        --muted-foreground: 0 0% 45.1%;
+        --accent: 0 0% 96.1%;
+        --accent-foreground: 0 0% 9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 89.8%;
+        --input: 0 0% 89.8%;
+        --ring: 0 0% 3.9%;
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        --radius: 0.5rem;
+    }
+  .dark {
+        --background: 0 0% 3.9%;
+        --foreground: 0 0% 98%;
+        --card: 0 0% 3.9%;
+        --card-foreground: 0 0% 98%;
+        --popover: 0 0% 3.9%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 0 0% 98%;
+        --primary-foreground: 0 0% 9%;
+        --secondary: 0 0% 14.9%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 0 0% 14.9%;
+        --muted-foreground: 0 0% 63.9%;
+        --accent: 0 0% 14.9%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 14.9%;
+        --input: 0 0% 14.9%;
+        --ring: 0 0% 83.1%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+    }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
 }

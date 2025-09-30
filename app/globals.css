@@ -1705,25 +1705,6 @@ body {
     }
 }
 
-    .step-title {
-        font-size: 1rem;
-        margin-bottom: 8px;
-    }
-
-    .step-description {
-        font-size: 0.875rem;
-        line-height: 1.5;
-    }
-
-    .process-step {
-        margin-bottom: 24px;
-    }
-
-    .timeline-step {
-        max-width: 280px;
-    }
-}
-
 /* Sticky CTA Button - Apple/Vercel Level Polish */
 .sticky-cta {
     position: fixed;

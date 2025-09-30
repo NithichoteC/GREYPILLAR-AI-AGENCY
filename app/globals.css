@@ -698,7 +698,7 @@ body {
 
 @media (max-width: 480px) {
     .hero-text-content .h1 {
-        font-size: 2.5rem; /* Increased from var(--font-4xl) to 2.5rem (40px) for clear dominance */
+        font-size: 2.25rem; /* 36px - balanced mobile size, professional standard */
         line-height: 1.35;
         letter-spacing: -0.01em;
     }
@@ -1607,7 +1607,7 @@ body {
     }
 
     .visual-storytelling-container {
-        padding: 0 var(--space-md); /* Match mobile pattern: 16px */
+        padding: 0 24px; /* Match hero section: 24px for readability */
         gap: 32px;
     }
 

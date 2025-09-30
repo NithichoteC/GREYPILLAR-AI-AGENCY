@@ -30,7 +30,7 @@ export default function HomePage() {
       {/* Hero Subheading Section */}
       <section className="hero-subheading-section py-8">
         <div className="container max-w-6xl mx-auto px-8">
-          <p className="text-xl md:text-2xl text-left text-medium-dark leading-relaxed">
+          <p className="text-xl md:text-2xl text-center text-medium-dark leading-relaxed">
             No huge upfront investment. No complex tech to manage. Just results.<br />
             Trusted by teams in construction, medicine, and professional services.
           </p>
@@ -125,7 +125,7 @@ export default function HomePage() {
 
       {/* Problem Section with Animated Leak Cards */}
       <section className="section problem-section">
-        <div className="container">
+        <div className="container px-6 md:px-8">
           {/* Section Header */}
           <div className="problem-header">
             <h2 className="problem-headline">The Silent Killers of Growth<br />Are Already in Your Business</h2>
@@ -221,7 +221,7 @@ export default function HomePage() {
           </p>
 
           {/* McKinsey-Style Horizontal Process */}
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-5xl mx-auto px-6 md:px-8">
             {/* Step 1: AUDIT */}
             <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
               <div className="md:w-1/2 mb-4 md:mb-0">

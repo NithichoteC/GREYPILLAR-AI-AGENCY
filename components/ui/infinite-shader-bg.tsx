@@ -26,13 +26,13 @@ function ShaderPlane({
       material.uniforms.u_time.value = state.clock.elapsedTime * 0.5;
       material.uniforms.u_resolution.value.set(size.width, size.height, 1.0);
 
-      // Cinema-quality responsive parameters - Professional framing approach
+      // Cinema-quality responsive parameters - Maximum mobile visibility
       material.uniforms.u_brightness.value = 1.5; // Consistent brightness everywhere
-      material.uniforms.u_cameraZ.value = isMobile ? -2.5 : -1.0; // Mobile pulls back for overview
+      material.uniforms.u_cameraZ.value = isMobile ? -4.0 : -1.0; // Mobile: dramatic wide landscape view
       material.uniforms.u_cameraY.value = isMobile ? 9.0 : 6.0; // Mobile frames higher - centers peaks
       material.uniforms.u_terrainFreq.value = 0.25; // Same wave size all screens
-      material.uniforms.u_terrainAmp.value = isMobile ? 0.8 : 0.5;
-      material.uniforms.u_fogDist.value = isMobile ? 60.0 : 98.0;
+      material.uniforms.u_terrainAmp.value = isMobile ? 1.0 : 0.5; // Mobile: dramatic peaks for visibility
+      material.uniforms.u_fogDist.value = isMobile ? 85.0 : 98.0; // Mobile: see farther before fog
     }
   });
 

@@ -1434,6 +1434,80 @@ body {
     background-clip: text;
 }
 
+/* Solution Cards - Premium Card Design */
+.solution-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: var(--space-2xl);
+    min-height: 280px;
+    transition: all 0.3s ease;
+    overflow: visible;
+}
+
+.solution-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.solution-number {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    font-size: 8rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.08);
+    line-height: 1;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.solution-content {
+    position: relative;
+    z-index: 2;
+    margin-top: 100px;
+    margin-left: var(--space-lg);
+}
+
+.solution-step-title {
+    font-size: var(--font-2xl);
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: var(--space-md);
+    line-height: 1.2;
+}
+
+.solution-step-description {
+    font-size: var(--font-lg);
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+}
+
+/* Solution Cards Responsive */
+@media (max-width: 768px) {
+    .solution-card {
+        padding: var(--space-xl);
+        min-height: 240px;
+    }
+
+    .solution-number {
+        font-size: 6rem;
+    }
+
+    .solution-content {
+        margin-top: 80px;
+        margin-left: var(--space-md);
+    }
+
+    .solution-step-title {
+        font-size: var(--font-xl);
+    }
+
+    .solution-step-description {
+        font-size: var(--font-base);
+    }
+}
+
 .solution-subtext {
     font-size: 18px;
     color: rgba(255, 255, 255, 0.6);

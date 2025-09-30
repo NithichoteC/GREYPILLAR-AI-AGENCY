@@ -230,40 +230,37 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* McKinsey-Style Horizontal Process */}
-          <div>
-            {/* Step 1: AUDIT */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
-              <div className="md:w-1/2 mb-4 md:mb-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight text-left">STEP 1: AUDIT</h3>
-              </div>
-              <div className="md:w-1/2 md:text-right">
-                <p className="text-white/60 text-base md:text-lg leading-relaxed text-left md:text-right">
-                  Find the single biggest revenue leak costing you customers
+          {/* Premium Card-Based Process */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 1: Revenue Leak Analysis */}
+            <div className="solution-card">
+              <div className="solution-number">01</div>
+              <div className="solution-content">
+                <h3 className="solution-step-title">Revenue Leak Analysis</h3>
+                <p className="solution-step-description">
+                  Identify your specific 60-80% opportunity gap
                 </p>
               </div>
             </div>
 
-            {/* Step 2: BLUEPRINT */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
-              <div className="md:w-1/2 mb-4 md:mb-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight text-left">STEP 2: BLUEPRINT</h3>
-              </div>
-              <div className="md:w-1/2 md:text-right">
-                <p className="text-white/60 text-base md:text-lg leading-relaxed text-left md:text-right">
-                  Design your custom AI system to capture those opportunities
+            {/* Step 2: Custom System Design */}
+            <div className="solution-card">
+              <div className="solution-number">02</div>
+              <div className="solution-content">
+                <h3 className="solution-step-title">Custom System Design</h3>
+                <p className="solution-step-description">
+                  Engineer AI that captures missed opportunities
                 </p>
               </div>
             </div>
 
-            {/* Step 3: GUARANTEE */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between py-8">
-              <div className="md:w-1/2 mb-4 md:mb-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight text-left">STEP 3: GUARANTEE</h3>
-              </div>
-              <div className="md:w-1/2 md:text-right">
-                <p className="text-white/60 text-base md:text-lg leading-relaxed text-left md:text-right">
-                  30-day measurable revenue win, or you don't pay
+            {/* Step 3: Guaranteed Results */}
+            <div className="solution-card">
+              <div className="solution-number">03</div>
+              <div className="solution-content">
+                <h3 className="solution-step-title">Guaranteed Results</h3>
+                <p className="solution-step-description">
+                  Measurable revenue impact in 30 days
                 </p>
               </div>
             </div>

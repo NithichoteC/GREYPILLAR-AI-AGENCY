@@ -1328,7 +1328,7 @@ body {
 .visual-storytelling-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 40px;
+    padding: 0 var(--space-xl); /* Match nav-container: 32px */
     position: relative;
     display: grid;
     grid-template-columns: 40% 60%;
@@ -1339,7 +1339,7 @@ body {
 /* Void animation container */
 .void-visual-container {
     position: relative;
-    height: 500px;
+    height: 600px; /* Increased from 500px for larger graphic */
     transform: translateX(-20%);
     grid-column: 1;
 }
@@ -1399,8 +1399,8 @@ body {
 /* Three.js Professional Void Canvas */
 .void-canvas {
     position: absolute;
-    width: 400px;
-    height: 400px;
+    width: 500px; /* Increased from 400px */
+    height: 500px; /* Increased from 400px */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -1554,11 +1554,11 @@ body {
     .visual-storytelling-container {
         grid-template-columns: 45% 55%;
         gap: 60px;
-        padding: 0 32px;
+        padding: 0 var(--space-xl); /* Consistent 32px */
     }
     .void-canvas {
-        width: 350px;
-        height: 350px;
+        width: 450px; /* Increased from 350px */
+        height: 450px;
     }
 }
 
@@ -1567,13 +1567,17 @@ body {
         grid-template-columns: 1fr;
         gap: 40px;
         max-width: 960px;
-        padding: 0 32px;
+        padding: 0 var(--space-xl); /* Consistent 32px */
     }
     .void-visual-container {
-        height: 350px;
+        height: 450px; /* Increased from 350px for larger graphic */
         transform: translateX(0);
         order: 1;
         margin: 0 auto;
+    }
+    .void-canvas {
+        width: 400px; /* Increased from 280px */
+        height: 400px;
     }
     .process-content-area {
         order: 2;
@@ -1603,17 +1607,17 @@ body {
     }
 
     .visual-storytelling-container {
-        padding: 0 24px;
+        padding: 0 var(--space-md); /* Match mobile pattern: 16px */
         gap: 32px;
     }
 
     .void-visual-container {
-        height: 300px;
+        height: 360px; /* Increased from 300px */
     }
 
     .void-canvas {
-        width: 280px;
-        height: 280px;
+        width: 340px; /* Increased from 280px */
+        height: 340px;
     }
 
     .process-step {
@@ -1668,16 +1672,16 @@ body {
 
 @media (max-width: 480px) {
     .solution-section {
-        padding: 60px 0;
+        padding: 40px 0; /* Reduced from 60px for more graphic space */
     }
 
     .void-visual-container {
-        height: 240px;
+        height: 340px; /* Increased from 240px */
     }
 
     .void-canvas {
-        width: 220px;
-        height: 220px;
+        width: 320px; /* Increased from 220px */
+        height: 320px;
     }
 
     .solution-headline {

@@ -209,16 +209,19 @@ export default function HomePage() {
           zIndex: 2
         }} />
 
-        <div className="container relative text-center mx-auto px-8" style={{ zIndex: 10, maxWidth: '1200px' }}>
-          {/* Headline */}
-          <h2 className="text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[0.95] tracking-tight text-white mb-6">
-            We Don't Sell AI.<br />We Engineer Revenue.
-          </h2>
+        <div className="container relative mx-auto px-8" style={{ zIndex: 10, maxWidth: '1200px' }}>
+          {/* Header + Subheading Container - Same width as steps */}
+          <div className="max-w-5xl mx-auto text-right mb-20">
+            {/* Headline */}
+            <h2 className="text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[0.95] tracking-tight text-white mb-6">
+              We Don't Sell AI.<br />We Engineer Revenue.
+            </h2>
 
-          {/* Subtitle - Ultra Concise */}
-          <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20">
-            Most "AI consultants" force technology onto broken processes. We start with a first-principles, engineering mindset.
-          </p>
+            {/* Subtitle - Ultra Concise */}
+            <p className="text-white/70 text-base md:text-lg leading-relaxed">
+              Most "AI consultants" force technology onto broken processes. We start with a first-principles, engineering mindset.
+            </p>
+          </div>
 
           {/* McKinsey-Style Horizontal Process */}
           <div className="max-w-5xl mx-auto px-8">

@@ -1,19 +1,21 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 
 interface ShaderPlaneProps {
   vertexShader: string;
   fragmentShader: string;
   uniforms: { [key: string]: { value: unknown } };
+  isMobile: boolean;
 }
 
 function ShaderPlane({
   vertexShader,
   fragmentShader,
   uniforms,
+  isMobile,
 }: ShaderPlaneProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const { size } = useThree();
@@ -23,6 +25,13 @@ function ShaderPlane({
       const material = meshRef.current.material as THREE.ShaderMaterial;
       material.uniforms.u_time.value = state.clock.elapsedTime * 0.5;
       material.uniforms.u_resolution.value.set(size.width, size.height, 1.0);
+
+      // Update responsive parameters
+      material.uniforms.u_brightness.value = isMobile ? 1.5 : 0.9;
+      material.uniforms.u_cameraZ.value = isMobile ? 2.0 : -1.0;
+      material.uniforms.u_terrainFreq.value = isMobile ? 0.4 : 0.25;
+      material.uniforms.u_terrainAmp.value = isMobile ? 0.8 : 0.5;
+      material.uniforms.u_fogDist.value = isMobile ? 60.0 : 98.0;
     }
   });
 
@@ -46,6 +55,18 @@ interface InfiniteShaderBgProps {
 }
 
 export default function InfiniteShaderBg({ className = "w-full h-full" }: InfiniteShaderBgProps) {
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   const vertexShader = `
     varying vec2 vUv;
     void main() {
@@ -60,6 +81,11 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
     varying vec2 vUv;
     uniform float u_time;
     uniform vec3 u_resolution;
+    uniform float u_brightness;
+    uniform float u_cameraZ;
+    uniform float u_terrainFreq;
+    uniform float u_terrainAmp;
+    uniform float u_fogDist;
 
     #define STEP 256
     #define EPS .001
@@ -104,7 +130,7 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
     float swingPlane(float height)
     {
         vec3 pos = _position + vec3(0.,0.,u_time * 5.5);
-        float def =  fbm6(pos.xz * .25) * 0.5;
+        float def =  fbm6(pos.xz * u_terrainFreq) * u_terrainAmp;
 
         float way = pow(abs(pos.x) * 34. ,2.5) *.0000125;
         def *= way;
@@ -140,7 +166,7 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
     {
       vec2 uv = (fragCoord.xy-.5*u_resolution.xy)/u_resolution.y;
 
-        vec3 rayOrigin = vec3(uv + vec2(0.,6.), -1. );
+        vec3 rayOrigin = vec3(uv + vec2(0.,6.), u_cameraZ);
 
         vec3 rayDir = normalize(vec3(uv , 1.));
 
@@ -163,10 +189,10 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
         float f;
 
         float dist = distance(rayOrigin,position);
-        f = dist /(98.);
+        f = dist / u_fogDist;
         f = float(nbStep) / float(STEP);
 
-        f *= .9;
+        f *= u_brightness;
         vec3 col = vec3(f);
 
         fragColor = vec4(col,1.0);
@@ -184,6 +210,11 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
     () => ({
       u_time: { value: 0 },
       u_resolution: { value: new THREE.Vector3(1, 1, 1) },
+      u_brightness: { value: 0.9 },
+      u_cameraZ: { value: -1.0 },
+      u_terrainFreq: { value: 0.25 },
+      u_terrainAmp: { value: 0.5 },
+      u_fogDist: { value: 98.0 },
     }),
     [],
   );
@@ -195,6 +226,7 @@ export default function InfiniteShaderBg({ className = "w-full h-full" }: Infini
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}
           uniforms={shaderUniforms}
+          isMobile={isMobile}
         />
       </Canvas>
     </div>

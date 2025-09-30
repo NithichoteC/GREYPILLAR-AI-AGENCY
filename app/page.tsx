@@ -16,7 +16,7 @@ export default function HomePage() {
           <div className="hero-frame">
             <GridCanvas className="grid-canvas" />
           </div>
-          <div className="container max-w-6xl mx-auto px-8">
+          <div className="container max-w-6xl mx-auto px-6 md:px-8">
             <div className="hero-text-content">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 text-darkest">
                 Your Business is Leaking Revenue.<br />
@@ -29,7 +29,7 @@ export default function HomePage() {
 
       {/* Hero Subheading Section */}
       <section className="hero-subheading-section py-8">
-        <div className="container max-w-6xl mx-auto px-8">
+        <div className="container max-w-6xl mx-auto px-6 md:px-8">
           <p className="text-xl md:text-2xl text-left text-medium-dark leading-relaxed">
             No huge upfront investment. No complex tech to manage. Just results.<br />
             Trusted by teams in construction, medicine, and professional services.
@@ -209,7 +209,7 @@ export default function HomePage() {
           zIndex: 2
         }} />
 
-        <div className="container relative text-center mx-auto px-6" style={{ zIndex: 10, maxWidth: '1200px' }}>
+        <div className="container relative text-center mx-auto px-6 md:px-8" style={{ zIndex: 10, maxWidth: '1200px' }}>
           {/* Headline */}
           <h2 className="text-[clamp(2.25rem,6vw,4rem)] font-bold leading-[0.95] tracking-tight text-white mb-6">
             We Don't Sell AI.<br />We Engineer Revenue.

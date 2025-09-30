@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { GlassButton } from './glass-button';
 
 interface FloatingCTAProps {
   heroCTARef?: React.RefObject<HTMLElement>;
@@ -98,13 +99,14 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         pointerEvents: isVisible ? 'auto' : 'none'
       }}
     >
-      <div className="glass-button-wrap cursor-pointer rounded-full">
-        <button className={`glass-button relative isolate all-unset cursor-pointer rounded-full transition-all ${isOverDark ? 'over-dark' : ''}`}>
-          <Link href="#audit" className="glass-button-text relative block select-none tracking-tighter">
-            Book Strategy Call
-          </Link>
-        </button>
-      </div>
+      <Link href="#audit">
+        <GlassButton
+          className={isOverDark ? 'over-dark' : ''}
+          size="default"
+        >
+          Book Strategy Call
+        </GlassButton>
+      </Link>
     </div>
   );
 }

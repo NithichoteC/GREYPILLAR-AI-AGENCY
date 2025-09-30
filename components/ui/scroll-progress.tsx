@@ -6,33 +6,29 @@ export default function ScrollProgress() {
   const [progress, setProgress] = useState(0);
   const [isOverDark, setIsOverDark] = useState(false);
 
-  // Throttle helper for 60fps performance
-  const throttle = (func: Function, delay: number) => {
-    let lastCall = 0;
-    return (...args: any[]) => {
-      const now = Date.now();
-      if (now - lastCall >= delay) {
-        lastCall = now;
-        func(...args);
-      }
-    };
-  };
-
-  // Update progress on scroll with faster updates (CSS handles smoothing)
+  // RAF-based scroll tracking (2025 industry standard - pixel-perfect precision)
   useEffect(() => {
-    const updateProgress = throttle(() => {
+    let rafId: number | null = null;
+
+    const updateProgress = () => {
       const winScroll = document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100;
       setProgress(Math.min(scrolled, 100));
-    }, 8); // 120fps potential, CSS transition smooths output
+    };
 
-    window.addEventListener('scroll', updateProgress, { passive: true });
+    const handleScroll = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateProgress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     updateProgress(); // Initial calculation
 
-    return () => window.removeEventListener('scroll', updateProgress);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   // Hybrid approach for color adaptation (SYNCHRONIZED with navigation)

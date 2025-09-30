@@ -225,13 +225,12 @@ body {
     width: var(--scroll-progress, 0%);
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
-    transition: width 50ms linear; /* GPU-accelerated smooth interpolation */
     will-change: width; /* GPU optimization hint */
 }
 
 .scroll-progress.over-dark::before {
     background: white; /* White when over dark section */
-    transition: background 250ms ease-in-out, width 50ms linear; /* Keep width smoothing */
+    transition: background 250ms ease-in-out; /* Only transition color */
 }
 
 /* =========================
@@ -1733,7 +1732,6 @@ body {
     }
 
     .visual-storytelling-container {
-        padding: 0 24px; /* Match hero section: 24px for readability */
         gap: 32px;
     }
 
@@ -1819,9 +1817,7 @@ body {
 
 /* Very small mobile - extra breathing room */
 @media (max-width: 400px) {
-    .visual-storytelling-container {
-        padding: 0 20px; /* Extra 4px breathing room on tiny screens */
-    }
+    /* Width constraints handled by responsive breakpoints above */
 }
 
 /* Sticky CTA Button - Apple/Vercel Level Polish */

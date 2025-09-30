@@ -30,7 +30,7 @@ export default function HomePage() {
       {/* Hero Subheading Section */}
       <section className="hero-subheading-section py-8">
         <div className="container max-w-6xl mx-auto px-8">
-          <p className="text-xl md:text-2xl text-center text-medium-dark leading-relaxed">
+          <p className="text-xl md:text-2xl text-left text-medium-dark leading-relaxed">
             No huge upfront investment. No complex tech to manage. Just results.<br />
             Trusted by teams in construction, medicine, and professional services.
           </p>
@@ -125,7 +125,7 @@ export default function HomePage() {
 
       {/* Problem Section with Animated Leak Cards */}
       <section className="section problem-section">
-        <div className="container px-6 md:px-8">
+        <div className="container max-w-6xl mx-auto px-6 md:px-8">
           {/* Section Header */}
           <div className="problem-header">
             <h2 className="problem-headline">The Silent Killers of Growth<br />Are Already in Your Business</h2>
@@ -216,7 +216,7 @@ export default function HomePage() {
           </h2>
 
           {/* Subtitle - Ultra Concise */}
-          <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20">
+          <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20 px-6 md:px-8">
             Most "AI consultants" force technology onto broken processes. We start with a first-principles, engineering mindset.
           </p>
 

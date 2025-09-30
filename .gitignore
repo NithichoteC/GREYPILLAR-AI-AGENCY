@@ -72,3 +72,8 @@ coverage/
 premeeting-video.mp4
 premeetingvid3.mp4
 videos/*.mp4
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo

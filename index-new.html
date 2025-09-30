@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grey Pillar AI - Your First AI Revenue Win in 30 Days</title>
+    <meta name="description" content="We build custom AI systems that capture missed opportunities and generate qualified pipeline growth for service businesses">
+
+    <!-- Apple-inspired typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Apple-inspired design system */
+        :root {
+            --apple-grey: #F5F5F7;
+            --apple-white: #FFFFFF;
+            --apple-black: #1D1D1F;
+            --apple-blue: #0071E3;
+            --apple-green: #34C759;
+            --apple-text-secondary: #6E6E73;
+
+            --shadow-light: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 24px rgba(0,0,0,0.15);
+
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--apple-grey);
+            color: var(--apple-black);
+            line-height: 1.6;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--apple-black);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--apple-text-secondary);
+            text-decoration: none;
+            font-weight: 400;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--apple-black);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 80px 0 120px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            color: var(--apple-blue);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            color: var(--apple-text-secondary);
+            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-primary {
+            background: var(--apple-blue);
+            color: white;
+            padding: 16px 32px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 18px;
+            display: inline-block;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-primary:hover {
+            background: #0056B3;
+            transform: translateY(-2px);
+        }
+
+        /* Service Cards Section */
+        .services {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: var(--apple-text-secondary);
+            margin-bottom: 64px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            margin-bottom: 64px;
+        }
+
+        .service-card {
+            background: var(--apple-white);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--shadow-light);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--apple-blue), #007AFF);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .service-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .service-description {
+            color: var(--apple-text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .service-features {
+            list-style: none;
+            text-align: left;
+        }
+
+        .service-features li {
+            color: var(--apple-text-secondary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .service-features li:before {
+            content: "✓";
+            color: var(--apple-green);
+            font-weight: 600;
+            position: absolute;
+            left: 0;
+        }
+
+        /* Social Proof */
+        .social-proof {
+            background: var(--apple-white);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .trust-badge {
+            color: var(--apple-text-secondary);
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero-title {
+                font-size: 40px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">Grey Pillar AI</a>
+                <ul class="nav-links">
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="eyebrow">AI Automation & Business Intelligence</div>
+            <h1 class="hero-title">Your First AI Revenue Win in 30 Days</h1>
+            <p class="hero-subtitle">We build custom AI systems that capture missed opportunities and generate qualified pipeline growth for service businesses</p>
+            <a href="#" class="cta-primary">Get Your AI Strategy Call</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">What We Specialize In</h2>
+            <p class="section-subtitle">Four core areas where AI automation drives the highest ROI for service businesses</p>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🎯</div>
+                    <h3 class="service-title">Lead Generation</h3>
+                    <p class="service-description">AI systems that capture and convert more leads from your existing traffic</p>
+                    <ul class="service-features">
+                        <li>AI Cold Outreach Systems</li>
+                        <li>Missed Call Recovery Automation</li>
+                        <li>Lead Reactivation Campaigns</li>
+                        <li>Application Systems</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3 class="service-title">Sales Automation</h3>
+                    <p class="service-description">Automate your sales process while maintaining the personal touch</p>
+                    <ul class="service-features">
+                        <li>AI Sales Agent Integration</li>
+                        <li>Pipeline Management Systems</li>
+                        <li>Automated Follow-up Sequences</li>
+                        <li>Customized CRMs</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔧</div>
+                    <h3 class="service-title">Operations Intelligence</h3>
+                    <p class="service-description">Streamline operations and eliminate manual bottlenecks</p>
+                    <ul class="service-features">
+                        <li>Process Automation Workflows</li>
+                        <li>AI-Powered Task Management</li>
+                        <li>Data Integration Systems</li>
+                        <li>AI Automated Fulfillment</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🎨</div>
+                    <h3 class="service-title">Custom Solutions</h3>
+                    <p class="service-description">Tailored AI systems built specifically for your industry and workflow</p>
+                    <ul class="service-features">
+                        <li>Industry-Specific AI Tools</li>
+                        <li>AI Asset Generators</li>
+                        <li>Custom System Development</li>
+                        <li>Enterprise Integration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof Section -->
+    <section class="social-proof">
+        <div class="container">
+            <div class="trust-badge">Trusted by 50+ Service Businesses</div>
+            <h2 class="section-title">Join Businesses Already Automating with AI</h2>
+            <!-- Placeholder for client logos -->
+        </div>
+    </section>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

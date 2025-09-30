@@ -1232,6 +1232,14 @@ body {
         margin-top: 150px; /* Reduce from 220px to fit 300px card */
         margin-left: var(--space-md); /* Also reduce side margin */
     }
+
+    .card-title {
+        font-size: var(--font-base); /* Same as mobile for compact display */
+    }
+
+    .card-description {
+        font-size: var(--font-sm); /* Same as mobile for compact display */
+    }
 }
 
 /* Mobile Responsive */

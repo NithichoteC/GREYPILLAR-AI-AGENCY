@@ -132,6 +132,14 @@ body {
     background: rgba(33, 37, 41, 0.1); /* Subtle grey with low opacity */
 }
 
+/* Mobile nav border - match smaller padding */
+@media (max-width: 809.98px) {
+    .nav-container::after {
+        left: var(--space-md);
+        right: var(--space-md);
+    }
+}
+
 .logo {
     font-size: var(--font-lg);
     font-weight: 800;
@@ -847,23 +855,48 @@ body {
     position: relative;
 }
 
-/* Divider Line (constrained to 1200px max-width like container) */
+/* Divider Line (matches nav-container at all breakpoints) */
 .problem-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    max-width: 1200px;
     width: calc(100% - 2 * var(--space-xl));
+    max-width: calc(1200px - 2 * var(--space-xl));
     height: 2px;
     background: var(--light);
 }
 
-/* Mobile divider uses smaller spacing */
+/* Large screens - match 1600px nav-container */
+@media (min-width: 1440px) {
+    .problem-section::before {
+        width: calc(100vw - 2 * var(--space-xl));
+        max-width: calc(1600px - 2 * var(--space-xl));
+    }
+}
+
+/* Desktop - match fluid nav-container */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+    .problem-section::before {
+        width: calc(100vw - 4rem - 2 * var(--space-xl));
+        max-width: none;
+    }
+}
+
+/* Tablet - match fluid nav-container */
+@media (min-width: 810px) and (max-width: 1023.98px) {
+    .problem-section::before {
+        width: calc(100vw - 4rem - 2 * var(--space-xl));
+        max-width: none;
+    }
+}
+
+/* Mobile - match smaller padding */
 @media (max-width: 809.98px) {
     .problem-section::before {
-        width: calc(100% - 2 * var(--space-md));
+        width: calc(100vw - 2rem - 2 * var(--space-md));
+        max-width: none;
     }
 }
 

@@ -225,10 +225,10 @@ export default function HomePage() {
             {/* Step 1: AUDIT */}
             <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
               <div className="md:w-1/2 mb-4 md:mb-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">STEP 1: AUDIT</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight text-left">STEP 1: AUDIT</h3>
               </div>
               <div className="md:w-1/2 md:text-right">
-                <p className="text-white/60 text-base md:text-lg leading-relaxed">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed text-left md:text-right">
                   Find the single biggest revenue leak costing you customers
                 </p>
               </div>
@@ -237,10 +237,10 @@ export default function HomePage() {
             {/* Step 2: BLUEPRINT */}
             <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
               <div className="md:w-1/2 mb-4 md:mb-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">STEP 2: BLUEPRINT</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight text-left">STEP 2: BLUEPRINT</h3>
               </div>
               <div className="md:w-1/2 md:text-right">
-                <p className="text-white/60 text-base md:text-lg leading-relaxed">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed text-left md:text-right">
                   Design your custom AI system to capture those opportunities
                 </p>
               </div>
@@ -249,10 +249,10 @@ export default function HomePage() {
             {/* Step 3: GUARANTEE */}
             <div className="flex flex-col md:flex-row md:items-center justify-between py-8">
               <div className="md:w-1/2 mb-4 md:mb-0">
-                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">STEP 3: GUARANTEE</h3>
+                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight text-left">STEP 3: GUARANTEE</h3>
               </div>
               <div className="md:w-1/2 md:text-right">
-                <p className="text-white/60 text-base md:text-lg leading-relaxed">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed text-left md:text-right">
                   30-day measurable revenue win, or you don't pay
                 </p>
               </div>

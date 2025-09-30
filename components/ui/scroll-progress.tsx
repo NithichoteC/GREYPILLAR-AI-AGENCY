@@ -18,7 +18,7 @@ export default function ScrollProgress() {
     };
   };
 
-  // Update progress on scroll (LinkedIn/Medium pattern)
+  // Update progress on scroll with faster updates (CSS handles smoothing)
   useEffect(() => {
     const updateProgress = throttle(() => {
       const winScroll = document.documentElement.scrollTop;
@@ -27,8 +27,7 @@ export default function ScrollProgress() {
         document.documentElement.clientHeight;
       const scrolled = (winScroll / height) * 100;
       setProgress(Math.min(scrolled, 100));
-      console.log('📊 Scroll Progress:', scrolled.toFixed(1) + '%');
-    }, 16); // 60fps
+    }, 8); // 120fps potential, CSS transition smooths output
 
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress(); // Initial calculation
@@ -36,29 +35,50 @@ export default function ScrollProgress() {
     return () => window.removeEventListener('scroll', updateProgress);
   }, []);
 
-  // Intersection Observer for color adaptation (SYNCHRONIZED with navigation)
+  // Hybrid approach for color adaptation (SYNCHRONIZED with navigation)
   useEffect(() => {
     const darkSection = document.querySelector('#solution');
 
     if (!darkSection) return;
 
+    // Position check function for continuous precision
+    const checkPosition = () => {
+      const rect = darkSection.getBoundingClientRect();
+      const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
+      setIsOverDark(isNavOverDark);
+    };
+
+    // Intersection Observer for threshold-based detection (performance)
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const rect = entry.target.getBoundingClientRect();
-        // "Is this dark section below me now?" - IDENTICAL logic to navigation
-        const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
-        setIsOverDark(isNavOverDark);
-        console.log('📊 Progress Over Dark:', isNavOverDark, '| Section Top:', rect.top.toFixed(0));
+        checkPosition(); // Update on threshold crossings
       },
       {
-        // 2025 Standard: 101 thresholds (0.00 to 1.00) catches mobile momentum scrolling
+        // 101 thresholds catches mobile momentum scrolling
         threshold: Array.from({ length: 101 }, (_, i) => i / 100)
       }
     );
 
-    observer.observe(darkSection);
+    // Scroll listener for slow scrolling precision (RAF throttled)
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkPosition();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
-    return () => observer.disconnect();
+    observer.observe(darkSection);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    checkPosition(); // Initial check
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (

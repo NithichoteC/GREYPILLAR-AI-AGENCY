@@ -7,30 +7,50 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
 
-  // Intersection Observer for adaptive nav colors (Apple/Stripe pattern)
+  // Hybrid approach for adaptive nav colors (2025 industry standard)
   useEffect(() => {
     const darkSection = document.querySelector('#solution');
 
     if (!darkSection) return;
 
+    // Position check function for continuous precision
+    const checkPosition = () => {
+      const rect = darkSection.getBoundingClientRect();
+      const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
+      setIsOverDark(isNavOverDark);
+    };
+
+    // Intersection Observer for threshold-based detection (performance)
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const rect = entry.target.getBoundingClientRect();
-        // "Is this dark section below me now?"
-        // Triggers when section has scrolled up and is UNDER the navigation
-        const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
-        setIsOverDark(isNavOverDark);
-        console.log('🎨 Nav Over Dark:', isNavOverDark, '| Section Top:', rect.top.toFixed(0), '| Section Bottom:', rect.bottom.toFixed(0));
+        checkPosition(); // Update on threshold crossings
       },
       {
-        // 2025 Standard: 101 thresholds (0.00 to 1.00) catches mobile momentum scrolling
+        // 101 thresholds catches mobile momentum scrolling
         threshold: Array.from({ length: 101 }, (_, i) => i / 100)
       }
     );
 
-    observer.observe(darkSection);
+    // Scroll listener for slow scrolling precision (RAF throttled)
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkPosition();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
 
-    return () => observer.disconnect();
+    observer.observe(darkSection);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    checkPosition(); // Initial check
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   return (

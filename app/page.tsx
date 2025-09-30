@@ -230,12 +230,12 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Premium Card-Based Process */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Horizontal Process Rows with Big Numbers */}
+          <div className="solution-steps-container">
             {/* Step 1: Revenue Leak Analysis */}
-            <div className="solution-card">
-              <div className="solution-number">01</div>
-              <div className="solution-content">
+            <div className="solution-step-row">
+              <div className="solution-step-number">01</div>
+              <div className="solution-step-content">
                 <h3 className="solution-step-title">Revenue Leak Analysis</h3>
                 <p className="solution-step-description">
                   Identify your specific 60-80% opportunity gap
@@ -244,9 +244,9 @@ export default function HomePage() {
             </div>
 
             {/* Step 2: Custom System Design */}
-            <div className="solution-card">
-              <div className="solution-number">02</div>
-              <div className="solution-content">
+            <div className="solution-step-row">
+              <div className="solution-step-number">02</div>
+              <div className="solution-step-content">
                 <h3 className="solution-step-title">Custom System Design</h3>
                 <p className="solution-step-description">
                   Engineer AI that captures missed opportunities
@@ -255,9 +255,9 @@ export default function HomePage() {
             </div>
 
             {/* Step 3: Guaranteed Results */}
-            <div className="solution-card">
-              <div className="solution-number">03</div>
-              <div className="solution-content">
+            <div className="solution-step-row">
+              <div className="solution-step-number">03</div>
+              <div className="solution-step-content">
                 <h3 className="solution-step-title">Guaranteed Results</h3>
                 <p className="solution-step-description">
                   Measurable revenue impact in 30 days

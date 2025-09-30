@@ -1434,46 +1434,48 @@ body {
     background-clip: text;
 }
 
-/* Solution Cards - Premium Card Design */
-.solution-card {
+/* Solution Steps - Horizontal Rows with Big Numbers */
+.solution-steps-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.solution-step-row {
     position: relative;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: var(--space-2xl);
-    min-height: 280px;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    padding: var(--space-2xl) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     overflow: visible;
 }
 
-.solution-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.2);
+.solution-step-row:last-child {
+    border-bottom: none;
 }
 
-.solution-number {
+.solution-step-number {
     position: absolute;
-    top: -10px;
-    left: -10px;
+    left: 0;
     font-size: 8rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.06);
     line-height: 1;
     pointer-events: none;
     z-index: 1;
 }
 
-.solution-content {
+.solution-step-content {
     position: relative;
     z-index: 2;
-    margin-top: 100px;
-    margin-left: var(--space-lg);
+    margin-left: 120px;
+    flex: 1;
 }
 
 .solution-step-title {
     font-size: var(--font-2xl);
     font-weight: 600;
     color: #FFFFFF;
-    margin-bottom: var(--space-md);
+    margin-bottom: var(--space-sm);
     line-height: 1.2;
 }
 
@@ -1483,20 +1485,19 @@ body {
     line-height: 1.5;
 }
 
-/* Solution Cards Responsive */
+/* Solution Steps Responsive */
 @media (max-width: 768px) {
-    .solution-card {
-        padding: var(--space-xl);
-        min-height: 240px;
+    .solution-step-row {
+        padding: var(--space-xl) 0;
     }
 
-    .solution-number {
-        font-size: 6rem;
+    .solution-step-number {
+        font-size: 5rem;
+        left: -10px;
     }
 
-    .solution-content {
-        margin-top: 80px;
-        margin-left: var(--space-md);
+    .solution-step-content {
+        margin-left: 80px;
     }
 
     .solution-step-title {

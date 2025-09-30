@@ -215,61 +215,47 @@ export default function HomePage() {
             We Don't Sell AI.<br />We Engineer Revenue.
           </h2>
 
-          {/* Subtitle - Concise */}
+          {/* Subtitle - Ultra Concise */}
           <p className="text-white/70 text-base md:text-lg mx-auto max-w-2xl text-center leading-relaxed mb-20">
-            Most "AI consultants" try to sell you a flashy new tool. That's why 95% of AI projects fail to deliver ROI—they force technology onto a broken process. We do things differently. Our approach is built on a first-principles, engineering mindset.
+            Most "AI consultants" force technology onto broken processes. We start with a first-principles, engineering mindset.
           </p>
 
-          {/* Premium 3-Stage Process - Mobile Responsive */}
-          <div className="max-w-6xl mx-auto">
-            <div className="relative">
-              {/* Subtle connecting line - desktop only */}
-              <div className="hidden md:block absolute top-5 left-0 right-0 h-px" style={{
-                background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.08) 50%, transparent)'
-              }}></div>
-
-              {/* Responsive Grid: Mobile stack, Desktop 3-col */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
-                {/* Step 1 - Audit */}
-                <div className="text-center relative px-4">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 mb-6 relative border border-white/10">
-                    <span className="text-white/70 text-sm font-semibold">01</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Audit</h3>
-                  <p className="text-white/60 text-base leading-relaxed">
-                    We analyze your customer journey to find the single biggest revenue leak costing you customers.
-                  </p>
-                </div>
-
-                {/* Step 2 - Blueprint */}
-                <div className="text-center relative px-4">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 mb-6 relative border border-white/10">
-                    <span className="text-white/70 text-sm font-semibold">02</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Blueprint</h3>
-                  <p className="text-white/60 text-base leading-relaxed">
-                    We design your custom AI system to capture those lost opportunities automatically.
-                  </p>
-                </div>
-
-                {/* Step 3 - Guarantee */}
-                <div className="text-center relative px-4">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white/5 mb-6 relative border border-white/10">
-                    <span className="text-white/70 text-sm font-semibold">03</span>
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight">Guarantee</h3>
-                  <p className="text-white/60 text-base leading-relaxed">
-                    We deliver a measurable revenue win in 30 days, or you don't pay. The risk is 100% on us.
-                  </p>
-                </div>
+          {/* McKinsey-Style Horizontal Process */}
+          <div className="max-w-5xl mx-auto">
+            {/* Step 1: AUDIT */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
+              <div className="md:w-1/2 mb-4 md:mb-0">
+                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">STEP 1: AUDIT</h3>
+              </div>
+              <div className="md:w-1/2 md:text-right">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed">
+                  Find the single biggest revenue leak costing you customers
+                </p>
               </div>
             </div>
 
-            {/* Subtle Partnership Signal */}
-            <div className="text-center mt-20">
-              <p className="text-white/40 text-sm font-light">
-                Then we grow together as your partner.
-              </p>
+            {/* Step 2: BLUEPRINT */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between py-8 border-b border-white/10">
+              <div className="md:w-1/2 mb-4 md:mb-0">
+                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">STEP 2: BLUEPRINT</h3>
+              </div>
+              <div className="md:w-1/2 md:text-right">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed">
+                  Design your custom AI system to capture those opportunities
+                </p>
+              </div>
+            </div>
+
+            {/* Step 3: GUARANTEE */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between py-8">
+              <div className="md:w-1/2 mb-4 md:mb-0">
+                <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tight">STEP 3: GUARANTEE</h3>
+              </div>
+              <div className="md:w-1/2 md:text-right">
+                <p className="text-white/60 text-base md:text-lg leading-relaxed">
+                  30-day measurable revenue win, or you don't pay
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -1063,30 +1063,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Responsive Divider Line (matches scroll progress) */
-@media (min-width: 1440px) {
-    .problem-section::before {
-        width: calc(1600px - 2 * var(--space-xl));
-    }
-}
-
-@media (max-width: 1439.98px) and (min-width: 1024px) {
-    .problem-section::before {
-        width: calc(100vw - 4rem - 2 * var(--space-xl));
-    }
-}
-
-@media (max-width: 1023.98px) and (min-width: 810px) {
-    .problem-section::before {
-        width: calc(100vw - 4rem - 2 * var(--space-xl));
-    }
-}
-
-@media (max-width: 809.98px) {
-    .problem-section::before {
-        width: calc(100vw - 2rem - 2 * var(--space-md));
-    }
-}
+/* Divider line width removed - using consistent 1200px from base rule to match navigation */
 
 /* Tablet Responsive - Increase title sizes and adjust spacing */
 @media (max-width: 774px) and (min-width: 481px) {

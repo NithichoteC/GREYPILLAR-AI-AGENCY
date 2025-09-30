@@ -16,7 +16,7 @@ export default function HomePage() {
           <div className="hero-frame">
             <GridCanvas className="grid-canvas" />
           </div>
-          <div className="container max-w-[1200px] mx-auto px-6 md:px-8">
+          <div className="container max-w-[1200px] mx-auto">
             <div className="hero-text-content">
               <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 text-darkest">
                 Your Business is Leaking Revenue.<br />

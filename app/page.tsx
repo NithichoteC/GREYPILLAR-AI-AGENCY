@@ -216,7 +216,7 @@ export default function HomePage() {
           zIndex: 2
         }} />
 
-        <div className="container relative mx-auto px-8" style={{ zIndex: 10, maxWidth: '1200px' }}>
+        <div className="container relative mx-auto" style={{ zIndex: 10 }}>
           {/* Header + Subheading Container - Same width as steps */}
           <div className="max-w-5xl mx-auto px-8 text-center mb-20">
             {/* Headline */}

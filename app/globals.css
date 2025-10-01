@@ -2602,7 +2602,7 @@ body {
 /* Cards Wrapper - Sticky Viewport Container */
 .capabilities-cards-wrapper {
     position: relative;
-    min-height: 400vh; /* Space for scroll effect - allows all 4 cards to stack */
+    min-height: 500vh; /* Space for scroll effect - matches reference implementation for 4 cards */
 }
 
 .capabilities-cards {

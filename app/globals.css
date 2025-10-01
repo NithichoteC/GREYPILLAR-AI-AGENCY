@@ -381,7 +381,35 @@ body {
     font-weight: 400;
     color: var(--darkest);
     user-select: none;
-    transition: color 0.3s var(--ease-smooth);
+    position: relative;
+    display: inline-block;
+}
+
+/* Professional cross-fade transition for menu ↔ close */
+.menu-text::before,
+.menu-text::after {
+    transition: opacity 0.3s var(--ease-smooth);
+}
+
+.menu-text::before {
+    content: 'menu';
+    opacity: 1;
+}
+
+.menu-text::after {
+    content: 'close ×';
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active .menu-text::before {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active .menu-text::after {
+    opacity: 1;
 }
 
 /* Menu button text stays dark - matches light blur background */
@@ -414,15 +442,15 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.8); /* Blur white like nav */
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px); /* Safari support */
+    background: rgba(255, 255, 255, 0.1); /* Match nav - subtle tint */
+    backdrop-filter: blur(20px); /* Match nav - same blur strength */
+    -webkit-backdrop-filter: blur(20px); /* Safari support */
     z-index: 10000;
     flex-direction: column;
     justify-content: flex-start; /* Move menu higher for 2025 modern look */
     align-items: flex-end; /* Right-aligned */
     padding-top: 120px; /* Space from top */
-    padding-right: var(--space-3xl); /* Right padding for alignment */
+    padding-right: var(--space-xl); /* Match close button right edge */
     gap: var(--space-lg); /* Compressed spacing (24px vs 48px) */
     opacity: 0;
     transform: translateY(-20px);

@@ -7,42 +7,48 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
 
-  // Intersection Observer ONLY - no RAF scroll handler (eliminates layout thrashing)
+  // Hybrid approach: IO for efficiency + RAF for responsive color switching
   useEffect(() => {
     const darkSection = document.querySelector('#solution');
     if (!darkSection) return;
 
-    const cachedRect = { top: 0, bottom: 0 };
-
-    // Cache rect updates from Intersection Observer
-    const updateCachedRect = () => {
-      const rect = darkSection.getBoundingClientRect();
-      cachedRect.top = rect.top;
-      cachedRect.bottom = rect.bottom;
-    };
-
-    // Check position using cached values
+    // Position check function for continuous precision
     const checkPosition = () => {
+      const rect = darkSection.getBoundingClientRect();
       const navCenter = 30.5;
-      const isNavOverDark = cachedRect.top <= navCenter && cachedRect.bottom > navCenter;
+      const isNavOverDark = rect.top <= navCenter && rect.bottom > navCenter;
       setIsOverDark(isNavOverDark);
     };
 
-    // Intersection Observer with optimized thresholds
+    // Intersection Observer for threshold-based detection
     const observer = new IntersectionObserver(
-      () => {
-        updateCachedRect();
+      ([entry]) => {
         checkPosition();
       },
-      { threshold: [0, 0.25, 0.5, 0.75, 1] } // 5 thresholds vs 101 (95% less memory)
+      {
+        threshold: Array.from({ length: 20 }, (_, i) => i / 19) // 20 thresholds for smooth detection
+      }
     );
 
+    // Scroll listener for real-time color switching (RAF throttled)
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkPosition();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
     observer.observe(darkSection);
-    updateCachedRect();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     checkPosition();
 
     return () => {
       observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

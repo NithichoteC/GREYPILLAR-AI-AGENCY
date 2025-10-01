@@ -237,8 +237,8 @@ body {
     pointer-events: none;
 }
 
-/* New architecture: .scroll-progress-bar element for direct transform manipulation */
-.scroll-progress-bar {
+.scroll-progress::before {
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -246,13 +246,14 @@ body {
     width: 100%;
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
-    transform: translate3d(0, 0, 0) scaleX(0); /* Initial state, updated via JS */
-    /* will-change managed dynamically in JavaScript (debounced scroll sessions) */
-    transition: background 150ms ease-in-out; /* Smooth dark mode transition */
+    transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* Browser-optimized calc() */
+    /* will-change managed dynamically in JavaScript */
+    transition: background 150ms ease-in-out; /* Smooth background change */
 }
 
-.scroll-progress.over-dark .scroll-progress-bar {
+.scroll-progress.over-dark::before {
     background: white; /* White when over dark section */
+    transition: background 150ms ease-in-out;
 }
 
 /* =========================

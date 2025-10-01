@@ -379,7 +379,7 @@ body {
 .menu-text {
     font-size: var(--font-sm);
     font-weight: 400;
-    color: rgba(33, 37, 41, 0.1); /* Grey like nav border when closed */
+    color: var(--darkest); /* Darker grey like CTA button border */
     user-select: none;
     transition: color 0.3s var(--ease-smooth);
 }
@@ -398,15 +398,15 @@ body {
 .menu-line {
     width: 20px;
     height: 2px;
-    background: rgba(33, 37, 41, 0.1); /* Grey like nav border when closed */
+    background: var(--darkest); /* Darker grey like CTA button border */
     transition: all 0.3s var(--ease-smooth);
-    transform-origin: center;
+    transform-origin: left center; /* Keep left anchor point fixed */
     border-radius: 1px;
 }
 
 /* X-cross animation when menu opens - left points stay, right points swap */
 .mobile-menu-toggle.active .menu-line {
-    background: var(--darkest); /* Turn black */
+    background: var(--darkest); /* Stay black during animation */
 }
 
 .mobile-menu-toggle.active .menu-line:first-child {

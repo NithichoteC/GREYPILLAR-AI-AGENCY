@@ -82,7 +82,7 @@ export default function ScrollProgress() {
     <div
       className={`scroll-progress ${isOverDark ? 'over-dark' : ''}`}
       style={{
-        '--scroll-progress': `${progress}%`
+        '--scroll-progress': progress
       } as React.CSSProperties}
     />
   );

@@ -55,7 +55,7 @@ export default function Navigation() {
   }, []);
 
   return (
-    <nav className={`glass-nav ${isOverDark ? 'nav-over-dark' : ''}`}>
+    <nav className={`glass-nav ${isOverDark ? 'nav-over-dark' : ''} ${isMobileMenuOpen ? 'menu-open' : ''}`}>
       <div className="nav-container">
         <Link href="/" className="logo">
           GREYPILLAR

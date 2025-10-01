@@ -207,15 +207,18 @@ body {
     background: white;
 }
 
-/* Override: Keep logo and progress bar black when mobile menu is open */
-.glass-nav:has(.mobile-menu-toggle.active) .logo,
-.glass-nav:has(.mobile-menu-toggle.active) .menu-text,
-.glass-nav:has(.mobile-menu-toggle.active) .menu-line {
+/* Mobile menu open: Force black nav elements (overrides .nav-over-dark) */
+.glass-nav.nav-over-dark.menu-open .logo,
+.glass-nav.nav-over-dark.menu-open .menu-text {
     color: var(--darkest) !important;
+}
+
+.glass-nav.nav-over-dark.menu-open .menu-line {
     background: var(--darkest) !important;
 }
 
-.scroll-progress:has(~ .glass-nav .mobile-menu-toggle.active)::before {
+/* Force progress bar to stay black when menu open */
+.glass-nav.menu-open ~ .scroll-progress.over-dark::before {
     background: var(--darkest) !important;
 }
 
@@ -437,10 +440,9 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(247, 247, 248, 0.8); /* Visible frosted glass with subtle tint */
+    background: rgba(255, 255, 255, 0.2); /* 20% opacity for visible blur */
     backdrop-filter: blur(20px); /* Same blur strength as nav */
     -webkit-backdrop-filter: blur(20px); /* Safari support */
-    transform: translateZ(0); /* GPU acceleration for blur to work */
     z-index: 10000;
     flex-direction: column;
     justify-content: flex-start; /* Move menu higher for 2025 modern look */

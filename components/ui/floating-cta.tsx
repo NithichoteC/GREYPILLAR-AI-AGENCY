@@ -33,7 +33,7 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
       },
       {
         threshold: 0,
-        rootMargin: '200px 0px 0px 0px' // Hide 200px BEFORE main CTA enters viewport
+        rootMargin: '0px 0px -200px 0px' // Hide when main CTA within 200px of bottom viewport
       }
     );
 
@@ -95,16 +95,10 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         bottom: '24px',
         right: '24px',
         zIndex: 50,
-        opacity: 1, // Constant - no opacity animation to preserve backdrop-filter
-        backgroundColor: isVisible ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0)',
-        backdropFilter: 'blur(20px)', // Always active - prevents Chrome/Safari rendering bug
-        WebkitBackdropFilter: 'blur(20px)', // Safari support
         transform: isVisible ? 'translateY(0) translateZ(0)' : 'translateY(20px) translateZ(0)',
-        transition: 'background-color 150ms ease-in-out, transform 150ms ease-in-out',
+        transition: 'transform 150ms ease-in-out',
         backfaceVisibility: 'hidden',
-        pointerEvents: isVisible ? 'auto' : 'none',
-        borderRadius: '12px',
-        padding: '2px'
+        pointerEvents: isVisible ? 'auto' : 'none'
       } as React.CSSProperties}
     >
       <Link href="#audit">

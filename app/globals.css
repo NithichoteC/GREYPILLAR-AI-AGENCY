@@ -297,29 +297,25 @@ body {
 /* DARK SECTIONS: over-dark class triggers on #solution */
 .glass-button.over-dark .glass-button-text {
     color: #FFFFFF;
-    background: rgba(255, 255, 255, 0.08); /* Ultra-transparent - no boxy appearance */
-    border: 1.5px solid rgba(255, 255, 255, 0.2);
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3); /* Black tint for true glass on dark backgrounds */
+    border: 1px solid rgba(255, 255, 255, 0.12); /* Very subtle light border */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    /* 21st.dev multi-layer light glow for dark backgrounds */
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.15) inset,   /* Subtle inner highlight */
-        0 2px 4px rgba(0, 0, 0, 0.5),                 /* Close depth */
-        0 8px 16px rgba(255, 255, 255, 0.1),          /* Light glow */
-        0 16px 32px rgba(255, 255, 255, 0.08);        /* Outer light spread */
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset,   /* Subtle inner glow */
+        0 4px 12px rgba(0, 0, 0, 0.5),
+        0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .glass-button.over-dark:hover .glass-button-text {
-    color: #FFFFFF; /* Keep white text on dark background hover */
-    background: rgba(255, 255, 255, 0.15); /* Slightly more opaque but still ultra-transparent */
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
-    /* NO LIFT! Enhanced glow on hover */
+    color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.4); /* Slightly darker on hover */
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow:
-        0 0 0 1.5px rgba(255, 255, 255, 0.3) inset,
-        0 4px 8px rgba(0, 0, 0, 0.6),
-        0 12px 24px rgba(255, 255, 255, 0.2),
-        0 20px 48px rgba(255, 255, 255, 0.15);
+        0 0 0 1.5px rgba(255, 255, 255, 0.15) inset,
+        0 6px 16px rgba(0, 0, 0, 0.6),
+        0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Floating CTA container - prevent transparent square artifact */

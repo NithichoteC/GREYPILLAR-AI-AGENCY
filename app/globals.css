@@ -234,6 +234,11 @@ body {
     transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
 }
 
+/* Conditional GPU acceleration during active scrolling (prevents battery drain) */
+.scroll-progress.scrolling::before {
+    will-change: transform;
+}
+
 .scroll-progress.over-dark::before {
     background: white; /* White when over dark section */
     transition: background 150ms ease-in-out; /* Match navigation timing */

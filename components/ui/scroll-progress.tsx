@@ -5,29 +5,58 @@ import { useState, useEffect } from 'react';
 export default function ScrollProgress() {
   const [progress, setProgress] = useState(0);
   const [isOverDark, setIsOverDark] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
 
-  // RAF-based scroll tracking (2025 industry standard - pixel-perfect precision)
+  // RAF-based scroll tracking with iOS Safari fixes (2025 industry standard)
   useEffect(() => {
     let rafId: number | null = null;
+    let scrollEndTimer: NodeJS.Timeout | null = null;
 
     const updateProgress = () => {
-      const winScroll = document.documentElement.scrollTop;
-      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      // Cross-browser scroll position (Safari uses window.scrollY, Chrome uses both)
+      const winScroll = window.scrollY || document.documentElement.scrollTop;
+
+      // Safari-compatible height calculation (Math.max for accurate scrollHeight)
+      const height = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      ) - window.innerHeight;
+
       const scrolled = (winScroll / height) * 100;
       setProgress(Math.min(scrolled, 100));
     };
 
     const handleScroll = () => {
+      setIsScrolling(true);
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateProgress);
+
+      // Detect scroll end for GPU acceleration cleanup
+      if (scrollEndTimer) clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => setIsScrolling(false), 150);
+    };
+
+    // iOS Safari momentum scrolling support (touchmove/touchend)
+    const handleTouch = () => {
+      setIsScrolling(true);
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateProgress);
+
+      if (scrollEndTimer) clearTimeout(scrollEndTimer);
+      scrollEndTimer = setTimeout(() => setIsScrolling(false), 150);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('touchmove', handleTouch, { passive: true });
+    window.addEventListener('touchend', handleTouch, { passive: true });
     updateProgress(); // Initial calculation
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
+      if (scrollEndTimer) clearTimeout(scrollEndTimer);
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('touchmove', handleTouch);
+      window.removeEventListener('touchend', handleTouch);
     };
   }, []);
 
@@ -80,7 +109,7 @@ export default function ScrollProgress() {
 
   return (
     <div
-      className={`scroll-progress ${isOverDark ? 'over-dark' : ''}`}
+      className={`scroll-progress ${isOverDark ? 'over-dark' : ''} ${isScrolling ? 'scrolling' : ''}`}
       style={{
         '--scroll-progress': progress
       } as React.CSSProperties}

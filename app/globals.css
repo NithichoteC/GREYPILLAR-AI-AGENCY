@@ -421,27 +421,39 @@ body {
 }
 
 .menu-icon {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    position: relative; /* Positioning context for absolute children */
+    width: 20px;
+    height: 14px; /* 2px top line + 10px gap + 2px bottom line = 14px */
 }
 
 .menu-line {
+    position: absolute; /* Absolute positioning for smooth animation */
+    left: 0;
     width: 20px;
     height: 2px;
-    background: var(--darkest); /* Darker grey like CTA button border */
+    background: var(--darkest);
     transition: all 0.3s var(--ease-smooth);
-    transform-origin: left center; /* Left anchor stays fixed, right side swaps to create X */
     border-radius: 1px;
 }
 
-/* X-cross animation when menu opens - left points stay, right points swap */
+/* Initial positions - top and bottom */
+.menu-line:first-child {
+    top: 0px;
+}
+
+.menu-line:last-child {
+    top: 12px; /* 14px container - 2px line height = 12px */
+}
+
+/* X-cross animation - both lines move to center, then rotate */
 .mobile-menu-toggle.active .menu-line:first-child {
-    transform: translateY(1.5px) rotate(45deg);
+    top: 6px; /* Center: (14px - 2px) / 2 = 6px */
+    transform: rotate(45deg);
 }
 
 .mobile-menu-toggle.active .menu-line:last-child {
-    transform: translateY(-1.5px) rotate(-45deg);
+    top: 6px; /* Same center position */
+    transform: rotate(-45deg);
 }
 
 /* Full Screen Mobile Overlay - Modern 2025 Style */

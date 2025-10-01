@@ -5,12 +5,10 @@ import { useState, useEffect, useRef } from 'react';
 export default function ScrollProgress() {
   const progressRef = useRef<HTMLDivElement>(null);
   const [isOverDark, setIsOverDark] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
 
-  // RAF-based scroll tracking with direct DOM manipulation (60fps guarantee)
+  // RAF-based scroll tracking with direct DOM manipulation (zero React overhead)
   useEffect(() => {
     let rafId: number | null = null;
-    let scrollEndTimer: NodeJS.Timeout | null = null;
 
     const updateProgress = () => {
       // Cross-browser scroll position with iOS bounce protection
@@ -32,23 +30,14 @@ export default function ScrollProgress() {
     };
 
     const handleScroll = () => {
-      setIsScrolling(true);
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateProgress);
-
-      // Detect scroll end for GPU acceleration cleanup
-      if (scrollEndTimer) clearTimeout(scrollEndTimer);
-      scrollEndTimer = setTimeout(() => setIsScrolling(false), 150);
     };
 
     // iOS Safari momentum scrolling support (touchmove/touchend)
     const handleTouch = () => {
-      setIsScrolling(true);
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(updateProgress);
-
-      if (scrollEndTimer) clearTimeout(scrollEndTimer);
-      scrollEndTimer = setTimeout(() => setIsScrolling(false), 150);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -58,7 +47,6 @@ export default function ScrollProgress() {
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
-      if (scrollEndTimer) clearTimeout(scrollEndTimer);
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('touchmove', handleTouch);
       window.removeEventListener('touchend', handleTouch);
@@ -115,7 +103,7 @@ export default function ScrollProgress() {
   return (
     <div
       ref={progressRef}
-      className={`scroll-progress ${isOverDark ? 'over-dark' : ''} ${isScrolling ? 'scrolling' : ''}`}
+      className={`scroll-progress ${isOverDark ? 'over-dark' : ''}`}
       style={{
         '--scroll-progress': '0'
       } as React.CSSProperties}

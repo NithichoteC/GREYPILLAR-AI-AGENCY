@@ -235,10 +235,6 @@ body {
     transition: background 150ms ease-in-out; /* Only color transitions, instant transform for scroll tracking */
 }
 
-/* Conditional GPU acceleration during active scrolling (prevents battery drain) */
-.scroll-progress.scrolling::before {
-    will-change: transform;
-}
 
 .scroll-progress.over-dark::before {
     background: white; /* White when over dark section */

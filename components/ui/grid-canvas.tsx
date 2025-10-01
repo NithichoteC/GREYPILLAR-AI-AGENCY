@@ -19,9 +19,10 @@ export default function GridCanvas({ className }: GridCanvasProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Configuration
+    // Configuration - responsive grid sizing
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
     const config = {
-      squareSize: 80,
+      squareSize: isMobile ? 50 : 80, // 50px on mobile, 80px on desktop
       speed: 0.5,
       borderColor: '#ced4da', // Light gray for borders
       hoverFillColor: '#e9ecef', // Slightly darker gray for hover

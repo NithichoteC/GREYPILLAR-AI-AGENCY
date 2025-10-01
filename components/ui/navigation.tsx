@@ -71,10 +71,10 @@ export default function Navigation() {
           </Link>
         </div>
         <button
-          className="mobile-menu-toggle"
+          className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <span className="menu-text">menu</span>
+          <span className="menu-text">{isMobileMenuOpen ? 'close ×' : 'menu'}</span>
           <div className="menu-icon">
             <div className="menu-line"></div>
             <div className="menu-line"></div>

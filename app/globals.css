@@ -232,7 +232,8 @@ body {
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
     transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
-    transition: background 150ms ease-in-out, transform 0ms; /* Explicit instant transform for iOS snap-to-end */
+    will-change: transform; /* Nitro style - GPU acceleration hint */
+    transition: background 150ms ease-in-out, transform 150ms ease-out; /* Nitro style - smooth animation */
 }
 
 
@@ -382,6 +383,13 @@ body {
     font-weight: 400;
     color: var(--darkest);
     user-select: none;
+    transition: color 0.3s var(--ease-smooth);
+}
+
+/* White text when menu is open (Nitro style) */
+.mobile-nav.open ~ .nav-container .menu-text,
+body:has(.mobile-nav.open) .menu-text {
+    color: var(--pure-white);
 }
 
 .menu-icon {
@@ -397,6 +405,11 @@ body {
     transition: all 0.3s var(--ease-smooth);
     transform-origin: center;
     border-radius: 1px;
+}
+
+/* White hamburger lines when menu is open (Nitro style) */
+body:has(.mobile-nav.open) .menu-line {
+    background: var(--pure-white);
 }
 
 .mobile-menu-toggle.active .menu-line:nth-child(1) {
@@ -415,12 +428,13 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(233, 236, 239, 0.95);
+    background: rgba(0, 0, 0, 0.98); /* Nitro style - fullscreen black */
     backdrop-filter: blur(20px);
     z-index: 10000;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end; /* Nitro style - right-aligned */
+    padding-right: var(--space-3xl); /* Add right padding for alignment */
     gap: var(--space-2xl);
     opacity: 0;
     transform: translateY(-20px);
@@ -436,32 +450,22 @@ body {
 .mobile-nav .nav-link {
     font-size: var(--font-2xl);
     font-weight: 500;
-    color: var(--darkest);
+    color: var(--pure-white); /* Nitro style - white text on black */
     text-decoration: none;
     padding: var(--space-md) var(--space-xl);
     border-radius: 8px;
     transition: all 0.3s var(--ease-smooth);
-    text-align: center;
+    text-align: right; /* Nitro style - right-aligned text */
     min-width: 200px;
 }
 
 .mobile-nav .nav-link:hover {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1); /* Subtle hover on dark background */
     transform: translateY(-2px);
 }
 
 .mobile-nav .nav-cta {
-    font-size: var(--font-xl);
-    font-weight: 600;
-    color: var(--pure-white);
-    background: var(--darkest);
-    text-decoration: none;
-    padding: var(--space-lg) var(--space-2xl);
-    border-radius: 12px;
-    transition: all 0.3s var(--ease-smooth);
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    display: none; /* Nitro style - remove CTA from mobile menu */
 }
 
 .mobile-nav .nav-cta:hover {
@@ -714,7 +718,7 @@ body {
     }
 
     .section-hero {
-        padding: 61px 0 0 0;
+        padding: calc(61px + var(--space-lg)) 0 0 0; /* Add 24px breathing room on mobile */
         min-height: 50vh;
     }
 }
@@ -859,7 +863,7 @@ body {
 
 @media (max-width: 480px) {
     .hero-text-content .h1 {
-        font-size: 2.25rem; /* 36px - balanced mobile size, professional standard */
+        font-size: 1.875rem; /* 30px - professional mobile standard, less overwhelming */
         line-height: 1.35;
         letter-spacing: -0.01em;
     }

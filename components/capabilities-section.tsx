@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface CapabilityCardProps {
   icon: string;
@@ -7,45 +7,33 @@ interface CapabilityCardProps {
   description: string;
   tags: string[];
   index: number;
-  scrollProgress: number; // Container scroll progress passed down
 }
 
-const CapabilityCard = ({ icon, title, description, tags, index, scrollProgress }: CapabilityCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card) return;
-
-    // DIFFERENTIAL SPEED: Each card moves at different rate for parallax effect
-    // Card 0 (index 0): moves very little (stays in background)
-    // Card 3 (index 3): moves most (slides over foreground)
-    const speedMultiplier = index * 50; // 0, 50, 100, 150
-    const translateY = -(scrollProgress * speedMultiplier);
-
-    // Scale: all cards scale down slightly as section scrolls
-    const scale = Math.max(0.88, 1 - (scrollProgress * 0.12));
-
-    card.style.transform = `translateY(${translateY}px) scale(${scale})`;
-  }, [scrollProgress, index]);
-
+const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
   return (
     <div
-      ref={cardRef}
       className="capability-card"
+      data-index={index}
       style={{
-        // Stacking context - earlier cards behind, later cards in front
-        zIndex: 10 - index,
-        willChange: 'transform',
+        zIndex: index,
       }}
     >
+      {/* Corner bracket decorations */}
+      <span className="capability-card-corner capability-card-corner-tl"></span>
+      <span className="capability-card-corner capability-card-corner-tr"></span>
+      <span className="capability-card-corner capability-card-corner-bl"></span>
+      <span className="capability-card-corner capability-card-corner-br"></span>
+
       <div className="capability-card-content">
         <div className="capability-card-header">
-          <span className="capability-card-icon">{icon}</span>
-          <h3 className="capability-card-title">{title}</h3>
+          <div className="capability-icon-circle">
+            <span className="capability-card-icon">{icon}</span>
+          </div>
+          <div>
+            <h3 className="capability-card-title">{title}</h3>
+            <p className="capability-card-description">{description}</p>
+          </div>
         </div>
-
-        <p className="capability-card-description">{description}</p>
 
         <div className="capability-card-tags">
           {tags.map((tag, i) => (
@@ -58,33 +46,8 @@ const CapabilityCard = ({ icon, title, description, tags, index, scrollProgress 
 };
 
 export default function CapabilitiesSection() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const section = sectionRef.current;
-      if (!section) return;
-
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const sectionHeight = section.offsetHeight;
-
-      // Calculate how far through the section we've scrolled (0 to 1)
-      // Section starts at top of viewport (rect.top = 0)
-      // Section ends when bottom leaves viewport (rect.bottom = 0)
-      const progress = Math.max(0, Math.min(1,
-        -rect.top / (sectionHeight - windowHeight)
-      ));
-
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const containerRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const capabilities = [
     {
@@ -113,17 +76,82 @@ export default function CapabilitiesSection() {
     }
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+
+      const container = containerRef.current;
+      const containerRect = container.getBoundingClientRect();
+      const scrollableHeight = container.scrollHeight - window.innerHeight;
+
+      let progress = -containerRect.top / scrollableHeight;
+      progress = Math.max(0, Math.min(1, progress));
+
+      const numCards = capabilities.length;
+      const activeCardFloat = progress * (numCards - 1);
+
+      // Parallax constants (from pararexcode.txt)
+      const STACK_SCALE = 0.9;
+      const Y_OFFSET_PER_LEVEL = 4; // in percent
+      const MAX_VISIBLE_STACK_CARDS = 3;
+
+      cardRefs.current.forEach((cardRef, index) => {
+        if (!cardRef) return;
+
+        cardRef.style.zIndex = String(index);
+
+        const depth = activeCardFloat - index;
+
+        if (depth >= 0) {
+          // Card is in stack or exiting
+          const depthProgress = Math.min(depth, 1);
+          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+          const scale = depth > 1 ? STACK_SCALE : 1 - depthProgress * (1 - STACK_SCALE);
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const stackParallax = -depth * 4;
+
+          cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
+          cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
+
+        } else if (depth > -1) {
+          // Card is incoming from bottom
+          const incomingProgress = 1 + depth;
+          const translateY = 100 - (incomingProgress * 100);
+          cardRef.style.transform = `translateY(${translateY}%)`;
+          cardRef.style.opacity = '1';
+        } else {
+          // Card is off-screen below
+          cardRef.style.transform = `translateY(100%)`;
+          cardRef.style.opacity = '0';
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [capabilities.length]);
+
   return (
-    <section ref={sectionRef} className="capabilities-section" id="capabilities">
+    <section ref={containerRef} className="capabilities-section" id="capabilities">
       <div className="capabilities-container">
         <p className="capabilities-intro">
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div className="capabilities-cards">
-          {capabilities.map((capability, index) => (
-            <CapabilityCard key={index} {...capability} index={index} scrollProgress={scrollProgress} />
-          ))}
+        <div className="capabilities-cards-wrapper">
+          <div className="capabilities-cards">
+            {capabilities.map((capability, index) => (
+              <div
+                key={index}
+                ref={(el) => { cardRefs.current[index] = el; }}
+                style={{ position: 'absolute', inset: 0 }}
+              >
+                <CapabilityCard {...capability} index={index} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

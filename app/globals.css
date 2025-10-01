@@ -237,8 +237,8 @@ body {
     pointer-events: none;
 }
 
-.scroll-progress::before {
-    content: '';
+/* New architecture: .scroll-progress-bar element for direct transform manipulation */
+.scroll-progress-bar {
     position: absolute;
     top: 0;
     left: 0;
@@ -246,15 +246,13 @@ body {
     width: 100%;
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
-    transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
-    /* will-change managed dynamically in JavaScript for better GPU memory optimization */
-    transition: background 150ms ease-in-out; /* Smooth background change, instant transform (no flicker) */
+    transform: translate3d(0, 0, 0) scaleX(0); /* Initial state, updated via JS */
+    /* will-change managed dynamically in JavaScript (debounced scroll sessions) */
+    transition: background 150ms ease-in-out; /* Smooth dark mode transition */
 }
 
-
-.scroll-progress.over-dark::before {
+.scroll-progress.over-dark .scroll-progress-bar {
     background: white; /* White when over dark section */
-    transition: background 150ms ease-in-out; /* Match navigation timing */
 }
 
 /* =========================

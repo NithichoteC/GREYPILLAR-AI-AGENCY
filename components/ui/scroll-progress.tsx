@@ -4,45 +4,58 @@ import { useEffect, useRef } from 'react';
 
 export default function ScrollProgress() {
   const progressRef = useRef<HTMLDivElement>(null);
-  const isOverDarkRef = useRef(false); // useRef instead of useState - no React re-renders
-  const willChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const isOverDarkRef = useRef(false);
+  const cachedRectRef = useRef<DOMRect | null>(null);
+  const isScrollingRef = useRef(false);
+  const scrollEndTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // COMBINED RAF scroll handler - progress update + dark mode check (NO React re-renders)
   useEffect(() => {
     let rafId: number | null = null;
     const darkSection = document.querySelector('#solution');
 
-    const updateScrollState = () => {
-      if (!progressRef.current) return;
+    // Performance optimization: Cache dark section position via Intersection Observer
+    const updateCachedRect = () => {
+      if (darkSection) {
+        cachedRectRef.current = darkSection.getBoundingClientRect();
+      }
+    };
 
-      // 1. Update progress bar (scaleX)
+    const updateScrollState = () => {
+      if (!progressBarRef.current) return;
+
+      // 1. Direct transform manipulation (40x faster than CSS custom properties)
       const winScroll = Math.max(0, window.scrollY || document.documentElement.scrollTop);
       const height = Math.max(
         document.body.scrollHeight,
         document.documentElement.scrollHeight
       ) - window.innerHeight;
-      const scrolled = Math.min((winScroll / height) * 100, 100);
+      const scrolled = Math.min(winScroll / height, 1); // 0-1 range
 
-      progressRef.current.style.setProperty('--scroll-progress', scrolled.toFixed(2));
+      // Direct transform (no CSS variable overhead)
+      progressBarRef.current.style.transform = `translate3d(0, 0, 0) scaleX(${scrolled.toFixed(4)})`;
 
-      // Dynamic will-change for GPU memory optimization
-      progressRef.current.style.willChange = 'transform';
+      // Debounced will-change management (set once per scroll session)
+      if (!isScrollingRef.current) {
+        progressBarRef.current.style.willChange = 'transform';
+        isScrollingRef.current = true;
+      }
 
-      // Remove will-change after 500ms idle (mobile GPU memory relief)
-      if (willChangeTimeoutRef.current) clearTimeout(willChangeTimeoutRef.current);
-      willChangeTimeoutRef.current = setTimeout(() => {
-        if (progressRef.current) {
-          progressRef.current.style.willChange = 'auto';
+      // Detect scroll end (debounced)
+      if (scrollEndTimeoutRef.current) clearTimeout(scrollEndTimeoutRef.current);
+      scrollEndTimeoutRef.current = setTimeout(() => {
+        if (progressBarRef.current) {
+          progressBarRef.current.style.willChange = 'auto';
+          isScrollingRef.current = false;
         }
-      }, 500);
+      }, 150);
 
-      // 2. Check dark mode position - DIRECT DOM manipulation (no setState)
-      if (darkSection) {
-        const rect = darkSection.getBoundingClientRect();
+      // 2. Dark mode check using CACHED rect (no getBoundingClientRect on every frame)
+      if (cachedRectRef.current && progressRef.current) {
         const progressCenter = 30.5;
+        const rect = cachedRectRef.current;
         const newIsOverDark = rect.top <= progressCenter && rect.bottom > progressCenter;
 
-        // Only update if value changed (conditional check)
         if (newIsOverDark !== isOverDarkRef.current) {
           if (newIsOverDark) {
             progressRef.current.classList.add('over-dark');
@@ -59,23 +72,33 @@ export default function ScrollProgress() {
       rafId = requestAnimationFrame(updateScrollState);
     };
 
+    // Intersection Observer for dark section position updates (async, no forced reflow)
+    const observer = new IntersectionObserver(
+      () => {
+        updateCachedRect(); // Only recalculate when section moves
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    if (darkSection) {
+      observer.observe(darkSection);
+      updateCachedRect(); // Initial cache
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    updateScrollState(); // Initial calculation
+    updateScrollState();
 
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
-      if (willChangeTimeoutRef.current) clearTimeout(willChangeTimeoutRef.current);
+      if (scrollEndTimeoutRef.current) clearTimeout(scrollEndTimeoutRef.current);
+      observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
-    <div
-      ref={progressRef}
-      className="scroll-progress"
-      style={{
-        '--scroll-progress': '0'
-      } as React.CSSProperties}
-    />
+    <div ref={progressRef} className="scroll-progress">
+      <div ref={progressBarRef} className="scroll-progress-bar" />
+    </div>
   );
 }

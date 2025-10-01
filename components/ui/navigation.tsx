@@ -7,50 +7,42 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
 
-  // Hybrid approach for adaptive nav colors (2025 industry standard)
+  // Intersection Observer ONLY - no RAF scroll handler (eliminates layout thrashing)
   useEffect(() => {
     const darkSection = document.querySelector('#solution');
-
     if (!darkSection) return;
 
-    // Position check function for continuous precision
-    const checkPosition = () => {
+    const cachedRect = { top: 0, bottom: 0 };
+
+    // Cache rect updates from Intersection Observer
+    const updateCachedRect = () => {
       const rect = darkSection.getBoundingClientRect();
-      const navCenter = 30.5; // Half of 61px nav height - triggers at 50% overlap
-      const isNavOverDark = rect.top <= navCenter && rect.bottom > navCenter;
+      cachedRect.top = rect.top;
+      cachedRect.bottom = rect.bottom;
+    };
+
+    // Check position using cached values
+    const checkPosition = () => {
+      const navCenter = 30.5;
+      const isNavOverDark = cachedRect.top <= navCenter && cachedRect.bottom > navCenter;
       setIsOverDark(isNavOverDark);
     };
 
-    // Intersection Observer for threshold-based detection (performance)
+    // Intersection Observer with optimized thresholds
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        checkPosition(); // Update on threshold crossings
+      () => {
+        updateCachedRect();
+        checkPosition();
       },
-      {
-        // 101 thresholds catches mobile momentum scrolling
-        threshold: Array.from({ length: 101 }, (_, i) => i / 100)
-      }
+      { threshold: [0, 0.25, 0.5, 0.75, 1] } // 5 thresholds vs 101 (95% less memory)
     );
 
-    // Scroll listener for slow scrolling precision (RAF throttled)
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          checkPosition();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
     observer.observe(darkSection);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    checkPosition(); // Initial check
+    updateCachedRect();
+    checkPosition();
 
     return () => {
       observer.disconnect();
-      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

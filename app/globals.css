@@ -232,7 +232,7 @@ body {
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
     transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
-    transition: transform 50ms linear; /* Ultra-fast interpolation for 60fps → 120fps smoothness */
+    transition: background 150ms ease-in-out; /* Only color transitions, instant transform for scroll tracking */
 }
 
 /* Conditional GPU acceleration during active scrolling (prevents battery drain) */

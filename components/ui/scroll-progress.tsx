@@ -25,8 +25,9 @@ export default function ScrollProgress() {
       const scrolled = Math.min((winScroll / height) * 100, 100);
 
       // Direct DOM manipulation bypasses React re-renders (0ms overhead)
+      // toFixed(2) ensures sub-percentage precision (45.67 instead of 45)
       if (progressRef.current) {
-        progressRef.current.style.setProperty('--scroll-progress', scrolled.toString());
+        progressRef.current.style.setProperty('--scroll-progress', scrolled.toFixed(2));
       }
     };
 

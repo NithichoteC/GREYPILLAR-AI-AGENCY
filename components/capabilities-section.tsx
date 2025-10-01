@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface CapabilityCardProps {
   icon: string;
@@ -12,63 +12,41 @@ interface CapabilityCardProps {
 
 const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const willChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
     if (!cardRef.current) return;
 
     const card = cardRef.current;
-    const parallaxSpeed = 0.05 + (index * 0.03); // 0.05, 0.08, 0.11, 0.14
-    let rafId: number | null = null;
-
-    const updateParallax = () => {
-      if (!card) return;
-
-      const scrollY = window.scrollY;
-      const sectionTop = card.closest('section')?.offsetTop || 0;
-      const relativeScroll = scrollY - sectionTop;
-
-      // Only apply parallax when section is in view
-      if (relativeScroll > -window.innerHeight && relativeScroll < window.innerHeight * 2) {
-        card.style.transform = `translate3d(0, ${relativeScroll * parallaxSpeed}px, 0)`;
-        card.style.willChange = 'transform';
-
-        // Remove will-change after idle
-        if (willChangeTimeoutRef.current) clearTimeout(willChangeTimeoutRef.current);
-        willChangeTimeoutRef.current = setTimeout(() => {
-          if (card) card.style.willChange = 'auto';
-        }, 500);
-      }
-    };
-
-    const handleScroll = () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(updateParallax);
-    };
 
     // Check for reduced motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
 
-    if (!prefersReducedMotion) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      updateParallax(); // Initial position
-    }
+    // Intersection Observer for sticky scale effect
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Card is in view and sticky when intersecting
+        setIsInView(entry.isIntersecting);
+      },
+      {
+        threshold: [0, 0.5, 1],
+        rootMargin: '-100px 0px -100px 0px' // Trigger when card reaches sticky position
+      }
+    );
+
+    observer.observe(card);
 
     return () => {
-      if (rafId) cancelAnimationFrame(rafId);
-      if (willChangeTimeoutRef.current) clearTimeout(willChangeTimeoutRef.current);
-      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
     };
-  }, [index]);
+  }, []);
 
   return (
     <div
       ref={cardRef}
       className="capability-card"
-      style={{
-        zIndex: 4 - index, // Card 1: z-4, Card 2: z-3, Card 3: z-2, Card 4: z-1
-        marginTop: index === 0 ? 0 : '-100px' // Overlap cards
-      }}
+      data-in-view={isInView}
     >
       <div className="card-content">
         <div className="card-header">

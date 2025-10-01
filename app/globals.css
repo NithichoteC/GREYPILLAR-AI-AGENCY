@@ -379,14 +379,14 @@ body {
 .menu-text {
     font-size: var(--font-sm);
     font-weight: 400;
-    color: var(--light); /* Grey when closed - modern 2025 style */
+    color: rgba(33, 37, 41, 0.1); /* Grey like nav border when closed */
     user-select: none;
     transition: color 0.3s var(--ease-smooth);
 }
 
-/* White text when menu is open */
+/* Black text when menu is open */
 .mobile-menu-toggle.active .menu-text {
-    color: white;
+    color: var(--darkest); /* Black */
 }
 
 .menu-icon {
@@ -398,15 +398,23 @@ body {
 .menu-line {
     width: 20px;
     height: 2px;
-    background: var(--darkest);
+    background: rgba(33, 37, 41, 0.1); /* Grey like nav border when closed */
     transition: all 0.3s var(--ease-smooth);
     transform-origin: center;
     border-radius: 1px;
 }
 
-/* Hide hamburger icon when menu is open - only show "close ×" text */
-.mobile-menu-toggle.active .menu-icon {
-    display: none;
+/* X-cross animation when menu opens - left points stay, right points swap */
+.mobile-menu-toggle.active .menu-line {
+    background: var(--darkest); /* Turn black */
+}
+
+.mobile-menu-toggle.active .menu-line:first-child {
+    transform: rotate(45deg) translateY(2.5px);
+}
+
+.mobile-menu-toggle.active .menu-line:last-child {
+    transform: rotate(-45deg) translateY(-2.5px);
 }
 
 /* Full Screen Mobile Overlay - Modern 2025 Style */
@@ -417,7 +425,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.5); /* Dark semi-transparent for blur visibility */
+    background: rgba(255, 255, 255, 0.1); /* Light blur - exact match to nav */
     backdrop-filter: blur(20px); /* Same blur strength as nav */
     -webkit-backdrop-filter: blur(20px); /* Safari support */
     z-index: 10000;
@@ -441,7 +449,7 @@ body {
 .mobile-nav .nav-link {
     font-size: var(--font-md); /* Smaller, modern 2025 style */
     font-weight: 500;
-    color: white; /* White text on dark blur background */
+    color: var(--darkest); /* Black text on light blur background */
     text-decoration: none;
     padding: var(--space-sm) 0; /* Minimal padding for compressed look */
     text-align: right; /* Right-aligned text */

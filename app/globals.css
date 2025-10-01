@@ -2601,7 +2601,7 @@ body {
 
 .capabilities-cards {
     position: relative;
-    min-height: 300vh; /* Space for scroll effect - 4 cards × 100vh each, minus overlaps */
+    min-height: 400vh; /* Space for scroll effect - allows all 4 cards to stack */
 }
 
 /* Individual Capability Card - True Nitro Sticky Parallax */
@@ -2613,11 +2613,23 @@ body {
     margin-bottom: var(--space-md); /* Small gap for smooth overlapping */
 }
 
-/* Stacking top positions - tighter stacking for better overlap */
-.capability-card:nth-child(1) { top: 80px; }
-.capability-card:nth-child(2) { top: 90px; }
-.capability-card:nth-child(3) { top: 100px; }
-.capability-card:nth-child(4) { top: 110px; }
+/* Stacking - All cards at SAME top position for true parallax overlap */
+.capability-card:nth-child(1) {
+    top: 80px;
+    transform: scale(0.95); /* Depth effect - furthest back */
+}
+.capability-card:nth-child(2) {
+    top: 80px;
+    transform: scale(0.97); /* Slightly closer */
+}
+.capability-card:nth-child(3) {
+    top: 80px;
+    transform: scale(0.99); /* Almost full size */
+}
+.capability-card:nth-child(4) {
+    top: 80px;
+    transform: scale(1); /* Full size - topmost card */
+}
 
 /* Capability Card Content - Professional Design */
 .capability-card-content {

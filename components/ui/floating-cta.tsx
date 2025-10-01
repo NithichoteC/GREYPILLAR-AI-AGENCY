@@ -33,7 +33,7 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
       },
       {
         threshold: 0,
-        rootMargin: '0px 0px -200px 0px' // Hide when main CTA within 200px of bottom viewport
+        rootMargin: '200px 0px 0px 0px' // Trigger when main CTA is 200px from top (entering from bottom)
       }
     );
 

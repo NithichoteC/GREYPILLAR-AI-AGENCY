@@ -1197,7 +1197,7 @@ body {
 /* Problem Amplification */
 .problem-amplification {
     text-align: center;
-    margin-bottom: var(--space-4xl);
+    margin-bottom: var(--space-2xl); /* Match divider-to-header spacing (3rem = 48px) */
 }
 
 .amplification-text {
@@ -1222,7 +1222,7 @@ body {
 /* Problem Bridge */
 .problem-bridge {
     text-align: center;
-    margin-bottom: var(--space-4xl); /* Match header spacing (6rem = 96px) */
+    margin-bottom: var(--space-2xl); /* Match divider-to-header spacing (3rem = 48px) */
 }
 
 .bridge-text {

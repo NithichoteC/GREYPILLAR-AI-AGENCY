@@ -2585,10 +2585,10 @@ body {
 }
 
 .capabilities-container {
-    /* EXACT navigation border width - matches nav-container */
-    max-width: 1200px;
+    /* Match reference implementation (max-w-3xl = 768px) */
+    max-width: 768px;
     margin: 0 auto;
-    padding: 0 var(--space-xl); /* Match nav-container padding */
+    padding: 0 var(--space-xl);
 }
 
 .capabilities-intro {
@@ -2617,8 +2617,7 @@ body {
 /* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
 .capability-card {
     position: absolute;
-    inset: 0;
-    width: 100%;
+    inset: 0; /* Sets all edges (top, right, bottom, left), which includes width */
     will-change: transform; /* Optimize for JavaScript animations */
     display: flex;
     align-items: center;

@@ -46,7 +46,7 @@ const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCar
 };
 
 export default function CapabilitiesSection() {
-  const containerRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const capabilities = [
@@ -134,13 +134,13 @@ export default function CapabilitiesSection() {
   }, [capabilities.length]);
 
   return (
-    <section ref={containerRef} className="capabilities-section" id="capabilities">
+    <section className="capabilities-section" id="capabilities">
       <div className="capabilities-container">
         <p className="capabilities-intro">
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div className="capabilities-cards-wrapper">
+        <div ref={containerRef} className="capabilities-cards-wrapper">
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
               <div

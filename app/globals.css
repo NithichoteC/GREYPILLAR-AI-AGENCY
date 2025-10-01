@@ -2604,31 +2604,17 @@ body {
     min-height: 400vh; /* Space for scroll effect - allows all 4 cards to stack */
 }
 
-/* Individual Capability Card - True Nitro Sticky Parallax */
+/* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
 .capability-card {
     position: sticky;
+    top: 80px; /* All cards stick at same position */
     width: 100%;
+    min-height: 100vh; /* Lock card in viewport like Nitro */
     height: 85vh;
     max-height: 700px;
-    margin-bottom: var(--space-md); /* Small gap for smooth overlapping */
-}
-
-/* Stacking - All cards at SAME top position for true parallax overlap */
-.capability-card:nth-child(1) {
-    top: 80px;
-    transform: scale(0.95); /* Depth effect - furthest back */
-}
-.capability-card:nth-child(2) {
-    top: 80px;
-    transform: scale(0.97); /* Slightly closer */
-}
-.capability-card:nth-child(3) {
-    top: 80px;
-    transform: scale(0.99); /* Almost full size */
-}
-.capability-card:nth-child(4) {
-    top: 80px;
-    transform: scale(1); /* Full size - topmost card */
+    margin-bottom: var(--space-md);
+    will-change: transform; /* Optimize for JavaScript animations */
+    transition: transform 0.1s ease-out; /* Smooth transform updates */
 }
 
 /* Capability Card Content - Professional Design */

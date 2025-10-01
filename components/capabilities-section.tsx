@@ -1,3 +1,6 @@
+'use client';
+import { useEffect, useRef } from 'react';
+
 interface CapabilityCardProps {
   icon: string;
   title: string;
@@ -7,12 +10,43 @@ interface CapabilityCardProps {
 }
 
 const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const handleScroll = () => {
+      const rect = card.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate scroll progress (0 to 1) based on card position in viewport
+      const scrollProgress = Math.max(0, Math.min(1,
+        (windowHeight - rect.top) / windowHeight
+      ));
+
+      // Apply Nitro-style transforms
+      const translateY = -(scrollProgress * index * 90); // Move up by 90px per card
+      const scale = Math.max(0.88, 1 - (scrollProgress * 0.12)); // Scale from 1.0 to 0.88
+
+      card.style.transform = `translateY(${translateY}px) scale(${scale})`;
+    };
+
+    // Attach scroll listener
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [index]);
+
   return (
     <div
+      ref={cardRef}
       className="capability-card"
       style={{
         // Stacking context - earlier cards behind, later cards in front
         zIndex: 10 - index,
+        willChange: 'transform',
       }}
     >
       <div className="capability-card-content">

@@ -95,9 +95,7 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         bottom: '24px',
         right: '24px',
         zIndex: 50,
-        opacity: isVisible ? 1 : 0,
-        transform: 'translateZ(0)', // GPU acceleration only, no vertical movement
-        transition: 'opacity 200ms ease-in-out',
+        transform: 'translateZ(0)', // GPU acceleration only
         backfaceVisibility: 'hidden',
         pointerEvents: isVisible ? 'auto' : 'none'
       } as React.CSSProperties}

@@ -278,7 +278,8 @@ body {
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 9999px;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1; /* Default visible */
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease-in-out;
     transform: translateZ(0);
     will-change: transform; /* Pre-render blur layer on element itself */
     user-select: none;
@@ -314,6 +315,11 @@ body {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     /* GPU acceleration without breaking backdrop-filter isolation */
+}
+
+/* Control button opacity via parent state - blur always rendered */
+.floating-cta:not(.visible) .glass-button-text {
+    opacity: 0;
 }
 
 .floating-cta a {

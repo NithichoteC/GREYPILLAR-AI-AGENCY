@@ -71,18 +71,18 @@ export default function Navigation() {
               <div className="underline"></div>
             </Link>
           </div>
-          <button
-            className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''}`}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <span className="menu-text">{isMobileMenuOpen ? 'close' : 'menu'}</span>
-            <div className="menu-icon">
-              <div className="menu-line"></div>
-              <div className="menu-line"></div>
-            </div>
-          </button>
         </div>
       </nav>
+      <button
+        className={`mobile-menu-toggle ${isMobileMenuOpen ? 'active' : ''} ${isOverDark ? 'over-dark' : ''}`}
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      >
+        <span className="menu-text">{isMobileMenuOpen ? 'close' : 'menu'}</span>
+        <div className="menu-icon">
+          <div className="menu-line"></div>
+          <div className="menu-line"></div>
+        </div>
+      </button>
       <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
         <Link href="#problem" className="nav-link">Problem</Link>
         <Link href="#solution" className="nav-link">Solution</Link>

@@ -384,7 +384,9 @@ body {
     border: none;
     cursor: pointer;
     padding: var(--space-sm);
-    position: relative; /* Create stacking context */
+    position: fixed; /* Fixed at root level, outside nav stacking context */
+    top: 16px; /* Vertical center: (61px nav - 29px button) / 2 = 16px */
+    right: var(--space-xl); /* Match nav container padding */
     z-index: 10002; /* Above mobile-nav overlay (10000) */
     border-radius: 6px;
     transition: all 0.2s var(--ease-smooth);
@@ -400,9 +402,22 @@ body {
     transition: color 0.3s var(--ease-smooth);
 }
 
-/* Black text when menu is open */
+/* Dark mode - white menu button when over dark section */
+.mobile-menu-toggle.over-dark .menu-text {
+    color: white;
+}
+
+.mobile-menu-toggle.over-dark .menu-line {
+    background: white;
+}
+
+/* Black text when menu is open (overrides dark mode) */
 .mobile-menu-toggle.active .menu-text {
-    color: var(--darkest); /* Black */
+    color: var(--darkest) !important; /* Black, override dark mode */
+}
+
+.mobile-menu-toggle.active .menu-line {
+    background: var(--darkest) !important; /* Black, override dark mode */
 }
 
 .menu-icon {
@@ -421,10 +436,6 @@ body {
 }
 
 /* X-cross animation when menu opens - left points stay, right points swap */
-.mobile-menu-toggle.active .menu-line {
-    background: var(--darkest); /* Stay black during animation */
-}
-
 .mobile-menu-toggle.active .menu-line:first-child {
     transform: translateY(1.5px) rotate(45deg);
 }

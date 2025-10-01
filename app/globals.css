@@ -400,7 +400,7 @@ body {
     height: 2px;
     background: var(--darkest); /* Darker grey like CTA button border */
     transition: all 0.3s var(--ease-smooth);
-    transform-origin: right center; /* Right anchor so left side can move to create X */
+    transform-origin: left center; /* Left anchor stays fixed, right side swaps to create X */
     border-radius: 1px;
 }
 
@@ -410,11 +410,11 @@ body {
 }
 
 .mobile-menu-toggle.active .menu-line:first-child {
-    transform: translateY(2.5px) rotate(45deg);
+    transform: rotate(45deg);
 }
 
 .mobile-menu-toggle.active .menu-line:last-child {
-    transform: translateY(-2.5px) rotate(-45deg);
+    transform: rotate(-45deg);
 }
 
 /* Full Screen Mobile Overlay - Modern 2025 Style */
@@ -444,7 +444,7 @@ body {
 .mobile-nav.open {
     display: flex;
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
 }
 
 .mobile-nav .nav-link {

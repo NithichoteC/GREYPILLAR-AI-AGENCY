@@ -32,8 +32,8 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         setIsVisible(!entry.isIntersecting);
       },
       {
-        threshold: 0.1,
-        rootMargin: '0px'
+        threshold: 0,
+        rootMargin: '-100px 0px 0px 0px' // Trigger 100px before hero CTA disappears (fast scroll)
       }
     );
 
@@ -96,10 +96,11 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         right: '24px',
         zIndex: 50,
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-        transition: 'opacity 300ms ease-in-out, transform 300ms ease-in-out',
+        transform: isVisible ? 'translateY(0) translateZ(0)' : 'translateY(20px) translateZ(0)',
+        transition: 'opacity 150ms ease-in-out, transform 150ms ease-in-out',
+        backfaceVisibility: 'hidden',
         pointerEvents: isVisible ? 'auto' : 'none'
-      }}
+      } as React.CSSProperties}
     >
       <Link href="#audit">
         <GlassButton

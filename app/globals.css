@@ -379,40 +379,15 @@ body {
 .menu-text {
     font-size: var(--font-sm);
     font-weight: 400;
-    color: var(--darkest);
+    color: var(--light); /* Grey when closed - modern 2025 style */
     user-select: none;
-    position: relative;
-    display: inline-block;
+    transition: color 0.3s var(--ease-smooth);
 }
 
-/* Professional cross-fade transition for menu ↔ close */
-.menu-text::before,
-.menu-text::after {
-    transition: opacity 0.3s var(--ease-smooth);
+/* White text when menu is open */
+.mobile-menu-toggle.active .menu-text {
+    color: white;
 }
-
-.menu-text::before {
-    content: 'menu';
-    opacity: 1;
-}
-
-.menu-text::after {
-    content: 'close ×';
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-}
-
-.mobile-menu-toggle.active .menu-text::before {
-    opacity: 0;
-}
-
-.mobile-menu-toggle.active .menu-text::after {
-    opacity: 1;
-}
-
-/* Menu button text stays dark - matches light blur background */
 
 .menu-icon {
     display: flex;
@@ -442,8 +417,8 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.1); /* Match nav - subtle tint */
-    backdrop-filter: blur(20px); /* Match nav - same blur strength */
+    background: rgba(0, 0, 0, 0.5); /* Dark semi-transparent for blur visibility */
+    backdrop-filter: blur(20px); /* Same blur strength as nav */
     -webkit-backdrop-filter: blur(20px); /* Safari support */
     z-index: 10000;
     flex-direction: column;
@@ -466,7 +441,7 @@ body {
 .mobile-nav .nav-link {
     font-size: var(--font-md); /* Smaller, modern 2025 style */
     font-weight: 500;
-    color: var(--darkest); /* Dark text on light blur background */
+    color: white; /* White text on dark blur background */
     text-decoration: none;
     padding: var(--space-sm) 0; /* Minimal padding for compressed look */
     text-align: right; /* Right-aligned text */

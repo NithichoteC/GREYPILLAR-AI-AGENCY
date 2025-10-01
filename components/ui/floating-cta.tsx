@@ -33,7 +33,7 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
       },
       {
         threshold: 0,
-        rootMargin: '200px 0px -150px 0px' // 350px buffer: hide 200px before entering, show 150px after exiting
+        rootMargin: '0px 0px 0px 0px' // Pure viewport visibility - hide when main CTA visible, show when not
       }
     );
 

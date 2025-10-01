@@ -1,7 +1,3 @@
-'use client';
-
-import { useEffect, useRef } from 'react';
-
 interface CapabilityCardProps {
   icon: string;
   title: string;
@@ -11,62 +7,11 @@ interface CapabilityCardProps {
 }
 
 const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!cardRef.current) return;
-
-    const card = cardRef.current;
-
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) return;
-
-    // Scroll-based transform animation like Nitro
-    const handleScroll = () => {
-      if (!card) return;
-
-      const rect = card.getBoundingClientRect();
-      const scrollProgress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / window.innerHeight));
-
-      // Calculate transform values based on scroll position
-      // Cards move up progressively as you scroll
-      const translateY = -(scrollProgress * index * 90); // Each card moves up more than the previous
-      const scale = Math.max(0.88, 1 - (scrollProgress * 0.12)); // Scale from 1.0 to 0.88
-
-      // Apply transform like Nitro does
-      card.style.transform = `translateY(${translateY}px) scale(${scale})`;
-      card.style.willChange = 'transform';
-    };
-
-    // Initial call
-    handleScroll();
-
-    // Throttled scroll listener for performance
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [index]);
-
   return (
     <div
-      ref={cardRef}
       className="capability-card"
       style={{
-        // Stacking context - earlier cards behind
+        // Stacking context - earlier cards behind, later cards in front
         zIndex: 10 - index,
       }}
     >

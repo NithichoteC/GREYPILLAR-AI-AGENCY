@@ -2604,28 +2604,20 @@ body {
     min-height: 300vh; /* Space for scroll effect - 4 cards × 100vh each, minus overlaps */
 }
 
-/* Individual Capability Card - Nitro Sticky Behavior */
+/* Individual Capability Card - True Nitro Sticky Parallax */
 .capability-card {
     position: sticky;
     width: 100%;
-    height: 80vh;
+    height: 85vh;
     max-height: 700px;
-    margin-bottom: var(--space-2xl);
-    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-                opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: transform, opacity;
+    margin-bottom: var(--space-md); /* Small gap for smooth overlapping */
 }
 
-/* Stacking top positions - each card stacks slightly lower */
-.capability-card:nth-child(1) { top: 100px; }
-.capability-card:nth-child(2) { top: 120px; }
-.capability-card:nth-child(3) { top: 140px; }
-.capability-card:nth-child(4) { top: 160px; }
-
-/* Scale down when in sticky view (class added by JS) */
-.capability-card[data-in-view="true"] {
-    transform: scale(0.96);
-}
+/* Stacking top positions - tighter stacking for better overlap */
+.capability-card:nth-child(1) { top: 80px; }
+.capability-card:nth-child(2) { top: 90px; }
+.capability-card:nth-child(3) { top: 100px; }
+.capability-card:nth-child(4) { top: 110px; }
 
 /* Capability Card Content - Professional Design */
 .capability-card-content {

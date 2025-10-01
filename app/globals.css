@@ -286,11 +286,11 @@ body {
 }
 
 /* DARK SECTIONS: over-dark class triggers on #solution */
-.glass-button.over-dark .glass-button-text {
+.glass-button-wrap.over-dark .glass-button-text {
     color: #FFFFFF !important;
 }
 
-.glass-button.over-dark:hover .glass-button-text {
+.glass-button-wrap.over-dark:hover .glass-button-text {
     color: #FFFFFF !important;
 }
 

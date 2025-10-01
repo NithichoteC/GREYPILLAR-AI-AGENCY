@@ -308,10 +308,12 @@ body {
     color: #FFFFFF !important;
 }
 
-/* Floating CTA container - prevent transparent square artifact + pre-render blur */
+/* Floating CTA container - prevent transparent square artifact */
 .floating-cta {
     background: transparent !important;
-    will-change: opacity; /* Force GPU layer for smooth fade */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* GPU acceleration without breaking backdrop-filter isolation */
 }
 
 .floating-cta a {

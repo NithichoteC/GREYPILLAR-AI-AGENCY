@@ -93,7 +93,6 @@ body {
     backdrop-filter: blur(20px);
     background: rgba(255, 255, 255, 0.1);
     height: 61px; /* Fixed height - no more padding calculations */
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     transition: all 0.15s var(--ease-smooth);
     transform: translateZ(0);
 }
@@ -118,6 +117,11 @@ body {
     right: var(--space-xl); /* End before padding */
     height: 1px;
     background: rgba(33, 37, 41, 0.1); /* Subtle grey with low opacity */
+}
+
+/* Dark mode border color */
+.nav-over-dark .nav-container::after {
+    background: rgba(255, 255, 255, 0.12);
 }
 
 /* Mobile nav border - match smaller padding */
@@ -201,10 +205,6 @@ body {
 
 .glass-nav.nav-over-dark .menu-line {
     background: white;
-}
-
-.glass-nav.nav-over-dark {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 /* =========================

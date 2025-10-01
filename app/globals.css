@@ -232,8 +232,8 @@ body {
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
     transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
-    will-change: transform; /* Nitro style - GPU acceleration hint */
-    transition: background 150ms ease-in-out, transform 150ms ease-out; /* Nitro style - smooth animation */
+    will-change: transform; /* GPU acceleration hint */
+    transition: background 150ms ease-in-out; /* Smooth background change, instant transform (no flicker) */
 }
 
 
@@ -374,9 +374,7 @@ body {
     transition: all 0.2s var(--ease-smooth);
 }
 
-.mobile-menu-toggle:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
+/* Remove hover background - cleaner modern style */
 
 .menu-text {
     font-size: var(--font-sm);
@@ -386,11 +384,7 @@ body {
     transition: color 0.3s var(--ease-smooth);
 }
 
-/* White text when menu is open (Nitro style) */
-.mobile-nav.open ~ .nav-container .menu-text,
-body:has(.mobile-nav.open) .menu-text {
-    color: var(--pure-white);
-}
+/* Menu button text stays dark - matches light blur background */
 
 .menu-icon {
     display: flex;
@@ -407,20 +401,12 @@ body:has(.mobile-nav.open) .menu-text {
     border-radius: 1px;
 }
 
-/* White hamburger lines when menu is open (Nitro style) */
-body:has(.mobile-nav.open) .menu-line {
-    background: var(--pure-white);
+/* Hide hamburger icon when menu is open - only show "close ×" text */
+.mobile-menu-toggle.active .menu-icon {
+    display: none;
 }
 
-.mobile-menu-toggle.active .menu-line:nth-child(1) {
-    transform: rotate(45deg) translate(3px, 3px);
-}
-
-.mobile-menu-toggle.active .menu-line:nth-child(2) {
-    transform: rotate(-45deg) translate(3px, -3px);
-}
-
-/* Full Screen Mobile Overlay */
+/* Full Screen Mobile Overlay - Modern 2025 Style */
 .mobile-nav {
     display: none;
     position: fixed;
@@ -428,14 +414,16 @@ body:has(.mobile-nav.open) .menu-line {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.98); /* Nitro style - fullscreen black */
-    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.8); /* Blur white like nav */
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px); /* Safari support */
     z-index: 10000;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-end; /* Nitro style - right-aligned */
-    padding-right: var(--space-3xl); /* Add right padding for alignment */
-    gap: var(--space-2xl);
+    justify-content: flex-start; /* Move menu higher for 2025 modern look */
+    align-items: flex-end; /* Right-aligned */
+    padding-top: 120px; /* Space from top */
+    padding-right: var(--space-3xl); /* Right padding for alignment */
+    gap: var(--space-lg); /* Compressed spacing (24px vs 48px) */
     opacity: 0;
     transform: translateY(-20px);
     transition: all 0.4s var(--ease-smooth);
@@ -448,20 +436,20 @@ body:has(.mobile-nav.open) .menu-line {
 }
 
 .mobile-nav .nav-link {
-    font-size: var(--font-2xl);
+    font-size: var(--font-md); /* Smaller, modern 2025 style */
     font-weight: 500;
-    color: var(--pure-white); /* Nitro style - white text on black */
+    color: var(--darkest); /* Dark text on light blur background */
     text-decoration: none;
-    padding: var(--space-md) var(--space-xl);
-    border-radius: 8px;
+    padding: var(--space-sm) 0; /* Minimal padding for compressed look */
+    text-align: right; /* Right-aligned text */
+    text-transform: uppercase; /* All caps modern style */
+    letter-spacing: 0.05em; /* Slight spacing for readability */
     transition: all 0.3s var(--ease-smooth);
-    text-align: right; /* Nitro style - right-aligned text */
-    min-width: 200px;
 }
 
 .mobile-nav .nav-link:hover {
-    background: rgba(255, 255, 255, 0.1); /* Subtle hover on dark background */
-    transform: translateY(-2px);
+    opacity: 0.6; /* Subtle opacity hover instead of background */
+    transform: translateX(-4px); /* Slight left movement on hover */
 }
 
 .mobile-nav .nav-cta {

@@ -258,64 +258,40 @@ body {
 .glass-button-text {
     position: relative;
     display: block;
-    /* 21st.dev default size: px-6 py-3.5 */
     padding: 14px 24px;
-    /* DEFAULT = LIGHT SECTIONS: Grey text like "That's a leak" */
-    color: var(--darkest); /* #212529 - matches card-impact */
-    background: rgba(255, 255, 255, 0.25);  /* 25% for true glass effect */
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1.5px solid rgba(0, 0, 0, 0.15); /* Dark border for proper contrast */
+    /* Pure blur glass like hero nav */
+    color: var(--darkest);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 9999px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    /* 21st.dev premium text styling */
     user-select: none;
     -webkit-user-select: none;
-    letter-spacing: -0.025em; /* tracking-tighter */
-    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+    letter-spacing: -0.025em;
     text-decoration: none;
-    /* 21st.dev multi-layer shadow for 3D depth */
     box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.1) inset,           /* Subtle dark inner rim */
-        0 2px 4px rgba(0, 0, 0, 0.08),                /* Small close shadow */
-        0 8px 16px rgba(0, 0, 0, 0.12),               /* Medium depth */
-        0 16px 32px rgba(0, 0, 0, 0.08);              /* Outer glow shadow */
+        0 2px 4px rgba(0, 0, 0, 0.08),
+        0 8px 16px rgba(0, 0, 0, 0.12);
 }
 
 .glass-button:hover .glass-button-text {
-    color: #000000; /* Black on hover */
-    background: rgba(255, 255, 255, 0.4);  /* More opaque glass on hover */
-    border: 1.5px solid rgba(0, 0, 0, 0.2); /* Darker border on hover */
-    /* NO LIFT! Enhanced shadow depth on hover */
+    color: #000000;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.15);
     box-shadow:
-        0 0 0 1px rgba(0, 0, 0, 0.15) inset,         /* Darker inner rim on hover */
         0 4px 6px rgba(0, 0, 0, 0.1),
-        0 10px 20px rgba(0, 0, 0, 0.15),
-        0 20px 40px rgba(0, 0, 0, 0.1);
+        0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* DARK SECTIONS: over-dark class triggers on #solution */
 .glass-button.over-dark .glass-button-text {
     color: #FFFFFF;
-    background: rgba(0, 0, 0, 0.3); /* Black tint for true glass on dark backgrounds */
-    border: 1px solid rgba(255, 255, 255, 0.12); /* Very subtle light border */
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.08) inset,   /* Subtle inner glow */
-        0 4px 12px rgba(0, 0, 0, 0.5),
-        0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .glass-button.over-dark:hover .glass-button-text {
     color: #FFFFFF;
-    background: rgba(0, 0, 0, 0.4); /* Slightly darker on hover */
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow:
-        0 0 0 1.5px rgba(255, 255, 255, 0.15) inset,
-        0 6px 16px rgba(0, 0, 0, 0.6),
-        0 12px 32px rgba(0, 0, 0, 0.4);
 }
 
 /* Floating CTA container - prevent transparent square artifact */

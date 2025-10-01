@@ -508,7 +508,7 @@ body {
 }
 
 .section-hero {
-    padding: calc(61px + var(--space-lg)) 0 0 0; /* Navigation height + reduced gap */
+    padding: calc(61px + var(--space-2xl)) 0 0 0; /* Navigation height + breathing room (48px gap) */
     min-height: 60vh;
     /* Removed flex display that was constraining hero-frame */
 }

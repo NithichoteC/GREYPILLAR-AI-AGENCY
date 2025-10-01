@@ -400,7 +400,7 @@ body {
     height: 2px;
     background: var(--darkest); /* Darker grey like CTA button border */
     transition: all 0.3s var(--ease-smooth);
-    transform-origin: left center; /* Keep left anchor point fixed */
+    transform-origin: right center; /* Right anchor so left side can move to create X */
     border-radius: 1px;
 }
 
@@ -425,7 +425,7 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.1); /* Light blur - exact match to nav */
+    background: rgba(247, 247, 248, 0.8); /* Visible frosted glass with subtle tint */
     backdrop-filter: blur(20px); /* Same blur strength as nav */
     -webkit-backdrop-filter: blur(20px); /* Safari support */
     z-index: 10000;

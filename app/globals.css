@@ -2573,3 +2573,171 @@ body {
     @apply bg-background text-foreground;
     }
 }
+
+/* =========================
+   CAPABILITIES SECTION (Nitro-Style Stacking Cards)
+========================= */
+.capabilities-section {
+    padding: var(--space-5xl) 0;
+    background: var(--lightest);
+    position: relative;
+    overflow: hidden;
+}
+
+.capabilities-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+}
+
+.capabilities-intro {
+    font-size: var(--font-xl);
+    line-height: 1.6;
+    color: var(--dark);
+    margin-bottom: var(--space-4xl);
+    max-width: 800px;
+}
+
+.capabilities-cards {
+    position: relative;
+    padding-bottom: var(--space-3xl);
+}
+
+/* Individual Capability Card - Full Width */
+.capability-card {
+    position: relative;
+    width: 100%;
+    transition: transform 0.3s var(--ease-smooth);
+}
+
+.card-content {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 12px;
+    padding: var(--space-3xl);
+    box-shadow: 0 8px 30px rgba(3, 6, 23, 0.06);
+    transition: all 0.3s var(--ease-smooth);
+}
+
+.capability-card:hover .card-content {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(3, 6, 23, 0.12);
+}
+
+/* Card Header */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.card-icon {
+    font-size: var(--font-3xl);
+    line-height: 1;
+}
+
+.card-title {
+    font-size: var(--font-2xl);
+    font-weight: 700;
+    color: var(--darkest);
+    margin: 0;
+}
+
+/* Card Description */
+.card-description {
+    font-size: var(--font-lg);
+    line-height: 1.6;
+    color: var(--dark);
+    margin: 0 0 var(--space-xl) 0;
+}
+
+/* Card Tags */
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.tag {
+    display: inline-block;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--light);
+    color: var(--dark);
+    font-size: var(--font-sm);
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.2s var(--ease-smooth);
+}
+
+.tag:hover {
+    background: var(--medium-light);
+    color: var(--darkest);
+}
+
+/* Responsive Behavior */
+@media (max-width: 1024px) {
+    .capability-card {
+        margin-top: -60px !important; /* Reduce overlap on tablets */
+    }
+
+    .card-content {
+        padding: var(--space-2xl);
+    }
+
+    .card-title {
+        font-size: var(--font-xl);
+    }
+
+    .card-description {
+        font-size: var(--font-base);
+    }
+}
+
+@media (max-width: 768px) {
+    .capabilities-section {
+        padding: var(--space-3xl) 0;
+    }
+
+    .capabilities-intro {
+        font-size: var(--font-lg);
+        margin-bottom: var(--space-2xl);
+    }
+
+    .capability-card {
+        margin-top: var(--space-xl) !important; /* Stack normally on mobile */
+    }
+
+    .card-content {
+        padding: var(--space-xl);
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .card-icon {
+        font-size: var(--font-2xl);
+    }
+
+    .card-title {
+        font-size: var(--font-lg);
+    }
+
+    .card-description {
+        font-size: var(--font-sm);
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .capability-card {
+        transform: none !important;
+    }
+
+    .capability-card:hover .card-content {
+        transform: none;
+    }
+}

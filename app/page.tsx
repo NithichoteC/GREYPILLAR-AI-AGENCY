@@ -7,6 +7,7 @@ import GridCanvas from '@/components/ui/grid-canvas';
 import InfiniteShaderBg from '@/components/ui/infinite-shader-bg';
 import ScrollProgress from '@/components/ui/scroll-progress';
 import FloatingCTA from '@/components/ui/floating-cta';
+import CapabilitiesSection from '@/components/capabilities-section';
 
 export default function HomePage() {
   const heroCTARef = useRef<HTMLAnchorElement>(null);
@@ -273,6 +274,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Capabilities Section - Nitro-Style Stacking Parallax Cards */}
+      <CapabilitiesSection />
 
       {/* CTA Section */}
       <section className="py-20 bg-lightest">

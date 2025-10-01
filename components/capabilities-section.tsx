@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface CapabilityCardProps {
   icon: string;
@@ -12,7 +12,6 @@ interface CapabilityCardProps {
 
 const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
     if (!cardRef.current) return;
@@ -23,42 +22,65 @@ const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCar
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
 
-    // Intersection Observer for sticky scale effect
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Card is in view and sticky when intersecting
-        setIsInView(entry.isIntersecting);
-      },
-      {
-        threshold: [0, 0.5, 1],
-        rootMargin: '-100px 0px -100px 0px' // Trigger when card reaches sticky position
-      }
-    );
+    // Scroll-based transform animation like Nitro
+    const handleScroll = () => {
+      if (!card) return;
 
-    observer.observe(card);
+      const rect = card.getBoundingClientRect();
+      const scrollProgress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / window.innerHeight));
+
+      // Calculate transform values based on scroll position
+      // Cards move up progressively as you scroll
+      const translateY = -(scrollProgress * index * 90); // Each card moves up more than the previous
+      const scale = Math.max(0.88, 1 - (scrollProgress * 0.12)); // Scale from 1.0 to 0.88
+
+      // Apply transform like Nitro does
+      card.style.transform = `translateY(${translateY}px) scale(${scale})`;
+      card.style.willChange = 'transform';
+    };
+
+    // Initial call
+    handleScroll();
+
+    // Throttled scroll listener for performance
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
     };
-  }, []);
+  }, [index]);
 
   return (
     <div
       ref={cardRef}
       className="capability-card"
-      data-in-view={isInView}
+      style={{
+        // Stacking context - earlier cards behind
+        zIndex: 10 - index,
+      }}
     >
-      <div className="card-content">
-        <div className="card-header">
-          <span className="card-icon">{icon}</span>
-          <h3 className="card-title">{title}</h3>
+      <div className="capability-card-content">
+        <div className="capability-card-header">
+          <span className="capability-card-icon">{icon}</span>
+          <h3 className="capability-card-title">{title}</h3>
         </div>
 
-        <p className="card-description">{description}</p>
+        <p className="capability-card-description">{description}</p>
 
-        <div className="card-tags">
+        <div className="capability-card-tags">
           {tags.map((tag, i) => (
-            <span key={i} className="tag">{tag}</span>
+            <span key={i} className="capability-tag">{tag}</span>
           ))}
         </div>
       </div>

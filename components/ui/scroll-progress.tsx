@@ -37,11 +37,12 @@ export default function ScrollProgress() {
 
     if (!darkSection) return;
 
-    // Position check function for continuous precision
+    // Position check function - SYNCHRONIZED with navigation (exact same trigger)
     const checkPosition = () => {
       const rect = darkSection.getBoundingClientRect();
-      const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
-      setIsOverDark(isNavOverDark);
+      const progressCenter = 30.5; // Match nav center (61px / 2) for synchronized switching
+      const isProgressOverDark = rect.top <= progressCenter && rect.bottom > progressCenter;
+      setIsOverDark(isProgressOverDark);
     };
 
     // Intersection Observer for threshold-based detection (performance)

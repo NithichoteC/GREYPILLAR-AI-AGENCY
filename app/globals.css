@@ -247,7 +247,7 @@ body {
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
     transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
-    will-change: transform; /* GPU acceleration hint */
+    /* will-change managed dynamically in JavaScript for better GPU memory optimization */
     transition: background 150ms ease-in-out; /* Smooth background change, instant transform (no flicker) */
 }
 

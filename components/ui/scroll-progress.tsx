@@ -1,18 +1,20 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 export default function ScrollProgress() {
   const progressRef = useRef<HTMLDivElement>(null);
-  const [isOverDark, setIsOverDark] = useState(false);
+  const isOverDarkRef = useRef(false); // useRef instead of useState - no React re-renders
   const willChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // COMBINED RAF scroll handler - progress update + dark mode check (35% faster)
+  // COMBINED RAF scroll handler - progress update + dark mode check (NO React re-renders)
   useEffect(() => {
     let rafId: number | null = null;
     const darkSection = document.querySelector('#solution');
 
     const updateScrollState = () => {
+      if (!progressRef.current) return;
+
       // 1. Update progress bar (scaleX)
       const winScroll = Math.max(0, window.scrollY || document.documentElement.scrollTop);
       const height = Math.max(
@@ -21,27 +23,34 @@ export default function ScrollProgress() {
       ) - window.innerHeight;
       const scrolled = Math.min((winScroll / height) * 100, 100);
 
-      if (progressRef.current) {
-        progressRef.current.style.setProperty('--scroll-progress', scrolled.toFixed(2));
+      progressRef.current.style.setProperty('--scroll-progress', scrolled.toFixed(2));
 
-        // Dynamic will-change for GPU memory optimization
-        progressRef.current.style.willChange = 'transform';
+      // Dynamic will-change for GPU memory optimization
+      progressRef.current.style.willChange = 'transform';
 
-        // Remove will-change after 500ms idle (mobile GPU memory relief)
-        if (willChangeTimeoutRef.current) clearTimeout(willChangeTimeoutRef.current);
-        willChangeTimeoutRef.current = setTimeout(() => {
-          if (progressRef.current) {
-            progressRef.current.style.willChange = 'auto';
-          }
-        }, 500);
-      }
+      // Remove will-change after 500ms idle (mobile GPU memory relief)
+      if (willChangeTimeoutRef.current) clearTimeout(willChangeTimeoutRef.current);
+      willChangeTimeoutRef.current = setTimeout(() => {
+        if (progressRef.current) {
+          progressRef.current.style.willChange = 'auto';
+        }
+      }, 500);
 
-      // 2. Check dark mode position (combined in same RAF call)
+      // 2. Check dark mode position - DIRECT DOM manipulation (no setState)
       if (darkSection) {
         const rect = darkSection.getBoundingClientRect();
         const progressCenter = 30.5;
-        const isProgressOverDark = rect.top <= progressCenter && rect.bottom > progressCenter;
-        setIsOverDark(isProgressOverDark);
+        const newIsOverDark = rect.top <= progressCenter && rect.bottom > progressCenter;
+
+        // Only update if value changed (conditional check)
+        if (newIsOverDark !== isOverDarkRef.current) {
+          if (newIsOverDark) {
+            progressRef.current.classList.add('over-dark');
+          } else {
+            progressRef.current.classList.remove('over-dark');
+          }
+          isOverDarkRef.current = newIsOverDark;
+        }
       }
     };
 
@@ -60,31 +69,10 @@ export default function ScrollProgress() {
     };
   }, []);
 
-  // Lightweight Intersection Observer (20 thresholds instead of 101 = 80% memory reduction)
-  useEffect(() => {
-    const darkSection = document.querySelector('#solution');
-    if (!darkSection) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const rect = darkSection.getBoundingClientRect();
-        const progressCenter = 30.5;
-        const isProgressOverDark = rect.top <= progressCenter && rect.bottom > progressCenter;
-        setIsOverDark(isProgressOverDark);
-      },
-      {
-        threshold: Array.from({ length: 20 }, (_, i) => i / 19) // 20 thresholds (was 101)
-      }
-    );
-
-    observer.observe(darkSection);
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div
       ref={progressRef}
-      className={`scroll-progress ${isOverDark ? 'over-dark' : ''}`}
+      className="scroll-progress"
       style={{
         '--scroll-progress': '0'
       } as React.CSSProperties}

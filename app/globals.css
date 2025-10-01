@@ -318,7 +318,8 @@ body {
 }
 
 /* Control button opacity via parent state - blur always rendered */
-.floating-cta:not(.visible) .glass-button-text {
+.floating-cta:not(.visible) .glass-button-text,
+.floating-cta:not(.visible) .glass-button-shadow {
     opacity: 0;
 }
 

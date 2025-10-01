@@ -16,7 +16,8 @@ export default function Navigation() {
     // Position check function for continuous precision
     const checkPosition = () => {
       const rect = darkSection.getBoundingClientRect();
-      const isNavOverDark = rect.top <= 0 && rect.bottom > 61;
+      const navCenter = 30.5; // Half of 61px nav height - triggers at 50% overlap
+      const isNavOverDark = rect.top <= navCenter && rect.bottom > navCenter;
       setIsOverDark(isNavOverDark);
     };
 

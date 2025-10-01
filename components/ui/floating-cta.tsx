@@ -51,7 +51,9 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
     const checkPosition = () => {
       const rect = darkSection.getBoundingClientRect();
       const buttonBottom = window.innerHeight - 24; // Button position from bottom
-      const isOverDarkSection = rect.top <= buttonBottom && rect.bottom > buttonBottom;
+      const buttonHeight = 50; // Approximate button height
+      const buttonCenter = buttonBottom - (buttonHeight / 2); // Triggers at 50% overlap
+      const isOverDarkSection = rect.top <= buttonCenter && rect.bottom > buttonCenter;
       setIsOverDark(isOverDarkSection);
     };
 

@@ -2620,6 +2620,9 @@ body {
     inset: 0;
     width: 100%;
     will-change: transform; /* Optimize for JavaScript animations */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Capability Card Content - 21st.dev Sharp-Cornered Design */

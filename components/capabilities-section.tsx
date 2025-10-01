@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface CapabilityCardProps {
   icon: string;
@@ -9,41 +9,44 @@ interface CapabilityCardProps {
   index: number;
 }
 
-const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
-  return (
-    <div
-      className="capability-card"
-      data-index={index}
-      style={{
-        zIndex: index,
-      }}
-    >
-      {/* Corner bracket decorations */}
-      <span className="capability-card-corner capability-card-corner-tl"></span>
-      <span className="capability-card-corner capability-card-corner-tr"></span>
-      <span className="capability-card-corner capability-card-corner-bl"></span>
-      <span className="capability-card-corner capability-card-corner-br"></span>
+const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
+  ({ icon, title, description, tags, index }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className="capability-card"
+        data-index={index}
+        style={{
+          zIndex: index,
+        }}
+      >
+        {/* Corner bracket decorations */}
+        <span className="capability-card-corner capability-card-corner-tl"></span>
+        <span className="capability-card-corner capability-card-corner-tr"></span>
+        <span className="capability-card-corner capability-card-corner-bl"></span>
+        <span className="capability-card-corner capability-card-corner-br"></span>
 
-      <div className="capability-card-content">
-        <div className="capability-card-header">
-          <div className="capability-icon-circle">
-            <span className="capability-card-icon">{icon}</span>
+        <div className="capability-card-content">
+          <div className="capability-card-header">
+            <div className="capability-icon-circle">
+              <span className="capability-card-icon">{icon}</span>
+            </div>
+            <div>
+              <h3 className="capability-card-title">{title}</h3>
+              <p className="capability-card-description">{description}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="capability-card-title">{title}</h3>
-            <p className="capability-card-description">{description}</p>
-          </div>
-        </div>
 
-        <div className="capability-card-tags">
-          {tags.map((tag, i) => (
-            <span key={i} className="capability-tag">{tag}</span>
-          ))}
+          <div className="capability-card-tags">
+            {tags.map((tag, i) => (
+              <span key={i} className="capability-tag">{tag}</span>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -111,7 +114,7 @@ export default function CapabilitiesSection() {
           const stackParallax = -depth * 4;
 
           cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
-          cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
+          cardRef.style.opacity = adjustedDepth > MAX_VISIBLE_STACK_CARDS ? '0' : '1';
 
         } else if (depth > -1) {
           // Card is incoming from bottom
@@ -143,13 +146,12 @@ export default function CapabilitiesSection() {
         <div ref={containerRef} className="capabilities-cards-wrapper">
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
-              <div
+              <CapabilityCard
                 key={index}
                 ref={(el) => { cardRefs.current[index] = el; }}
-                style={{ position: 'absolute', inset: 0 }}
-              >
-                <CapabilityCard {...capability} index={index} />
-              </div>
+                {...capability}
+                index={index}
+              />
             ))}
           </div>
         </div>

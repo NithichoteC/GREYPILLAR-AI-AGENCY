@@ -1222,19 +1222,20 @@ body {
 /* Problem Bridge */
 .problem-bridge {
     text-align: center;
+    margin-bottom: var(--space-4xl); /* Match header spacing (6rem = 96px) */
 }
 
 .bridge-text {
     font-size: 1.25rem; /* 20px - stronger mobile presence */
     font-style: italic;
     color: var(--medium-dark);
-    margin: 48px 0 40px 0; /* Tighter integration: 48px top, 40px bottom */
+    margin: 0; /* Remove internal margins - spacing controlled by parent */
 }
 
 @media (min-width: 768px) {
     .bridge-text {
         font-size: 1.5rem; /* 24px - desktop prominence */
-        margin: 56px 0 48px 0; /* Desktop: 56px top, 48px bottom */
+        margin: 0; /* Spacing controlled by parent .problem-bridge */
     }
 }
 

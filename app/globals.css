@@ -384,7 +384,8 @@ body {
     border: none;
     cursor: pointer;
     padding: var(--space-sm);
-    z-index: 10001;
+    position: relative; /* Create stacking context */
+    z-index: 10002; /* Above mobile-nav overlay (10000) */
     border-radius: 6px;
     transition: all 0.2s var(--ease-smooth);
 }

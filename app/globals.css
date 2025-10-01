@@ -287,11 +287,11 @@ body {
 
 /* DARK SECTIONS: over-dark class triggers on #solution */
 .glass-button.over-dark .glass-button-text {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
 
 .glass-button.over-dark:hover .glass-button-text {
-    color: #FFFFFF;
+    color: #FFFFFF !important;
 }
 
 /* Floating CTA container - prevent transparent square artifact */

@@ -7,7 +7,7 @@ export default function ScrollProgress() {
   const isOverDarkRef = useRef(false);
   const willChangeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // COMBINED RAF scroll handler - progress update + dark mode check
+  // RAF scroll handler - progress bar ONLY (no layout reads)
   useEffect(() => {
     let rafId: number | null = null;
     const darkSection = document.querySelector('#solution');
@@ -15,7 +15,7 @@ export default function ScrollProgress() {
     const updateScrollState = () => {
       if (!progressRef.current) return;
 
-      // 1. Update progress bar (CSS custom property - browser optimized)
+      // Update progress bar (WRITE-ONLY, no layout reads)
       const winScroll = Math.max(0, window.scrollY || document.documentElement.scrollTop);
       const height = Math.max(
         document.body.scrollHeight,
@@ -35,23 +35,6 @@ export default function ScrollProgress() {
           progressRef.current.style.willChange = 'auto';
         }
       }, 500);
-
-      // 2. Check dark mode position - DIRECT DOM manipulation (no setState)
-      if (darkSection) {
-        const rect = darkSection.getBoundingClientRect();
-        const progressCenter = 30.5;
-        const newIsOverDark = rect.top <= progressCenter && rect.bottom > progressCenter;
-
-        // Only update if value changed (conditional check)
-        if (newIsOverDark !== isOverDarkRef.current) {
-          if (newIsOverDark) {
-            progressRef.current.classList.add('over-dark');
-          } else {
-            progressRef.current.classList.remove('over-dark');
-          }
-          isOverDarkRef.current = newIsOverDark;
-        }
-      }
     };
 
     const handleScroll = () => {

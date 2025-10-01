@@ -7,12 +7,12 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOverDark, setIsOverDark] = useState(false);
 
-  // Hybrid approach: IO for efficiency + RAF for responsive color switching
+  // Intersection Observer ONLY - no layout reads in scroll handler
   useEffect(() => {
     const darkSection = document.querySelector('#solution');
     if (!darkSection) return;
 
-    // Position check function for continuous precision
+    // Position check function (called only by IO async callback)
     const checkPosition = () => {
       const rect = darkSection.getBoundingClientRect();
       const navCenter = 30.5;
@@ -20,35 +20,21 @@ export default function Navigation() {
       setIsOverDark(isNavOverDark);
     };
 
-    // Intersection Observer for threshold-based detection
+    // Intersection Observer with 20 thresholds for smooth detection
     const observer = new IntersectionObserver(
       ([entry]) => {
-        checkPosition();
+        checkPosition(); // Async IO callback - no layout thrashing
       },
       {
-        threshold: Array.from({ length: 20 }, (_, i) => i / 19) // 20 thresholds for smooth detection
+        threshold: Array.from({ length: 20 }, (_, i) => i / 19)
       }
     );
 
-    // Scroll listener for real-time color switching (RAF throttled)
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          checkPosition();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
     observer.observe(darkSection);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    checkPosition();
+    checkPosition(); // Initial check
 
     return () => {
       observer.disconnect();
-      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 

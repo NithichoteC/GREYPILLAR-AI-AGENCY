@@ -33,7 +33,7 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
       },
       {
         threshold: 0,
-        rootMargin: '200px 0px 0px 0px' // Trigger when main CTA is 200px from top (entering from bottom)
+        rootMargin: '200px 0px -150px 0px' // 350px buffer: hide 200px before entering, show 150px after exiting
       }
     );
 
@@ -95,8 +95,9 @@ export default function FloatingCTA({ heroCTARef }: FloatingCTAProps) {
         bottom: '24px',
         right: '24px',
         zIndex: 50,
-        transform: isVisible ? 'translateY(0) translateZ(0)' : 'translateY(20px) translateZ(0)',
-        transition: 'transform 150ms ease-in-out',
+        opacity: isVisible ? 1 : 0,
+        transform: 'translateZ(0)', // GPU acceleration only, no vertical movement
+        transition: 'opacity 200ms ease-in-out',
         backfaceVisibility: 'hidden',
         pointerEvents: isVisible ? 'auto' : 'none'
       } as React.CSSProperties}

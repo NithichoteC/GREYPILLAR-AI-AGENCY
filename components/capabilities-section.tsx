@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface CapabilityCardProps {
   icon: string;
@@ -7,37 +7,27 @@ interface CapabilityCardProps {
   description: string;
   tags: string[];
   index: number;
+  scrollProgress: number; // Container scroll progress passed down
 }
 
-const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCardProps) => {
+const CapabilityCard = ({ icon, title, description, tags, index, scrollProgress }: CapabilityCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const card = cardRef.current;
     if (!card) return;
 
-    const handleScroll = () => {
-      const rect = card.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
+    // DIFFERENTIAL SPEED: Each card moves at different rate for parallax effect
+    // Card 0 (index 0): moves very little (stays in background)
+    // Card 3 (index 3): moves most (slides over foreground)
+    const speedMultiplier = index * 50; // 0, 50, 100, 150
+    const translateY = -(scrollProgress * speedMultiplier);
 
-      // Calculate scroll progress (0 to 1) based on card position in viewport
-      const scrollProgress = Math.max(0, Math.min(1,
-        (windowHeight - rect.top) / windowHeight
-      ));
+    // Scale: all cards scale down slightly as section scrolls
+    const scale = Math.max(0.88, 1 - (scrollProgress * 0.12));
 
-      // Apply Nitro-style transforms
-      const translateY = -(scrollProgress * index * 90); // Move up by 90px per card
-      const scale = Math.max(0.88, 1 - (scrollProgress * 0.12)); // Scale from 1.0 to 0.88
-
-      card.style.transform = `translateY(${translateY}px) scale(${scale})`;
-    };
-
-    // Attach scroll listener
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [index]);
+    card.style.transform = `translateY(${translateY}px) scale(${scale})`;
+  }, [scrollProgress, index]);
 
   return (
     <div
@@ -68,6 +58,34 @@ const CapabilityCard = ({ icon, title, description, tags, index }: CapabilityCar
 };
 
 export default function CapabilitiesSection() {
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const sectionHeight = section.offsetHeight;
+
+      // Calculate how far through the section we've scrolled (0 to 1)
+      // Section starts at top of viewport (rect.top = 0)
+      // Section ends when bottom leaves viewport (rect.bottom = 0)
+      const progress = Math.max(0, Math.min(1,
+        -rect.top / (sectionHeight - windowHeight)
+      ));
+
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const capabilities = [
     {
       icon: '🔹',
@@ -96,7 +114,7 @@ export default function CapabilitiesSection() {
   ];
 
   return (
-    <section className="capabilities-section" id="capabilities">
+    <section ref={sectionRef} className="capabilities-section" id="capabilities">
       <div className="capabilities-container">
         <p className="capabilities-intro">
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
@@ -104,7 +122,7 @@ export default function CapabilitiesSection() {
 
         <div className="capabilities-cards">
           {capabilities.map((capability, index) => (
-            <CapabilityCard key={index} {...capability} index={index} />
+            <CapabilityCard key={index} {...capability} index={index} scrollProgress={scrollProgress} />
           ))}
         </div>
       </div>

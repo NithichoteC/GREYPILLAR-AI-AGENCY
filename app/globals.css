@@ -232,7 +232,7 @@ body {
     background: rgba(33, 37, 41, 1); /* Black */
     transform-origin: left;
     transform: translate3d(0, 0, 0) scaleX(calc(var(--scroll-progress, 0) * 0.01)); /* iOS-optimized */
-    transition: background 150ms ease-in-out; /* Only color transitions, instant transform for scroll tracking */
+    transition: background 150ms ease-in-out, transform 0ms; /* Explicit instant transform for iOS snap-to-end */
 }
 
 
@@ -307,14 +307,16 @@ body {
     color: #FFFFFF !important;
 }
 
-/* Floating CTA container - prevent transparent square artifact */
+/* Floating CTA container - prevent transparent square artifact + pre-render blur */
 .floating-cta {
     background: transparent !important;
+    will-change: opacity; /* Force GPU layer for smooth fade */
 }
 
 .floating-cta a {
     background: transparent !important;
     display: inline-block;
+    will-change: transform; /* Pre-render blur layer to prevent flicker */
 }
 
 /* iOS Low Power Mode & Accessibility - Respect user preferences */

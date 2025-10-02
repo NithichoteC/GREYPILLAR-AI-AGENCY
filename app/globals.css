@@ -2640,6 +2640,7 @@ body {
     position: sticky;
     top: 250px; /* True middle positioning - visually balanced in viewport */
     height: 100vh;
+    width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2650,7 +2651,7 @@ body {
 /* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
 .capability-card {
     position: absolute;
-    width: 100%; /* Fill parent (1088px max - constrained by .capabilities-cards) */
+    width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
     will-change: transform; /* Optimize for JavaScript animations */
     display: flex;
     align-items: center;

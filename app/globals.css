@@ -2682,10 +2682,11 @@ body {
     opacity: 0;
 }
 
-/* Stacked cards get subtle styling - cleaner layering */
+/* Stacked cards get subtle styling - cleaner layering with blur for depth */
 .capability-card[data-depth]:not([data-depth="0"]) .capability-card-content {
     border-color: rgba(3, 6, 23, 0.03);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    filter: blur(0.5px); /* Subtle blur creates depth without transparency */
 }
 
 .capability-card-corner-tl {

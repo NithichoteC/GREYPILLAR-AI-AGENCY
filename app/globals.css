@@ -2643,9 +2643,9 @@ body {
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    align-items: center; /* MIDDLE POSITIONING: card centered in viewport (like before) */
+    align-items: center; /* MIDDLE POSITIONING: card naturally centered in viewport */
     justify-content: center;
-    padding-top: 1.5rem; /* REDUCED: 24px intro-to-card gap (less than before but maintains separation) */
+    /* No padding-top - align-items: center handles middle positioning without extra offset */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */
 }

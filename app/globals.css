@@ -2578,7 +2578,7 @@ body {
    CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
-    padding: 1rem 0; /* MINIMAL: 16px iPhone 14 Pro spacing (was 24px, now -8px) */
+    padding: var(--space-5xl) 0; /* STANDARD: 128px matches section spacing (same as Guaranteed Results above) */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
@@ -2643,9 +2643,9 @@ body {
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    align-items: flex-start; /* FIXED: align to top instead of center - removes massive viewport gap */
+    align-items: center; /* MIDDLE POSITIONING: card centered in viewport (like before) */
     justify-content: center;
-    padding-top: 3rem; /* BALANCED: 48px proper visual hierarchy between intro and cards */
+    padding-top: 1.5rem; /* REDUCED: 24px intro-to-card gap (less than before but maintains separation) */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */
 }

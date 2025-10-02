@@ -85,9 +85,15 @@ export default function CapabilitiesSection() {
 
       const container = containerRef.current;
       const containerRect = container.getBoundingClientRect();
-      const scrollableHeight = container.scrollHeight - window.innerHeight;
+      const viewportHeight = window.innerHeight;
 
-      let progress = -containerRect.top / scrollableHeight;
+      // Calculate progress based on when section enters viewport
+      // Start: section top at viewport bottom (containerRect.top = viewportHeight)
+      // End: section has scrolled through its full height
+      const scrollableHeight = container.scrollHeight - viewportHeight;
+      const scrollProgress = viewportHeight - containerRect.top;
+
+      let progress = scrollProgress / scrollableHeight;
       progress = Math.max(0, Math.min(1, progress));
 
       const numCards = capabilities.length;

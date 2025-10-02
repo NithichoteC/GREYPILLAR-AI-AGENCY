@@ -150,9 +150,12 @@ export default function CapabilitiesSection() {
           cardRef.style.opacity = String(opacity);
 
         } else if (depth >= 4) {
-          // Fully exited cards - off screen above
-          cardRef.style.opacity = '0';
-          cardRef.style.transform = 'scale(0.8) translateY(-200%)';
+          // Keep cards at final stack position - smooth and professional
+          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+
+          cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY}%)`;
+          // Opacity handled above - only last card fades, others stay visible
 
         } else if (depth > -1) {
           // Card is incoming - viewport-relative slide from bottom edge

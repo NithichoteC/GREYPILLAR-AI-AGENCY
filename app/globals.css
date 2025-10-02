@@ -2645,6 +2645,7 @@ body {
     display: flex;
     align-items: flex-start; /* START ALIGNMENT: card near top, not centered in 100vh */
     justify-content: center;
+    padding-top: 3rem; /* BREATHING ROOM: 48px spacing between intro and card */
     /* No margin-top - sticky elements ignore margin, use padding on parent instead */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */

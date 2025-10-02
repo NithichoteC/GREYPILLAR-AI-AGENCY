@@ -2639,7 +2639,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 80px; /* PROFESSIONAL: 61px nav + 19px breathing room = comfortable sticky position */
+    top: 0; /* TRUE CENTERING: let align-items: center work from actual viewport top */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;

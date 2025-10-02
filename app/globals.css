@@ -2578,7 +2578,7 @@ body {
    CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
-    padding: var(--space-xl) 0; /* ULTRA-TIGHT: 1.5rem (24px) iPhone-style spacing (was 48px, now -24px) */
+    padding: 1rem 0; /* MINIMAL: 16px iPhone 14 Pro spacing (was 24px, now -8px) */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
@@ -2625,7 +2625,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 0.5rem; /* MINIMAL: 8px iPhone-style spacing (was 16px, now -8px) */
+    margin-bottom: 0.25rem; /* EXTREME: 4px ultra-tight spacing (was 8px, now -4px) */
     max-width: 900px; /* Comfortable reading width */
 }
 
@@ -2639,7 +2639,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 16px; /* MINIMAL: 16px iPhone-style (24px + 8px + 16px = 48px total) */
+    top: 8px; /* EXTREME: 8px ultra-tight (16px + 4px + 8px = 28px total) */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
@@ -2759,7 +2759,7 @@ body {
         0 4px 8px -2px rgba(0, 0, 0, 0.06),
         0 0 0 1px rgba(0, 0, 0, 0.02);
     backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
-    background: rgba(247, 247, 248, 0.4); /* Light transparency */
+    background: rgba(247, 247, 248, 0.65); /* INCREASED: Medium opacity blocks text (was 0.4) */
     opacity: 0.99;
 }
 
@@ -2771,7 +2771,7 @@ body {
         0 3px 6px -2px rgba(0, 0, 0, 0.05),
         0 0 0 1px rgba(0, 0, 0, 0.015);
     backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
-    background: rgba(247, 247, 248, 0.6); /* Medium transparency */
+    background: rgba(247, 247, 248, 0.80); /* INCREASED: Strong opacity blocks text (was 0.6) */
     opacity: 0.985;
 }
 
@@ -2783,7 +2783,7 @@ body {
         0 2px 5px -1px rgba(0, 0, 0, 0.04),
         0 0 0 1px rgba(0, 0, 0, 0.01);
     backdrop-filter: blur(6px); /* STRONG: Building depth */
-    background: rgba(247, 247, 248, 0.75); /* Strong transparency */
+    background: rgba(247, 247, 248, 0.90); /* INCREASED: Very strong opacity blocks text (was 0.75) */
     opacity: 0.98;
 }
 
@@ -2796,7 +2796,7 @@ body {
         0 2px 4px -1px rgba(0, 0, 0, 0.03),
         0 0 0 1px rgba(0, 0, 0, 0.01);
     backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
-    background: rgba(247, 247, 248, 0.85); /* Maximum transparency */
+    background: rgba(247, 247, 248, 0.95); /* INCREASED: Maximum opacity blocks text (was 0.85) */
     opacity: 0.98;
 }
 

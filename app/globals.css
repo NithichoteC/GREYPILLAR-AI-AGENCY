@@ -2603,11 +2603,13 @@ body {
 .capabilities-cards-wrapper {
     position: relative;
     min-height: 500vh; /* Space for scroll effect - matches reference implementation for 4 cards */
+    margin-top: 100vh; /* Previous section must scroll out before parallax starts */
 }
 
 .capabilities-cards {
     position: sticky;
-    top: 80px;
+    top: 50vh; /* Center vertically in viewport */
+    transform: translateY(-50%); /* Center the card itself */
     height: 100vh;
     display: flex;
     align-items: center;

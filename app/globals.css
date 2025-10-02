@@ -2671,6 +2671,8 @@ body {
     border-radius: 0; /* Sharp corners - premium aesthetic */
     padding: var(--space-3xl); /* Generous internal spacing */
     width: 100%;
+    max-width: 400px; /* Match Silent Killers card width exactly */
+    margin: 0 auto; /* Center the card within parent */
     height: 100%;
     display: flex;
     flex-direction: column;

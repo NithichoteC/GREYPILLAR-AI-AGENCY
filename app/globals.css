@@ -2639,7 +2639,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 80px; /* STICKY POSITION: 61px nav + 19px breathing room - positions card nicely in middle */
+    top: 250px; /* TRUE MIDDLE: Calculated for 800px viewport - (800-520)/2 + optical adjustment = proper middle positioning */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;

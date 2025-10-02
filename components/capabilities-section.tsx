@@ -116,16 +116,27 @@ export default function CapabilitiesSection() {
           cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
           cardRef.style.opacity = adjustedDepth > MAX_VISIBLE_STACK_CARDS ? '0' : '1';
 
-        } else if (depth > -2) {
-          // Card is incoming from bottom - professional smooth slide (2-card early entry)
-          const incomingProgress = (depth + 2) / 2; // -2 to 0 maps to 0 to 1
-          const translateY = 100 - (incomingProgress * 100); // Smooth slide 100% to 0%
+        } else if (depth > -1) {
+          // Card is incoming - viewport-relative slide from bottom edge
+          const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          cardRef.style.transform = `translateY(${translateY}%)`;
+          // Calculate slide from bottom of viewport to stack position
+          const viewportHeight = window.innerHeight;
+          const containerTop = containerRect.top;
+
+          // Start position: bottom of viewport relative to container
+          const startY = viewportHeight - Math.max(0, containerTop);
+          // End position: stack position (0)
+          const targetY = 0;
+
+          // Interpolate between start and target based on scroll progress
+          const currentY = startY - (incomingProgress * startY);
+
+          cardRef.style.transform = `translateY(${currentY}px)`;
           cardRef.style.opacity = '1'; // Always full opacity - no fade
         } else {
-          // Card is off-screen below (depth <= -2)
-          cardRef.style.transform = `translateY(100%)`;
+          // Card is off-screen below (depth <= -1)
+          cardRef.style.transform = `translateY(100vh)`;
           cardRef.style.opacity = '0';
         }
       });

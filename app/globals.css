@@ -2632,6 +2632,7 @@ body {
 /* Cards Wrapper - Sticky Viewport Container */
 .capabilities-cards-wrapper {
     position: relative;
+    width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
     min-height: 500vh; /* Space for scroll effect - matches reference implementation for 4 cards */
     margin-top: 0; /* No gap - smooth flow from intro text */
 }

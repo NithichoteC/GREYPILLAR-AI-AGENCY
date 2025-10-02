@@ -2578,7 +2578,7 @@ body {
    CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
-    padding: var(--space-5xl) 0;
+    padding: var(--space-3xl) 0; /* REDUCED: 4rem (64px) instead of 8rem (128px) for tighter spacing */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */

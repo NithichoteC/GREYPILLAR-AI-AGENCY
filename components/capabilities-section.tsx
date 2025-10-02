@@ -91,7 +91,7 @@ export default function CapabilitiesSection() {
       progress = Math.max(0, Math.min(1, progress));
 
       const numCards = capabilities.length;
-      const activeCardFloat = progress * (numCards - 1);
+      const activeCardFloat = progress * (numCards + 0.5); // Extended range for last card exit
 
       // Parallax constants (from pararexcode.txt)
       const STACK_SCALE = 0.9;
@@ -110,8 +110,21 @@ export default function CapabilitiesSection() {
           const depthProgress = Math.min(depth, 1);
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // Smooth continuous scale - no jerky lock at depth 1
-          const scaleProgress = Math.min(depth / 1.5, 1); // Scale over 1.5 depth units
+          // Viewport-aware scaling - start when card passes middle of screen
+          const cardRect = cardRef.getBoundingClientRect();
+          const cardTop = cardRect.top;
+          const viewportMiddle = window.innerHeight / 2;
+          const passedMiddle = cardTop < viewportMiddle;
+
+          // Smooth continuous scale - starts only after passing viewport middle
+          let scaleProgress;
+          if (passedMiddle) {
+            // Card passed middle - scale based on depth
+            scaleProgress = Math.min(depth / 1.5, 1);
+          } else {
+            // Card still below middle - stay full size
+            scaleProgress = 0;
+          }
           const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;

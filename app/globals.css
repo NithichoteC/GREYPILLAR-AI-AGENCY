@@ -2639,13 +2639,13 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 250px; /* TRUE MIDDLE: Calculated for 800px viewport - (800-520)/2 + optical adjustment = proper middle positioning */
+    top: 140px; /* MIDDLE POSITION: 61px nav + reasonable middle positioning when sticky */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    align-items: center; /* MIDDLE POSITIONING: card centers in viewport when sticky (original parallax behavior) */
+    align-items: flex-start; /* START ALIGNMENT: card near top, not centered in 100vh */
     justify-content: center;
-    margin-top: 2rem; /* BREATHING ROOM: 32px gap after intro text */
+    /* No margin-top - sticky elements ignore margin, use padding on parent instead */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */
 }

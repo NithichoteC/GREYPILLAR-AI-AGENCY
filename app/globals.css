@@ -2575,19 +2575,19 @@ body {
 }
 
 /* =========================
-   CAPABILITIES SECTION (Nitro-Style 2025 Professional)
+   CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
     padding: var(--space-5xl) 0;
-    background: #000000; /* Black background like Nitro */
+    background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 
-    /* Grid background with radial fade (Nitro style) */
+    /* Subtle grid background with radial fade */
     background-image:
-        radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 50%, #000000 100%),
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        radial-gradient(circle at center, transparent 0%, rgba(247, 247, 248, 0.6) 50%, #F7F7F8 100%),
+        linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
     background-size:
         100% 100%,
         40px 40px,
@@ -2606,19 +2606,14 @@ body {
 }
 
 .capabilities-intro {
-    /* Nitro-style large hero text - 2025 premium */
-    font-size: clamp(2rem, 5vw, 4rem); /* Much larger - hero scale */
-    line-height: 1.2; /* Tighter for impact */
-    font-weight: 400; /* Light weight like Nitro */
-    letter-spacing: -0.02em; /* Tight tracking, modern */
-    margin-bottom: var(--space-4xl); /* More space before cards */
-    max-width: 1000px; /* Wider for larger text */
-
-    /* Mixed opacity effect (Nitro style) */
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.4) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    /* Professional readable intro text */
+    font-size: clamp(1.125rem, 2vw, 1.25rem); /* Readable size */
+    line-height: 1.7; /* Good readability */
+    color: #2d3748; /* Dark gray for good contrast on light bg */
+    font-weight: 500; /* Medium weight */
+    letter-spacing: -0.01em; /* Slightly tight, modern */
+    margin-bottom: var(--space-2xl); /* Balanced spacing */
+    max-width: 900px; /* Comfortable reading width */
 }
 
 /* Cards Wrapper - Sticky Viewport Container */

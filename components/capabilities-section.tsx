@@ -1,8 +1,10 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
+import { DollarSign, Star, Phone, TrendingUp } from 'lucide-react';
 
 interface CapabilityCardProps {
-  icon: string;
+  icon: React.ReactNode;
+  accentColor: string;
   title: string;
   description: string;
   tags: string[];
@@ -10,7 +12,7 @@ interface CapabilityCardProps {
 }
 
 const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
-  ({ icon, title, description, tags, index }, ref) => {
+  ({ icon, accentColor, title, description, tags, index }, ref) => {
     return (
       <div
         ref={ref}
@@ -20,16 +22,15 @@ const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
           zIndex: index,
         }}
       >
-        {/* Corner bracket decorations */}
-        <span className="capability-card-corner capability-card-corner-tl"></span>
-        <span className="capability-card-corner capability-card-corner-tr"></span>
-        <span className="capability-card-corner capability-card-corner-bl"></span>
-        <span className="capability-card-corner capability-card-corner-br"></span>
-
         <div className="capability-card-content">
           <div className="capability-card-header">
-            <div className="capability-icon-circle">
-              <span className="capability-card-icon">{icon}</span>
+            <div
+              className="capability-icon-circle"
+              style={{ borderColor: accentColor }}
+            >
+              <div style={{ color: accentColor }}>
+                {icon}
+              </div>
             </div>
             <div>
               <h3 className="capability-card-title">{title}</h3>
@@ -54,25 +55,29 @@ export default function CapabilitiesSection() {
 
   const capabilities = [
     {
-      icon: '🔹',
+      icon: <DollarSign size={24} strokeWidth={2} />,
+      accentColor: '#2563eb',
       title: 'Immediate Revenue Recovery',
       description: 'We take your "dead" list of past customers and old leads and reignite them with compelling, AI-powered campaigns, booking high-intent appointments and generating cash flow in the first week.',
       tags: ['Lead Reactivation', 'CRM Automation', 'Appointment Setting']
     },
     {
-      icon: '⚡',
+      icon: <Star size={24} strokeWidth={2} />,
+      accentColor: '#10b981',
       title: 'Automated Trust & Authority',
       description: 'Our system turns your happy customers into a powerful marketing engine, automatically prompting them to leave 5-star Google reviews and asking for referrals to create a stream of high-trust, free leads.',
       tags: ['Review Systems', 'Referral Automation', 'Reputation Management']
     },
     {
-      icon: '🎯',
+      icon: <Phone size={24} strokeWidth={2} />,
+      accentColor: '#8b5cf6',
       title: '24/7 Lead Capture & Conversion',
       description: 'Never miss an opportunity again. Our system instantly engages any missed call or website lead within 5 minutes, 24/7—answering questions, qualifying prospects, and booking them directly into your calendar.',
       tags: ['AI Receptionist', 'Instant Lead Response', 'CRM Intelligence']
     },
     {
-      icon: '📈',
+      icon: <TrendingUp size={24} strokeWidth={2} />,
+      accentColor: '#f59e0b',
       title: 'Scalable Acquisition Systems',
       description: 'Once your foundation is secure, we build predictable client acquisition machines. We use AI to optimize ad campaigns and nurture leads, ensuring a profitable and scalable return on your marketing spend.',
       tags: ['AI Ad Systems', 'Funnel Optimization', 'Growth Automation']

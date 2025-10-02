@@ -2643,8 +2643,9 @@ body {
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* FIXED: align to top instead of center - removes massive viewport gap */
     justify-content: center;
+    padding-top: 1rem; /* Small breathing room (16px) after intro text */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */
 }

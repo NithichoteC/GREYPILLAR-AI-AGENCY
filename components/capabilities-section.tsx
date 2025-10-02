@@ -105,6 +105,9 @@ export default function CapabilitiesSection() {
 
         const depth = activeCardFloat - index;
 
+        // Set data-depth for CSS styling (stacked vs front card)
+        cardRef.setAttribute('data-depth', Math.floor(Math.max(0, depth)).toString());
+
         if (depth >= 0 && depth < 4) {
           // Card is in stack or exiting - extended range for smooth exit
           const depthProgress = Math.min(depth, 1);
@@ -118,8 +121,8 @@ export default function CapabilitiesSection() {
           // Distance below middle (positive = below, negative = above)
           const distanceBelowMiddle = cardCenter - viewportMiddle;
 
-          // Start scaling 300px before middle, complete by middle
-          const scaleStartDistance = 300;
+          // Start scaling 500px before middle for smoother, earlier transition
+          const scaleStartDistance = 500;
           const scaleRange = Math.max(0, Math.min(1, (scaleStartDistance - distanceBelowMiddle) / scaleStartDistance));
 
           // Combine distance-based (50%) + depth-based (50%) scaling for smooth progression
@@ -134,14 +137,23 @@ export default function CapabilitiesSection() {
 
           cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
 
-          // Only fade LAST card on exit (prevents first card fading while last card shows)
+          // Progressive opacity for professional stacking
           const isLastCard = index === numCards - 1;
           let opacity = 1;
+
+          // Fade stacked cards progressively for cleaner, more professional look
+          if (adjustedDepth > 1) {
+            // Cards deep in stack (2nd, 3rd position) get progressively dimmer
+            const stackFade = Math.min((adjustedDepth - 1) / 2, 0.4); // Max 40% fade
+            opacity = 1 - stackFade;
+          }
+
+          // Last card exit fade
           if (isLastCard && depth > 3) {
-            // Last card only - gradual fade from depth 3 to 4
             const exitProgress = Math.max(0, depth - 3);
             opacity = Math.max(0, 1 - exitProgress);
           }
+
           cardRef.style.opacity = String(opacity);
 
         } else if (depth >= 4) {

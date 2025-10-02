@@ -2839,6 +2839,39 @@ body {
     transform: translateY(-1px);
 }
 
+/* ========================================
+   RESPONSIVE BREAKPOINTS - Match Nav Container
+   ======================================== */
+
+/* Large screens - wider container (≥1440px) */
+@media (min-width: 1440px) {
+    .capabilities-container {
+        max-width: 1600px; /* Match nav-container on large screens */
+    }
+}
+
+/* Desktop - constrained container (1024px-1439.98px) */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+    .capabilities-container {
+        max-width: calc(100vw - 4rem); /* Match nav-container responsive width */
+    }
+}
+
+/* Tablet - constrained container (810px-1023.98px) */
+@media (min-width: 810px) and (max-width: 1023.98px) {
+    .capabilities-container {
+        max-width: calc(100vw - 4rem); /* Match nav-container responsive width */
+    }
+}
+
+/* Mobile - responsive container (≤809.98px) */
+@media (max-width: 809.98px) {
+    .capabilities-container {
+        padding: 0 var(--space-md); /* Match nav-container mobile padding */
+        max-width: calc(100vw - 2rem); /* Match nav-container mobile width */
+    }
+}
+
 /* Responsive Behavior */
 @media (max-width: 1024px) {
     .capabilities-cards-wrapper {

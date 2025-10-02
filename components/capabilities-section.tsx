@@ -105,16 +105,29 @@ export default function CapabilitiesSection() {
 
         const depth = activeCardFloat - index;
 
-        if (depth >= 0) {
-          // Card is in stack or exiting
+        if (depth >= 0 && depth < 4) {
+          // Card is in stack or exiting - extended range for smooth exit
           const depthProgress = Math.min(depth, 1);
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-          const scale = depth > 1 ? STACK_SCALE : 1 - depthProgress * (1 - STACK_SCALE);
+
+          // Smooth continuous scale - no jerky lock at depth 1
+          const scaleProgress = Math.min(depth / 1.5, 1); // Scale over 1.5 depth units
+          const scale = 1 - scaleProgress * (1 - STACK_SCALE);
+
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4;
 
           cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
-          cardRef.style.opacity = adjustedDepth > MAX_VISIBLE_STACK_CARDS ? '0' : '1';
+
+          // Gradual fade for last card exit (depth 3 to 4)
+          const exitProgress = Math.max(0, depth - 3); // 0 at depth 3, 1 at depth 4
+          const opacity = depth > 3 ? Math.max(0, 1 - exitProgress) : 1;
+          cardRef.style.opacity = String(opacity);
+
+        } else if (depth >= 4) {
+          // Fully exited cards - off screen above
+          cardRef.style.opacity = '0';
+          cardRef.style.transform = 'scale(0.8) translateY(-200%)';
 
         } else if (depth > -1) {
           // Card is incoming - viewport-relative slide from bottom edge

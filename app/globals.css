@@ -2639,13 +2639,13 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 8px; /* EXTREME: 8px ultra-tight (16px + 4px + 8px = 28px total) */
+    top: 80px; /* PROFESSIONAL: 61px nav + 19px breathing room = comfortable sticky position */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
     align-items: flex-start; /* FIXED: align to top instead of center - removes massive viewport gap */
     justify-content: center;
-    padding-top: 1rem; /* Small breathing room (16px) after intro text */
+    padding-top: 3rem; /* BALANCED: 48px proper visual hierarchy between intro and cards */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */
 }

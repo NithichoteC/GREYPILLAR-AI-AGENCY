@@ -110,21 +110,23 @@ export default function CapabilitiesSection() {
           const depthProgress = Math.min(depth, 1);
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // Viewport-aware scaling - start when card passes middle of screen
+          // Progressive scaling - starts before reaching middle for smooth feel
           const cardRect = cardRef.getBoundingClientRect();
-          const cardTop = cardRect.top;
+          const cardCenter = cardRect.top + cardRect.height / 2;
           const viewportMiddle = window.innerHeight / 2;
-          const passedMiddle = cardTop < viewportMiddle;
 
-          // Smooth continuous scale - starts only after passing viewport middle
-          let scaleProgress;
-          if (passedMiddle) {
-            // Card passed middle - scale based on depth
-            scaleProgress = Math.min(depth / 1.5, 1);
-          } else {
-            // Card still below middle - stay full size
-            scaleProgress = 0;
-          }
+          // Distance below middle (positive = below, negative = above)
+          const distanceBelowMiddle = cardCenter - viewportMiddle;
+
+          // Start scaling 300px before middle, complete by middle
+          const scaleStartDistance = 300;
+          const scaleRange = Math.max(0, Math.min(1, (scaleStartDistance - distanceBelowMiddle) / scaleStartDistance));
+
+          // Combine distance-based (50%) + depth-based (50%) scaling for smooth progression
+          const distanceScale = scaleRange * 0.5;
+          const depthScale = Math.min(depth / 1.5, 1) * 0.5;
+          const scaleProgress = distanceScale + depthScale;
+
           const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
@@ -132,9 +134,14 @@ export default function CapabilitiesSection() {
 
           cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
 
-          // Gradual fade for last card exit (depth 3 to 4)
-          const exitProgress = Math.max(0, depth - 3); // 0 at depth 3, 1 at depth 4
-          const opacity = depth > 3 ? Math.max(0, 1 - exitProgress) : 1;
+          // Only fade LAST card on exit (prevents first card fading while last card shows)
+          const isLastCard = index === numCards - 1;
+          let opacity = 1;
+          if (isLastCard && depth > 3) {
+            // Last card only - gradual fade from depth 3 to 4
+            const exitProgress = Math.max(0, depth - 3);
+            opacity = Math.max(0, 1 - exitProgress);
+          }
           cardRef.style.opacity = String(opacity);
 
         } else if (depth >= 4) {

@@ -2595,7 +2595,7 @@ body {
     font-size: var(--font-xl);
     line-height: 1.6;
     color: var(--dark);
-    margin-bottom: var(--space-5xl);
+    margin-bottom: var(--space-3xl); /* Reduced from 5xl - tighter spacing with cards */
     max-width: 800px;
 }
 
@@ -2603,13 +2603,12 @@ body {
 .capabilities-cards-wrapper {
     position: relative;
     min-height: 500vh; /* Space for scroll effect - matches reference implementation for 4 cards */
-    margin-top: 100vh; /* Previous section must scroll out before parallax starts */
+    margin-top: 20vh; /* Smooth transition - reduced from 100vh for better text/card relationship */
 }
 
 .capabilities-cards {
     position: sticky;
-    top: 50vh; /* Center vertically in viewport */
-    transform: translateY(-50%); /* Center the card itself */
+    top: 15vh; /* Position in lower viewport, keeping intro text visible above */
     height: 100vh;
     display: flex;
     align-items: center;

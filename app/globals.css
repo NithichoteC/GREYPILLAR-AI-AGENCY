@@ -2578,7 +2578,7 @@ body {
    CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
-    padding: 0 0 var(--space-5xl) 0; /* BALANCED: 0px top (no space above intro), 128px bottom */
+    padding: var(--space-5xl) 0; /* STANDARD: 128px top/bottom - top spacing was CORRECT */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
@@ -2625,7 +2625,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: var(--space-5xl); /* BALANCED: 128px spacing to cards (matches what was above intro) */
+    margin-bottom: 0.25rem; /* SMALL: 4px matches the top spacing - equal gaps above and below */
     max-width: 900px; /* Comfortable reading width */
 }
 

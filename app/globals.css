@@ -2625,7 +2625,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: var(--space-2xl); /* Balanced spacing */
+    margin-bottom: 1.5rem; /* TIGHT: 24px for Apple/Vercel-style spacing (was 3rem = 48px too much) */
     max-width: 900px; /* Comfortable reading width */
 }
 
@@ -2639,7 +2639,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 80px; /* PROFESSIONAL: Tight spacing like Apple/Vercel (was 120px still too much gap) */
+    top: 40px; /* APPLE-TIGHT: 40px + 24px intro = 64px total gap (was 80px + 48px = 128px!) */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
@@ -2741,16 +2741,26 @@ body {
     opacity: 0;
 }
 
-/* Stacked cards - lighter shadows with optional glassmorphism */
-.capability-card[data-depth]:not([data-depth="0"]) .capability-card-content {
+/* Stacked card - First depth (just behind front card) */
+.capability-card[data-depth="1"] .capability-card-content {
     border-color: rgba(0, 0, 0, 0.03);
     box-shadow:
-        0 10px 20px -5px rgba(0, 0, 0, 0.05),   /* Very light shadow */
-        0 5px 10px -3px rgba(0, 0, 0, 0.08),    /* Subtle depth */
-        0 0 0 1px rgba(0, 0, 0, 0.03);          /* Faint edge */
-    /* Optional: Add slight blur for depth perception */
+        0 8px 16px -4px rgba(0, 0, 0, 0.04),    /* Light shadow */
+        0 4px 8px -2px rgba(0, 0, 0, 0.06),     /* Subtle depth */
+        0 0 0 1px rgba(0, 0, 0, 0.02);          /* Faint edge */
     backdrop-filter: blur(1px);
-    opacity: 0.97; /* Slightly transparent for stacked effect */
+    opacity: 0.97;
+}
+
+/* Stacked cards - Second depth and beyond (progressive fade) */
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]) .capability-card-content {
+    border-color: rgba(0, 0, 0, 0.02);
+    box-shadow:
+        0 4px 8px -3px rgba(0, 0, 0, 0.02),     /* Minimal shadow */
+        0 2px 4px -1px rgba(0, 0, 0, 0.03),     /* Very subtle */
+        0 0 0 1px rgba(0, 0, 0, 0.01);          /* Almost invisible edge */
+    backdrop-filter: blur(0.5px);
+    opacity: 0.95; /* More transparent for deeper cards */
 }
 
 .capability-card-corner-tl {

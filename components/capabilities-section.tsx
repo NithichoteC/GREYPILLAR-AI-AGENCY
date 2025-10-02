@@ -96,7 +96,7 @@ export default function CapabilitiesSection() {
       progress = Math.max(0, Math.min(1, progress));
 
       const numCards = capabilities.length;
-      const activeCardFloat = progress * (numCards + 0.5); // Extended range for last card exit
+      const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
       // Parallax constants (from pararexcode.txt)
       const STACK_SCALE = 0.9;

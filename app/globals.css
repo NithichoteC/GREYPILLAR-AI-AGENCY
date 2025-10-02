@@ -2578,7 +2578,7 @@ body {
    CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
-    padding: var(--space-3xl) 0; /* REDUCED: 4rem (64px) instead of 8rem (128px) for tighter spacing */
+    padding: var(--space-2xl) 0; /* APPLE-TIGHT: 3rem (48px) for minimal spacing (was 64px, now -16px) */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
@@ -2625,7 +2625,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 1.5rem; /* TIGHT: 24px for Apple/Vercel-style spacing (was 3rem = 48px too much) */
+    margin-bottom: 1rem; /* ULTRA-TIGHT: 16px Apple-style spacing (was 24px, now -8px) */
     max-width: 900px; /* Comfortable reading width */
 }
 
@@ -2639,7 +2639,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 40px; /* APPLE-TIGHT: 40px + 24px intro = 64px total gap (was 80px + 48px = 128px!) */
+    top: 24px; /* ULTRA-TIGHT: 24px + 16px intro = 40px total gap (Apple product page standard) */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
@@ -2748,8 +2748,9 @@ body {
         0 8px 16px -4px rgba(0, 0, 0, 0.04),    /* Light shadow */
         0 4px 8px -2px rgba(0, 0, 0, 0.06),     /* Subtle depth */
         0 0 0 1px rgba(0, 0, 0, 0.02);          /* Faint edge */
-    backdrop-filter: blur(1px);
-    opacity: 0.97;
+    backdrop-filter: blur(8px); /* STRONG: 8px for visible frosted glass (was 1px invisible) */
+    background: rgba(247, 247, 248, 0.85); /* Semi-transparent overlay to hide text behind */
+    opacity: 0.99; /* Increased from 0.97 - blur now handles depth perception */
 }
 
 /* Stacked cards - Second depth and beyond (progressive fade) */
@@ -2759,8 +2760,9 @@ body {
         0 4px 8px -3px rgba(0, 0, 0, 0.02),     /* Minimal shadow */
         0 2px 4px -1px rgba(0, 0, 0, 0.03),     /* Very subtle */
         0 0 0 1px rgba(0, 0, 0, 0.01);          /* Almost invisible edge */
-    backdrop-filter: blur(0.5px);
-    opacity: 0.95; /* More transparent for deeper cards */
+    backdrop-filter: blur(5px); /* MEDIUM: 5px for perceptible depth blur (was 0.5px invisible) */
+    background: rgba(247, 247, 248, 0.85); /* Semi-transparent overlay to hide text behind */
+    opacity: 0.98; /* Increased from 0.95 - blur handles transparency */
 }
 
 .capability-card-corner-tl {

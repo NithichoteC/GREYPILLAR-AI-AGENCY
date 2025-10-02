@@ -2581,7 +2581,7 @@ body {
     padding: var(--space-5xl) 0;
     background: var(--lightest);
     position: relative;
-    overflow-x: hidden;
+    /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
 .capabilities-container {

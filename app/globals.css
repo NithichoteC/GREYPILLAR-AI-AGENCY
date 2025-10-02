@@ -2585,8 +2585,8 @@ body {
 }
 
 .capabilities-container {
-    /* Match perfected sections (Silent Killers, etc.) for width consistency */
-    max-width: 1200px;
+    /* EXACT match to Silent Killers section - measured from live site */
+    max-width: 1152px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
 }
@@ -2611,7 +2611,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 120px; /* 61px nav + 40px breathing + 19px optical - see both text & cards */
+    top: 250px; /* True middle positioning - visually balanced in viewport */
     height: 100vh;
     display: flex;
     align-items: center;
@@ -2626,8 +2626,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 400px; /* Ensure consistent height */
-    max-height: 500px; /* Prevent cards from being too tall */
+    min-height: 500px; /* Taller cards - match Silent Killers proportion */
+    max-height: 600px; /* Allow more height for content */
 }
 
 /* Capability Card Content - Premium 2025 Design */

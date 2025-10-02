@@ -2585,8 +2585,8 @@ body {
 }
 
 .capabilities-container {
-    /* EXACT match to Silent Killers section - measured from live site */
-    max-width: 1152px;
+    /* Match nav border & problem section exactly */
+    max-width: calc(1200px - 2 * var(--space-xl));
     margin: 0 auto;
     padding: 0 var(--space-xl);
 }

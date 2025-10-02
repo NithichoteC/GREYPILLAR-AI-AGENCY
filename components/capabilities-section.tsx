@@ -155,7 +155,10 @@ export default function CapabilitiesSection() {
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
 
           cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY}%)`;
-          // Opacity handled above - only last card fades, others stay visible
+
+          // Explicitly set opacity - last card fades, others stay visible
+          const isLastCard = index === numCards - 1;
+          cardRef.style.opacity = isLastCard ? '0' : '1';
 
         } else if (depth > -1) {
           // Card is incoming - viewport-relative slide from bottom edge

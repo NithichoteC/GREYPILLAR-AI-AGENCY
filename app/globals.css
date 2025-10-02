@@ -2669,7 +2669,7 @@ body {
     background: #FFFFFF;
     border: 1px solid rgba(0, 0, 0, 0.08); /* Visible border on light bg */
     border-radius: 0; /* Sharp corners - premium aesthetic */
-    padding: var(--space-3xl); /* Generous internal spacing */
+    padding: 2rem; /* REDUCED: 32px tight spacing (was 64px, -50% reduction!) */
     width: 100%; /* Fill parent - matches total width of ALL 3 Silent Killers cards combined */
     height: 100%;
     min-height: 560px; /* INCREASED: Slightly taller cards for better presence (was 520px) */
@@ -2798,6 +2798,34 @@ body {
     backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
     background: rgba(247, 247, 248, 0.95); /* INCREASED: Maximum opacity blocks text (was 0.85) */
     opacity: 0.98;
+}
+
+/* Progressive text opacity - Apple approach to prevent bleed-through */
+.capability-card[data-depth="1"] .capability-card-header,
+.capability-card[data-depth="1"] .capability-card-description,
+.capability-card[data-depth="1"] .capability-card-tags {
+    opacity: 0.95; /* Slight text fade on first stacked card */
+}
+
+.capability-card[data-depth="2"] .capability-card-header,
+.capability-card[data-depth="2"] .capability-card-description,
+.capability-card[data-depth="2"] .capability-card-tags {
+    opacity: 0.85; /* Medium text fade on second depth */
+}
+
+.capability-card[data-depth="3"] .capability-card-header,
+.capability-card[data-depth="3"] .capability-card-description,
+.capability-card[data-depth="3"] .capability-card-tags {
+    opacity: 0.70; /* Strong text fade on third depth */
+}
+
+.capability-card[data-depth="4"] .capability-card-header,
+.capability-card[data-depth="4"] .capability-card-description,
+.capability-card[data-depth="4"] .capability-card-tags,
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-header,
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-description,
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-tags {
+    opacity: 0.50; /* Maximum text fade on deepest cards */
 }
 
 .capability-card-corner-tl {

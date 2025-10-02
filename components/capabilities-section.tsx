@@ -155,11 +155,12 @@ export default function CapabilitiesSection() {
           cardRef.style.opacity = String(opacity);
 
         } else if (depth >= 4) {
-          // Keep cards at final stack position - smooth and professional
+          // Keep cards at final stack position with continuous parallax
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY}%)`;
+          cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY + stackParallax}%)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;

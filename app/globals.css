@@ -2575,13 +2575,27 @@ body {
 }
 
 /* =========================
-   CAPABILITIES SECTION (Nitro-Style Sticky Cards)
+   CAPABILITIES SECTION (Nitro-Style 2025 Professional)
 ========================= */
 .capabilities-section {
     padding: var(--space-5xl) 0;
-    background: var(--lightest);
+    background: #000000; /* Black background like Nitro */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
+
+    /* Grid background with radial fade (Nitro style) */
+    background-image:
+        radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 50%, #000000 100%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size:
+        100% 100%,
+        40px 40px,
+        40px 40px;
+    background-position:
+        center,
+        0 0,
+        0 0;
 }
 
 .capabilities-container {
@@ -2592,14 +2606,19 @@ body {
 }
 
 .capabilities-intro {
-    /* Premium typography - Apple/Vercel aesthetic */
-    font-size: clamp(1.125rem, 2vw, 1.25rem); /* Responsive scaling */
-    line-height: 1.7; /* More breathing room */
-    color: #2d3748; /* Darker, more authoritative */
-    font-weight: 500; /* Medium weight for premium feel */
-    letter-spacing: -0.01em; /* Tight tracking, modern */
-    margin-bottom: var(--space-2xl); /* Tighter but not cramped */
-    max-width: 900px; /* Wider for 1200px container */
+    /* Nitro-style large hero text - 2025 premium */
+    font-size: clamp(2rem, 5vw, 4rem); /* Much larger - hero scale */
+    line-height: 1.2; /* Tighter for impact */
+    font-weight: 400; /* Light weight like Nitro */
+    letter-spacing: -0.02em; /* Tight tracking, modern */
+    margin-bottom: var(--space-4xl); /* More space before cards */
+    max-width: 1000px; /* Wider for larger text */
+
+    /* Mixed opacity effect (Nitro style) */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.4) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* Cards Wrapper - Sticky Viewport Container */
@@ -2633,10 +2652,10 @@ body {
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Capability Card Content - Apple/Vercel Premium Design */
+/* Capability Card Content - Nitro 2025 Premium Design */
 .capability-card-content {
     background: #FFFFFF;
-    border: 1px solid rgba(3, 6, 23, 0.08); /* Stronger border for definition */
+    border: 1px solid rgba(0, 0, 0, 0.08); /* Visible border on black */
     border-radius: 0; /* Sharp corners - premium aesthetic */
     padding: var(--space-3xl); /* Generous internal spacing */
     width: 100%;
@@ -2644,12 +2663,13 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
-    /* Apple-level depth - strong premium shadows */
+    /* Nitro-level dramatic shadows - strong depth on black background */
     box-shadow:
-        0 20px 50px -12px rgba(0, 0, 0, 0.25),
-        0 10px 25px -8px rgba(0, 0, 0, 0.15),
-        0 4px 12px -4px rgba(0, 0, 0, 0.08),
-        0 0 0 1px rgba(0, 0, 0, 0.03);
+        0 50px 100px -20px rgba(0, 0, 0, 0.5),
+        0 30px 60px -12px rgba(0, 0, 0, 0.35),
+        0 20px 40px -8px rgba(0, 0, 0, 0.25),
+        0 10px 20px -4px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
     transition:
         box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
         border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
@@ -2660,10 +2680,12 @@ body {
 /* Subtle hover interaction - premium feel */
 .capability-card-content:hover {
     box-shadow:
-        0 20px 40px -10px rgba(0, 0, 0, 0.12),
-        0 8px 16px -4px rgba(0, 0, 0, 0.06),
-        0 0 0 1px rgba(0, 0, 0, 0.03);
-    border-color: rgba(3, 6, 23, 0.12);
+        0 60px 120px -25px rgba(0, 0, 0, 0.6),
+        0 35px 70px -15px rgba(0, 0, 0, 0.4),
+        0 25px 50px -10px rgba(0, 0, 0, 0.3),
+        0 15px 30px -5px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.12);
 }
 
 /* Corner Bracket Decorations - 21st.dev Style */
@@ -2684,9 +2706,12 @@ body {
 
 /* Stacked cards get subtle styling - cleaner layering without blur for professional look */
 .capability-card[data-depth]:not([data-depth="0"]) .capability-card-content {
-    border-color: rgba(3, 6, 23, 0.03);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    /* No blur - keeps text sharp and professional like Silent Killers section */
+    border-color: rgba(0, 0, 0, 0.04);
+    box-shadow:
+        0 20px 40px -10px rgba(0, 0, 0, 0.3),
+        0 10px 20px -5px rgba(0, 0, 0, 0.2),
+        0 5px 10px -2px rgba(0, 0, 0, 0.1);
+    /* No blur - keeps text sharp and professional like Nitro */
 }
 
 .capability-card-corner-tl {

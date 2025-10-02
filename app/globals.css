@@ -2745,6 +2745,24 @@ body {
 
 /* Progressive blur levels - SMOOTH SILK TRANSITION (0 → 2px → 4px → 6px → 8px) */
 
+/* Blur entire card element - creates true frosted glass depth effect */
+.capability-card[data-depth="1"] {
+    filter: blur(0.5px); /* Very subtle blur on entire first stacked card */
+}
+
+.capability-card[data-depth="2"] {
+    filter: blur(1px); /* Light blur on entire second depth card */
+}
+
+.capability-card[data-depth="3"] {
+    filter: blur(1.5px); /* Medium blur on entire third depth card */
+}
+
+.capability-card[data-depth="4"],
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+    filter: blur(2px); /* Stronger blur on entire deepest cards */
+}
+
 /* Front card - Crystal clear (depth 0) */
 .capability-card[data-depth="0"] .capability-card-content {
     backdrop-filter: none;
@@ -2759,7 +2777,7 @@ body {
         0 4px 8px -2px rgba(0, 0, 0, 0.06),
         0 0 0 1px rgba(0, 0, 0, 0.02);
     backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
-    background: rgba(247, 247, 248, 0.65); /* INCREASED: Medium opacity blocks text (was 0.4) */
+    background: rgba(247, 247, 248, 0.96); /* SOLID: Nearly opaque blocks all text bleed (was 0.65) */
     opacity: 0.99;
 }
 
@@ -2771,7 +2789,7 @@ body {
         0 3px 6px -2px rgba(0, 0, 0, 0.05),
         0 0 0 1px rgba(0, 0, 0, 0.015);
     backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
-    background: rgba(247, 247, 248, 0.80); /* INCREASED: Strong opacity blocks text (was 0.6) */
+    background: rgba(247, 247, 248, 0.98); /* SOLID: Almost opaque blocks all text bleed (was 0.80) */
     opacity: 0.985;
 }
 
@@ -2783,7 +2801,7 @@ body {
         0 2px 5px -1px rgba(0, 0, 0, 0.04),
         0 0 0 1px rgba(0, 0, 0, 0.01);
     backdrop-filter: blur(6px); /* STRONG: Building depth */
-    background: rgba(247, 247, 248, 0.90); /* INCREASED: Very strong opacity blocks text (was 0.75) */
+    background: rgba(247, 247, 248, 0.99); /* SOLID: Nearly 100% opaque blocks all text bleed (was 0.90) */
     opacity: 0.98;
 }
 
@@ -2796,7 +2814,7 @@ body {
         0 2px 4px -1px rgba(0, 0, 0, 0.03),
         0 0 0 1px rgba(0, 0, 0, 0.01);
     backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
-    background: rgba(247, 247, 248, 0.95); /* INCREASED: Maximum opacity blocks text (was 0.85) */
+    background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque completely blocks all text bleed (was 0.95) */
     opacity: 0.98;
 }
 

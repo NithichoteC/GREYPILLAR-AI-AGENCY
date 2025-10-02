@@ -2747,20 +2747,20 @@ body {
 
 /* Blur entire card element - creates true frosted glass depth effect */
 .capability-card[data-depth="1"] {
-    filter: blur(0.5px); /* Very subtle blur on entire first stacked card */
+    filter: blur(2px); /* Light blur on entire first stacked card */
 }
 
 .capability-card[data-depth="2"] {
-    filter: blur(1px); /* Light blur on entire second depth card */
+    filter: blur(4px); /* Medium blur on entire second depth card */
 }
 
 .capability-card[data-depth="3"] {
-    filter: blur(1.5px); /* Medium blur on entire third depth card */
+    filter: blur(6px); /* Strong blur on entire third depth card */
 }
 
 .capability-card[data-depth="4"],
 .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-    filter: blur(2px); /* Stronger blur on entire deepest cards */
+    filter: blur(8px); /* Maximum blur on entire deepest cards */
 }
 
 /* Front card - Crystal clear (depth 0) */

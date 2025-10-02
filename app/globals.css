@@ -2585,30 +2585,33 @@ body {
 }
 
 .capabilities-container {
-    /* Match reference implementation (max-w-3xl = 768px) */
-    max-width: 768px;
+    /* Match perfected sections (Silent Killers, etc.) for width consistency */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
 }
 
 .capabilities-intro {
-    font-size: var(--font-xl);
-    line-height: 1.6;
-    color: var(--dark);
-    margin-bottom: var(--space-3xl); /* Reduced from 5xl - tighter spacing with cards */
-    max-width: 800px;
+    /* Premium typography - Apple/Vercel aesthetic */
+    font-size: clamp(1.125rem, 2vw, 1.25rem); /* Responsive scaling */
+    line-height: 1.7; /* More breathing room */
+    color: #2d3748; /* Darker, more authoritative */
+    font-weight: 500; /* Medium weight for premium feel */
+    letter-spacing: -0.01em; /* Tight tracking, modern */
+    margin-bottom: var(--space-2xl); /* Tighter but not cramped */
+    max-width: 900px; /* Wider for 1200px container */
 }
 
 /* Cards Wrapper - Sticky Viewport Container */
 .capabilities-cards-wrapper {
     position: relative;
     min-height: 500vh; /* Space for scroll effect - matches reference implementation for 4 cards */
-    margin-top: 20vh; /* Smooth transition - reduced from 100vh for better text/card relationship */
+    margin-top: 0; /* No gap - smooth flow from intro text */
 }
 
 .capabilities-cards {
     position: sticky;
-    top: 15vh; /* Position in lower viewport, keeping intro text visible above */
+    top: 120px; /* 61px nav + 40px breathing + 19px optical - see both text & cards */
     height: 100vh;
     display: flex;
     align-items: center;
@@ -2623,22 +2626,30 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    min-height: 400px; /* Ensure consistent height */
+    max-height: 500px; /* Prevent cards from being too tall */
 }
 
-/* Capability Card Content - 21st.dev Sharp-Cornered Design */
+/* Capability Card Content - Premium 2025 Design */
 .capability-card-content {
     background: #FFFFFF;
-    border: 1px solid rgba(3, 6, 23, 0.08);
+    border: 1px solid rgba(3, 6, 23, 0.06); /* Lighter border, more subtle */
     border-radius: 0; /* Sharp corners - no curves */
-    padding: var(--space-4xl);
+    padding: var(--space-3xl); /* Balanced internal spacing */
     width: 100%; /* Prevent content collapse during transforms */
     height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
-    /* Cleaner shadow matching 21st.dev style */
-    box-shadow: 0 10px 15px -3px rgba(24, 24, 27, 0.05), 0 4px 6px -4px rgba(24, 24, 27, 0.05);
-    transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Premium layered shadows - Apple/Vercel aesthetic */
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition:
+        box-shadow 0.3s ease,
+        border-color 0.3s ease,
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 0.3s ease-out;
 }
 
 /* Corner Bracket Decorations - 21st.dev Style */
@@ -2689,41 +2700,44 @@ body {
     display: flex;
     align-items: flex-start;
     gap: var(--space-lg);
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-xl); /* More space for visual hierarchy */
 }
 
-/* Icon Circle Container */
+/* Icon Circle Container - Premium Design */
 .capability-icon-circle {
     margin-top: 0.25rem; /* Slight alignment adjustment */
+    width: 56px; /* Larger, more presence */
+    height: 56px;
     border-radius: 9999px; /* Fully circular */
-    border: 1px solid rgba(3, 6, 23, 0.1);
-    background: #FFFFFF;
-    padding: 0.5rem;
+    border: 2px solid rgba(3, 6, 23, 0.08);
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); /* Subtle gradient */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04); /* Soft lift */
 }
 
 .capability-card-icon {
-    font-size: 1rem; /* Smaller icon in circle */
+    font-size: 1.25rem; /* Larger icon */
     line-height: 1;
     color: var(--medium);
 }
 
 .capability-card-title {
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 1.75rem; /* Larger, more impactful */
+    font-weight: 700; /* Bold for authority */
     color: var(--darkest);
     margin: 0;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.02em; /* Tight, modern */
+    line-height: 1.2; /* Compact headline */
 }
 
 /* Card Description */
 .capability-card-description {
-    font-size: 1.125rem;
-    line-height: 1.7;
-    color: var(--dark);
+    font-size: 1rem; /* Standard readability */
+    line-height: 1.6; /* Comfortable reading */
+    color: #4a5568; /* Softer than pure black */
     margin: 0;
     flex-grow: 1;
 }

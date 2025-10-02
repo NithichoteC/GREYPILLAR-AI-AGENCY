@@ -2633,13 +2633,13 @@ body {
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
-    min-height: 500vh; /* Space for scroll effect - matches reference implementation for 4 cards */
+    min-height: 600vh; /* INCREASED: 150vh per card = smoother scroll progression (was 500vh = 125vh/card too fast) */
     margin-top: 0; /* No gap - smooth flow from intro text */
 }
 
 .capabilities-cards {
     position: sticky;
-    top: 250px; /* True middle positioning - visually balanced in viewport */
+    top: 120px; /* REDUCED: Tighter visual connection to intro text (was 250px too far) */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
@@ -2657,8 +2657,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 520px; /* Taller cards for better content space */
-    max-height: 650px; /* More height allowance for breathing room */
+    min-height: 560px; /* INCREASED: Better visual presence, less empty feel */
+    max-height: 680px; /* Slightly more room for larger cards */
     /* Smooth sliding animation - MUST be on same element JavaScript animates */
     /* Only animate transform - opacity changes instantly per user requirement */
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2667,14 +2667,16 @@ body {
 /* Capability Card Content - Nitro 2025 Premium Design */
 .capability-card-content {
     background: #FFFFFF;
-    border: 1px solid rgba(0, 0, 0, 0.08); /* Visible border on black */
+    border: 1px solid rgba(0, 0, 0, 0.08); /* Visible border on light bg */
     border-radius: 0; /* Sharp corners - premium aesthetic */
     padding: var(--space-3xl); /* Generous internal spacing */
     width: 100%; /* Fill parent - matches total width of ALL 3 Silent Killers cards combined */
     height: 100%;
+    min-height: 560px; /* INCREASED: Slightly taller cards for better presence (was 520px) */
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden; /* For gradient overlay */
     /* Nitro-level dramatic shadows - strong depth on black background */
     box-shadow:
         0 50px 100px -20px rgba(0, 0, 0, 0.5),
@@ -2689,6 +2691,27 @@ body {
         opacity 0.3s ease-out;
 }
 
+/* Subtle gradient overlay - adds visual interest without overwhelming content */
+.capability-card-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: radial-gradient(circle at 100% 0%, currentColor 0%, transparent 50%);
+    opacity: 0.03; /* Very subtle - just enough to break up white space */
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Ensure content stays above gradient */
+.capability-card-header,
+.capability-card-tags {
+    position: relative;
+    z-index: 1;
+}
+
 /* Subtle hover interaction - premium feel */
 .capability-card-content:hover {
     box-shadow:
@@ -2698,6 +2721,11 @@ body {
         0 15px 30px -5px rgba(0, 0, 0, 0.2),
         0 0 0 1px rgba(0, 0, 0, 0.08);
     border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* Hover enhances gradient slightly */
+.capability-card-content:hover::before {
+    opacity: 0.05;
 }
 
 /* Corner Bracket Decorations - 21st.dev Style */

@@ -2630,26 +2630,36 @@ body {
     max-height: 600px; /* Allow more height for content */
 }
 
-/* Capability Card Content - Premium 2025 Design */
+/* Capability Card Content - Apple/Vercel Premium Design */
 .capability-card-content {
     background: #FFFFFF;
-    border: 1px solid rgba(3, 6, 23, 0.06); /* Lighter border, more subtle */
-    border-radius: 0; /* Sharp corners - no curves */
-    padding: var(--space-3xl); /* Balanced internal spacing */
-    width: 100%; /* Prevent content collapse during transforms */
+    border: 1px solid rgba(3, 6, 23, 0.08); /* Stronger border for definition */
+    border-radius: 0; /* Sharp corners - premium aesthetic */
+    padding: var(--space-3xl); /* Generous internal spacing */
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
-    /* Premium layered shadows - Apple/Vercel aesthetic */
+    /* Enhanced depth - Apple-style layered shadows */
     box-shadow:
-        0 4px 6px -1px rgba(0, 0, 0, 0.05),
-        0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        0 10px 25px -5px rgba(0, 0, 0, 0.08),
+        0 4px 10px -2px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
     transition:
-        box-shadow 0.3s ease,
-        border-color 0.3s ease,
+        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
         opacity 0.3s ease-out;
+}
+
+/* Subtle hover interaction - premium feel */
+.capability-card-content:hover {
+    box-shadow:
+        0 20px 40px -10px rgba(0, 0, 0, 0.12),
+        0 8px 16px -4px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(0, 0, 0, 0.03);
+    border-color: rgba(3, 6, 23, 0.12);
 }
 
 /* Corner Bracket Decorations - 21st.dev Style */
@@ -2703,43 +2713,48 @@ body {
     margin-bottom: var(--space-xl); /* More space for visual hierarchy */
 }
 
-/* Icon Circle Container - Premium Design */
+/* Icon Circle Container - Apple/Vercel Premium */
 .capability-icon-circle {
-    margin-top: 0.25rem; /* Slight alignment adjustment */
-    width: 56px; /* Larger, more presence */
-    height: 56px;
-    border-radius: 9999px; /* Fully circular */
-    border: 2px solid rgba(3, 6, 23, 0.08);
-    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); /* Subtle gradient */
+    margin-top: 0.25rem;
+    width: 64px; /* Larger for more presence */
+    height: 64px;
+    border-radius: 9999px;
+    border: 1px solid rgba(3, 6, 23, 0.06); /* Lighter, more subtle */
+    background: #F8FAFC; /* Solid, clean background */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04); /* Soft lift */
+    /* Enhanced depth - stronger visual presence */
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.06),
+        0 2px 6px rgba(0, 0, 0, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .capability-card-icon {
-    font-size: 1.25rem; /* Larger icon */
+    font-size: 1.5rem; /* Larger, more prominent */
     line-height: 1;
-    color: var(--medium);
+    color: #2563eb; /* Blue accent for visual interest */
 }
 
 .capability-card-title {
-    font-size: 1.75rem; /* Larger, more impactful */
-    font-weight: 700; /* Bold for authority */
-    color: var(--darkest);
+    font-size: 2rem; /* Bigger, more commanding presence */
+    font-weight: 700;
+    color: #0F172A; /* Darker for stronger authority */
     margin: 0;
-    letter-spacing: -0.02em; /* Tight, modern */
-    line-height: 1.2; /* Compact headline */
+    letter-spacing: -0.025em; /* Tighter, modern premium feel */
+    line-height: 1.15; /* Compact, impactful */
 }
 
 /* Card Description */
 .capability-card-description {
-    font-size: 1rem; /* Standard readability */
-    line-height: 1.6; /* Comfortable reading */
-    color: #4a5568; /* Softer than pure black */
+    font-size: 1.0625rem; /* Slightly larger for readability */
+    line-height: 1.65; /* More breathing room */
+    color: #475569; /* Balanced contrast - not too light, not too dark */
     margin: 0;
     flex-grow: 1;
+    font-weight: 400; /* Regular weight for body text */
 }
 
 /* Card Tags */

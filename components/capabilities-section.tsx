@@ -117,15 +117,12 @@ export default function CapabilitiesSection() {
           cardRef.style.opacity = adjustedDepth > MAX_VISIBLE_STACK_CARDS ? '0' : '1';
 
         } else if (depth > -1) {
-          // Card is incoming from bottom - smooth slide with fade
+          // Card is incoming from bottom - smooth slide at full opacity
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
           const translateY = 100 - (incomingProgress * 100); // 100% to 0%
 
-          // Fade in as card slides up (0 to 1 opacity)
-          const opacity = Math.max(0, Math.min(1, incomingProgress));
-
           cardRef.style.transform = `translateY(${translateY}%)`;
-          cardRef.style.opacity = String(opacity);
+          cardRef.style.opacity = '1'; // Always full opacity - matches reference implementation
         } else {
           // Card is off-screen below
           cardRef.style.transform = `translateY(100%)`;

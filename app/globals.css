@@ -2578,7 +2578,7 @@ body {
    CAPABILITIES SECTION (Professional Light Design)
 ========================= */
 .capabilities-section {
-    padding: var(--space-2xl) 0; /* APPLE-TIGHT: 3rem (48px) for minimal spacing (was 64px, now -16px) */
+    padding: var(--space-xl) 0; /* ULTRA-TIGHT: 1.5rem (24px) iPhone-style spacing (was 48px, now -24px) */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
@@ -2625,7 +2625,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 1rem; /* ULTRA-TIGHT: 16px Apple-style spacing (was 24px, now -8px) */
+    margin-bottom: 0.5rem; /* MINIMAL: 8px iPhone-style spacing (was 16px, now -8px) */
     max-width: 900px; /* Comfortable reading width */
 }
 
@@ -2639,7 +2639,7 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 24px; /* ULTRA-TIGHT: 24px + 16px intro = 40px total gap (Apple product page standard) */
+    top: 16px; /* MINIMAL: 16px iPhone-style (24px + 8px + 16px = 48px total) */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
@@ -2686,7 +2686,9 @@ body {
     transition:
         border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
         transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.3s ease-out;
+        opacity 0.3s ease-out,
+        backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),  /* SMOOTH SILK blur transition */
+        background 0.4s cubic-bezier(0.4, 0, 0.2, 1);       /* SMOOTH SILK background fade */
 }
 
 /* Subtle gradient overlay - adds visual interest without overwhelming content */
@@ -2741,28 +2743,61 @@ body {
     opacity: 0;
 }
 
-/* Stacked card - First depth (just behind front card) */
+/* Progressive blur levels - SMOOTH SILK TRANSITION (0 → 2px → 4px → 6px → 8px) */
+
+/* Front card - Crystal clear (depth 0) */
+.capability-card[data-depth="0"] .capability-card-content {
+    backdrop-filter: none;
+    background: #FFFFFF; /* Solid white, no transparency */
+}
+
+/* Stacked card - First depth (subtle blur start) */
 .capability-card[data-depth="1"] .capability-card-content {
     border-color: rgba(0, 0, 0, 0.03);
     box-shadow:
-        0 8px 16px -4px rgba(0, 0, 0, 0.04),    /* Light shadow */
-        0 4px 8px -2px rgba(0, 0, 0, 0.06),     /* Subtle depth */
-        0 0 0 1px rgba(0, 0, 0, 0.02);          /* Faint edge */
-    backdrop-filter: blur(8px); /* STRONG: 8px for visible frosted glass (was 1px invisible) */
-    background: rgba(247, 247, 248, 0.85); /* Semi-transparent overlay to hide text behind */
-    opacity: 0.99; /* Increased from 0.97 - blur now handles depth perception */
+        0 8px 16px -4px rgba(0, 0, 0, 0.04),
+        0 4px 8px -2px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(0, 0, 0, 0.02);
+    backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
+    background: rgba(247, 247, 248, 0.4); /* Light transparency */
+    opacity: 0.99;
 }
 
-/* Stacked cards - Second depth and beyond (progressive fade) */
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]) .capability-card-content {
+/* Second depth - Medium blur */
+.capability-card[data-depth="2"] .capability-card-content {
+    border-color: rgba(0, 0, 0, 0.025);
+    box-shadow:
+        0 6px 12px -4px rgba(0, 0, 0, 0.03),
+        0 3px 6px -2px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(0, 0, 0, 0.015);
+    backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
+    background: rgba(247, 247, 248, 0.6); /* Medium transparency */
+    opacity: 0.985;
+}
+
+/* Third depth - Strong blur */
+.capability-card[data-depth="3"] .capability-card-content {
     border-color: rgba(0, 0, 0, 0.02);
     box-shadow:
-        0 4px 8px -3px rgba(0, 0, 0, 0.02),     /* Minimal shadow */
-        0 2px 4px -1px rgba(0, 0, 0, 0.03),     /* Very subtle */
-        0 0 0 1px rgba(0, 0, 0, 0.01);          /* Almost invisible edge */
-    backdrop-filter: blur(5px); /* MEDIUM: 5px for perceptible depth blur (was 0.5px invisible) */
-    background: rgba(247, 247, 248, 0.85); /* Semi-transparent overlay to hide text behind */
-    opacity: 0.98; /* Increased from 0.95 - blur handles transparency */
+        0 5px 10px -3px rgba(0, 0, 0, 0.025),
+        0 2px 5px -1px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(0, 0, 0, 0.01);
+    backdrop-filter: blur(6px); /* STRONG: Building depth */
+    background: rgba(247, 247, 248, 0.75); /* Strong transparency */
+    opacity: 0.98;
+}
+
+/* Fourth depth and beyond - Maximum blur */
+.capability-card[data-depth="4"] .capability-card-content,
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
+    border-color: rgba(0, 0, 0, 0.02);
+    box-shadow:
+        0 4px 8px -3px rgba(0, 0, 0, 0.02),
+        0 2px 4px -1px rgba(0, 0, 0, 0.03),
+        0 0 0 1px rgba(0, 0, 0, 0.01);
+    backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
+    background: rgba(247, 247, 248, 0.85); /* Maximum transparency */
+    opacity: 0.98;
 }
 
 .capability-card-corner-tl {

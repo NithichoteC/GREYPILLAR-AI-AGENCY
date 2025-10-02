@@ -111,7 +111,15 @@ export default function CapabilitiesSection() {
         const depth = activeCardFloat - index;
 
         // Set data-depth for CSS styling (stacked vs front card)
-        cardRef.setAttribute('data-depth', Math.floor(Math.max(0, depth)).toString());
+        let finalDepth = Math.floor(Math.max(0, depth));
+
+        // Last card becomes crisp (depth 0) when scroll reaches end
+        const isLastCard = index === numCards - 1;
+        if (isLastCard && activeCardFloat >= numCards) {
+          finalDepth = 0; // Crystal clear at scroll end
+        }
+
+        cardRef.setAttribute('data-depth', finalDepth.toString());
 
         if (depth >= 0 && depth < 4) {
           // Card is in stack or exiting - extended range for smooth exit

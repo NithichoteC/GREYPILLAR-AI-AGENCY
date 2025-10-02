@@ -2585,8 +2585,8 @@ body {
 }
 
 .capabilities-container {
-    /* Match Silent Killers section - cards fit perfectly between vertical lines */
-    max-width: 1152px;
+    /* MATCH nav-container exactly - same as Silent Killers section */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
     position: relative; /* For pseudo-element positioning */
@@ -2643,10 +2643,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* Constrain cards to area between vertical lines */
-    max-width: calc(1152px - 2 * var(--space-xl)); /* 1152 - 64 = 1088px */
-    margin: 0 auto;
+    /* Cards fill full container content area (1200px - 64px = 1136px) */
+    /* No max-width or margin - prevents double-centering */
 }
 
 /* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */

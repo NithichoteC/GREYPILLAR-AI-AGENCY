@@ -137,16 +137,11 @@ export default function CapabilitiesSection() {
 
           cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
 
-          // Clean opacity logic - no transparency fade on stacked cards
+          // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
-          let opacity = 1; // Keep all visible cards at full opacity (solid, professional)
+          let opacity = 1; // All cards in stack range stay fully visible
 
-          // Hide cards that are too far back in stack (beyond max visible)
-          if (depth > MAX_VISIBLE_STACK_CARDS && !isLastCard) {
-            opacity = 0; // Instant hide for non-active cards
-          }
-
-          // Last card only - smooth exit fade
+          // Only last card gets exit fade (when scrolling past all cards)
           if (isLastCard && depth > 3) {
             const exitProgress = Math.max(0, depth - 3);
             opacity = Math.max(0, 1 - exitProgress);

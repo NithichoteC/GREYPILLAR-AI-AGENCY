@@ -2585,8 +2585,8 @@ body {
 }
 
 .capabilities-container {
-    /* Match nav border & problem section exactly */
-    max-width: calc(1200px - 2 * var(--space-xl));
+    /* Match nav border & problem section exactly - padding handled separately */
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
 }
@@ -2823,21 +2823,23 @@ body {
     }
 
     .capabilities-cards-wrapper {
-        min-height: auto;
+        min-height: auto !important;  /* No tall scrolling container on mobile */
         display: block;
     }
 
     .capabilities-cards {
-        position: relative;
-        height: auto;
+        position: static !important;  /* Disable sticky positioning */
+        top: auto !important;
+        height: auto !important;
         display: block;
     }
 
     .capability-card {
-        position: relative;
-        inset: auto;
+        position: relative !important;  /* Force override JavaScript positioning */
+        inset: auto !important;
         margin-bottom: var(--space-xl);
         transform: none !important;
+        opacity: 1 !important;  /* Always visible on mobile */
     }
 
     .capability-card-content {

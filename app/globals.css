@@ -2582,23 +2582,6 @@ body {
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
-
-    /* Two vertical lines aligned with nav border edges */
-    background-image:
-        /* Left vertical line */
-        linear-gradient(to right,
-            transparent calc(50% - 600px + var(--space-xl)),
-            rgba(33, 37, 41, 0.1) calc(50% - 600px + var(--space-xl)),
-            rgba(33, 37, 41, 0.1) calc(50% - 600px + var(--space-xl) + 1px),
-            transparent calc(50% - 600px + var(--space-xl) + 1px)
-        ),
-        /* Right vertical line */
-        linear-gradient(to right,
-            transparent calc(50% + 600px - var(--space-xl) - 1px),
-            rgba(33, 37, 41, 0.1) calc(50% + 600px - var(--space-xl) - 1px),
-            rgba(33, 37, 41, 0.1) calc(50% + 600px - var(--space-xl)),
-            transparent calc(50% + 600px - var(--space-xl))
-        );
 }
 
 .capabilities-container {
@@ -2606,6 +2589,33 @@ body {
     max-width: 1152px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
+    position: relative; /* For pseudo-element positioning */
+}
+
+/* Left vertical line - EXACT nav border alignment */
+.capabilities-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--space-xl); /* Same as nav border */
+    width: 1px;
+    background: rgba(33, 37, 41, 0.1); /* Same color as nav border */
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Right vertical line - EXACT nav border alignment */
+.capabilities-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: var(--space-xl); /* Same as nav border */
+    width: 1px;
+    background: rgba(33, 37, 41, 0.1); /* Same color as nav border */
+    pointer-events: none;
+    z-index: 1;
 }
 
 .capabilities-intro {
@@ -2633,12 +2643,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    /* Constrain cards to area between vertical lines */
+    max-width: calc(1152px - 2 * var(--space-xl)); /* 1152 - 64 = 1088px */
+    margin: 0 auto;
 }
 
 /* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
 .capability-card {
     position: absolute;
-    inset: 0; /* Sets all edges (top, right, bottom, left), which includes width */
+    width: 100%; /* Fill parent (1088px max - constrained by .capabilities-cards) */
     will-change: transform; /* Optimize for JavaScript animations */
     display: flex;
     align-items: center;

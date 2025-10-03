@@ -3080,7 +3080,7 @@ body {
 
     /* Mobile uses sticky positioning for scroll-based reveal */
     .capability-card {
-        position: sticky; /* Enable sticky positioning for mobile scroll (desktop keeps absolute for stack) */
+        position: sticky !important; /* MUST override desktop's position: absolute for mobile scroll behavior */
         top: 80px; /* Offset from top during sticky scroll */
         margin-bottom: var(--space-xl);
 

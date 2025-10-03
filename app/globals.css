@@ -2586,21 +2586,23 @@ body {
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
-/* Vertical Grid Background - Fades at Top */
-.capabilities-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
+.capabilities-container {
+    /* MATCH nav-container exactly - same as Silent Killers section */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+    position: relative; /* For pseudo-element positioning */
+    z-index: 1; /* Above grid background */
+
+    /* Vertical Grid Background - Equal 80px spacing constrained to container */
     background-image: repeating-linear-gradient(
         90deg,
-        rgba(3, 6, 23, 0.04) 0px,
-        rgba(3, 6, 23, 0.04) 1px,
-        transparent 1px,
-        transparent 80px
+        transparent 0px,
+        transparent 79px,
+        rgba(3, 6, 23, 0.04) 79px,
+        rgba(3, 6, 23, 0.04) 80px
     );
+    background-size: 80px 100%;
     mask-image: linear-gradient(
         to bottom,
         transparent 0%,
@@ -2613,17 +2615,6 @@ body {
         black 8%,
         black 100%
     );
-    pointer-events: none;
-    z-index: 0;
-}
-
-.capabilities-container {
-    /* MATCH nav-container exactly - same as Silent Killers section */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-xl);
-    position: relative; /* For pseudo-element positioning */
-    z-index: 1; /* Above grid background */
 }
 
 /* Left vertical line - EXACT nav border alignment with fade */

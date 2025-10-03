@@ -2603,7 +2603,7 @@ body {
         rgba(3, 6, 23, 0.04) calc(1136px / 14)
     );
     background-size: calc(1136px / 14) 100%; /* 81.142857px exactly - no rounding errors */
-    background-position: var(--space-xl) 0; /* Start at left frame (32px) */
+    background-position: 0 0; /* Start at content box edge (padding creates 32px offset automatically) */
     background-clip: content-box; /* Clip to padding box - grid stays within content area */
     mask-image: linear-gradient(
         to bottom,

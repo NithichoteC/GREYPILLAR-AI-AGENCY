@@ -2626,7 +2626,7 @@ body {
     z-index: 1; /* Above grid background */
 }
 
-/* Left vertical line - EXACT nav border alignment */
+/* Left vertical line - EXACT nav border alignment with fade */
 .capabilities-container::before {
     content: '';
     position: absolute;
@@ -2635,11 +2635,23 @@ body {
     left: var(--space-xl); /* Same as nav border */
     width: 1px;
     background: rgba(33, 37, 41, 0.1); /* Same color as nav border */
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
     pointer-events: none;
     z-index: 1;
 }
 
-/* Right vertical line - EXACT nav border alignment */
+/* Right vertical line - EXACT nav border alignment with fade */
 .capabilities-container::after {
     content: '';
     position: absolute;
@@ -2648,6 +2660,18 @@ body {
     right: var(--space-xl); /* Same as nav border */
     width: 1px;
     background: rgba(33, 37, 41, 0.1); /* Same color as nav border */
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
     pointer-events: none;
     z-index: 1;
 }

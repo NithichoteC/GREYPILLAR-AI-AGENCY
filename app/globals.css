@@ -2625,7 +2625,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 0.25rem; /* SMALL: 4px matches the top spacing - equal gaps above and below */
+    margin-bottom: 4rem; /* BREATHING ROOM: 64px spacing between intro and cards */
     max-width: 900px; /* Comfortable reading width */
 }
 
@@ -2639,14 +2639,13 @@ body {
 
 .capabilities-cards {
     position: sticky;
-    top: 140px; /* MIDDLE POSITION: 61px nav + reasonable middle positioning when sticky */
+    top: 250px; /* TRUE MIDDLE: Positions ~600px card center at 50% viewport (250px + 300px = 550px center) */
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    align-items: flex-start; /* START ALIGNMENT: card near top, not centered in 100vh */
+    align-items: flex-start; /* START ALIGNMENT: card positioning controlled by sticky top value */
     justify-content: center;
-    padding-top: 3rem; /* BREATHING ROOM: 48px spacing between intro and card */
-    /* No margin-top - sticky elements ignore margin, use padding on parent instead */
+    /* No padding-top - absolute positioned cards ignore parent padding */
     /* Cards fill full container content area (1200px - 64px = 1136px) */
     /* No max-width or margin - prevents double-centering */
 }

@@ -53,6 +53,8 @@ export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
+  const prevTransformsRef = useRef<string[]>([]); // Cache previous transforms (prevent style thrashing)
+  const prevOpacitiesRef = useRef<string[]>([]); // Cache previous opacities (prevent style thrashing)
 
   const capabilities = [
     {
@@ -180,6 +182,10 @@ export default function CapabilitiesSection() {
           prevDepthsRef.current[index] = finalDepth;
         }
 
+        // Calculate new transform and opacity values
+        let newTransform = '';
+        let newOpacity = '';
+
         if (depth >= 0 && depth < 4) {
           // Card is in stack or exiting - simplified scroll-based scaling
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
@@ -191,10 +197,9 @@ export default function CapabilitiesSection() {
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4;
 
-          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+          newTransform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Simple opacity - all stacked cards stay visible
-          const isLastCard = index === numCards - 1;
           let opacity = 1; // All cards in stack range stay fully visible
 
           // Only last card gets exit fade (when scrolling past all cards)
@@ -203,7 +208,7 @@ export default function CapabilitiesSection() {
             opacity = Math.max(0, 1 - exitProgress);
           }
 
-          cardRef.style.opacity = String(opacity);
+          newOpacity = String(opacity);
 
         } else if (depth >= 4) {
           // Keep cards at final stack position with continuous parallax
@@ -211,11 +216,10 @@ export default function CapabilitiesSection() {
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+          newTransform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
-          const isLastCard = index === numCards - 1;
-          cardRef.style.opacity = isLastCard ? '0' : '1';
+          newOpacity = isLastCard ? '0' : '1';
 
         } else if (depth > -1) {
           // Card is incoming - viewport-relative slide from bottom edge
@@ -229,12 +233,23 @@ export default function CapabilitiesSection() {
           // Interpolate between start and target based on scroll progress
           const currentY = startY - (incomingProgress * startY);
 
-          cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
-          cardRef.style.opacity = '1'; // Always full opacity - no fade
+          newTransform = `translate3d(0, ${currentY}px, 0)`;
+          newOpacity = '1'; // Always full opacity - no fade
         } else {
           // Card is off-screen below (depth <= -1)
-          cardRef.style.transform = `translate3d(0, 100vh, 0)`;
-          cardRef.style.opacity = '0';
+          newTransform = `translate3d(0, 100vh, 0)`;
+          newOpacity = '0';
+        }
+
+        // PERFORMANCE: Only update styles if values changed (prevents style thrashing)
+        if (prevTransformsRef.current[index] !== newTransform) {
+          cardRef.style.transform = newTransform;
+          prevTransformsRef.current[index] = newTransform;
+        }
+
+        if (prevOpacitiesRef.current[index] !== newOpacity) {
+          cardRef.style.opacity = newOpacity;
+          prevOpacitiesRef.current[index] = newOpacity;
         }
       });
 

@@ -2705,7 +2705,7 @@ body {
 .capability-card {
     position: absolute;
     width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
-    will-change: transform; /* Optimize for JavaScript animations */
+    will-change: auto; /* Controlled by JavaScript for battery optimization (2025 standard) */
     -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
     backface-visibility: hidden; /* Prevent flickering on mobile */
     -webkit-backface-visibility: hidden; /* Safari-specific */
@@ -2714,9 +2714,8 @@ body {
     justify-content: center;
     min-height: 650px; /* TALLER: More presence and room for content */
     max-height: 800px; /* Increased height for better visual impact */
-    /* Smooth sliding animation - MUST be on same element JavaScript animates */
-    /* Only animate transform - opacity changes instantly per user requirement */
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    /* NO transition on transform - JavaScript controls it directly (prevents flickering) */
+    touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */
@@ -2737,13 +2736,9 @@ body {
         0 20px 40px -10px rgba(0, 0, 0, 0.08),  /* Soft ambient */
         0 10px 20px -5px rgba(0, 0, 0, 0.12),   /* Mid depth */
         0 0 0 1px rgba(0, 0, 0, 0.05);          /* Crisp edge */
-    /* NO box-shadow transition - prevents flickering during scroll */
-    transition:
-        border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.3s ease-out,
-        backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),  /* SMOOTH SILK blur transition */
-        background 0.4s cubic-bezier(0.4, 0, 0.2, 1);       /* SMOOTH SILK background fade */
+    /* NO transitions on scroll-controlled properties (prevents flickering) */
+    /* Only transition hover states */
+    transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Subtle gradient overlay - adds visual interest without overwhelming content */
@@ -2799,23 +2794,26 @@ body {
 }
 
 /* Progressive blur levels - SMOOTH SILK TRANSITION (0 → 2px → 4px → 6px → 8px) */
+/* DESKTOP ONLY - Mobile overrides below to prevent initial blur flash */
 
-/* Blur entire card element - creates true frosted glass depth effect */
-.capability-card[data-depth="1"] {
-    filter: blur(2px); /* Light blur on entire first stacked card */
-}
+@media (min-width: 769px) {
+    /* Blur entire card element - creates true frosted glass depth effect */
+    .capability-card[data-depth="1"] {
+        filter: blur(2px); /* Light blur on entire first stacked card */
+    }
 
-.capability-card[data-depth="2"] {
-    filter: blur(4px); /* Medium blur on entire second depth card */
-}
+    .capability-card[data-depth="2"] {
+        filter: blur(4px); /* Medium blur on entire second depth card */
+    }
 
-.capability-card[data-depth="3"] {
-    filter: blur(6px); /* Strong blur on entire third depth card */
-}
+    .capability-card[data-depth="3"] {
+        filter: blur(6px); /* Strong blur on entire third depth card */
+    }
 
-.capability-card[data-depth="4"],
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-    filter: blur(8px); /* Maximum blur on entire deepest cards */
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: blur(8px); /* Maximum blur on entire deepest cards */
+    }
 }
 
 /* Front card - Crystal clear (depth 0) */

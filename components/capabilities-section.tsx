@@ -52,6 +52,7 @@ const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
 export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
 
   const capabilities = [
     {
@@ -87,6 +88,7 @@ export default function CapabilitiesSection() {
   useEffect(() => {
     let ticking = false;
     let lastScrollTime = 0;
+    let scrollIdleTimeout: NodeJS.Timeout | null = null;
 
     // PERFORMANCE: Cache viewport constants (recalculate only on resize)
     let viewportHeight = window.innerHeight;
@@ -97,7 +99,29 @@ export default function CapabilitiesSection() {
       isMobile = window.innerWidth <= 768;
     };
 
+    // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
+    const enableGPULayers = () => {
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'transform';
+      });
+    };
+
+    const disableGPULayers = () => {
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'auto';
+      });
+    };
+
     const handleScroll = () => {
+      // Enable GPU layers on first scroll
+      enableGPULayers();
+
+      // Clear previous idle timeout
+      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
+
+      // Disable GPU layers after 150ms of no scrolling (battery optimization)
+      scrollIdleTimeout = setTimeout(disableGPULayers, 150);
+
       if (!ticking) {
         window.requestAnimationFrame((timestamp) => {
           // THROTTLE: Skip if less than 16ms since last frame (60fps max)
@@ -143,7 +167,11 @@ export default function CapabilitiesSection() {
           finalDepth = 0; // Crystal clear at scroll end
         }
 
-        cardRef.setAttribute('data-depth', finalDepth.toString());
+        // PERFORMANCE: Only update data-depth when value changes (prevents flickering)
+        if (prevDepthsRef.current[index] !== finalDepth) {
+          cardRef.setAttribute('data-depth', finalDepth.toString());
+          prevDepthsRef.current[index] = finalDepth;
+        }
 
         if (depth >= 0 && depth < 4) {
           // Card is in stack or exiting - simplified scroll-based scaling
@@ -187,10 +215,9 @@ export default function CapabilitiesSection() {
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
           // Calculate slide from bottom of viewport to stack position
-          const viewportHeight = window.innerHeight;
           const containerTop = containerRect.top;
 
-          // Start position: bottom of viewport relative to container
+          // Start position: bottom of viewport relative to container (use cached viewportHeight)
           const startY = viewportHeight - Math.max(0, containerTop);
           // End position: stack position (0)
           const targetY = 0;
@@ -226,6 +253,8 @@ export default function CapabilitiesSection() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
+      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
+      disableGPULayers(); // Cleanup: remove GPU layers on unmount
     };
   }, [capabilities.length]);
 

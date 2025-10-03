@@ -2583,7 +2583,7 @@ body {
     padding: var(--space-5xl) 0; /* STANDARD: 128px top/bottom - top spacing was CORRECT */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
-    overflow-x: hidden; /* Prevent horizontal scroll from absolute grid overlay */
+    /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
 /* Grid overlay container - absolute positioned, full section coverage */
@@ -2592,8 +2592,8 @@ body {
     top: 0;
     left: 50%; /* Center alignment */
     transform: translateX(-50%);
-    width: 1200px; /* Explicit width required for absolute positioning - responsive via media queries */
-    max-width: 1200px; /* Match container - responsive via media queries */
+    width: 100%;
+    max-width: 1200px; /* Match container */
     height: 100%;
     display: grid;
     grid-template-columns: 32px repeat(14, 1fr) 32px; /* 32px padding + 14 columns + 32px */
@@ -2637,28 +2637,24 @@ body {
 /* Grid overlay responsive breakpoints - match capabilities-container exactly */
 @media (min-width: 1440px) {
     .capabilities-grid-overlay {
-        width: 1600px; /* Explicit width for absolute positioning */
         max-width: 1600px; /* Match nav-container on large screens */
     }
 }
 
 @media (min-width: 1024px) and (max-width: 1439.98px) {
     .capabilities-grid-overlay {
-        width: calc(100vw - 4rem); /* Explicit width for absolute positioning */
         max-width: calc(100vw - 4rem); /* Match container responsive width */
     }
 }
 
 @media (min-width: 810px) and (max-width: 1023.98px) {
     .capabilities-grid-overlay {
-        width: calc(100vw - 4rem); /* Explicit width for absolute positioning */
         max-width: calc(100vw - 4rem); /* Match container responsive width */
     }
 }
 
 @media (max-width: 809.98px) {
     .capabilities-grid-overlay {
-        width: calc(100vw - 2rem); /* Explicit width for absolute positioning */
         max-width: calc(100vw - 2rem); /* Match mobile width */
         grid-template-columns: 16px repeat(14, 1fr) 16px; /* Smaller padding on mobile */
     }
@@ -3074,24 +3070,23 @@ body {
     }
 
     .capabilities-cards-wrapper {
-        min-height: auto !important; /* Disable tall scroll container on mobile */
+        min-height: auto !important;  /* No tall scrolling container on mobile */
         display: block;
     }
 
     .capabilities-cards {
-        position: static !important; /* Disable sticky positioning on mobile */
+        position: static !important;  /* Disable sticky positioning */
         top: auto !important;
         height: auto !important;
         display: block;
     }
 
-    /* Mobile: Simple vertical stack (NO parallax for performance) */
     .capability-card {
-        position: relative !important; /* Simple vertical stacking - disables desktop absolute positioning */
+        position: relative !important;  /* Force override JavaScript positioning */
         inset: auto !important;
         margin-bottom: var(--space-xl);
-        transform: none !important; /* Disable all JavaScript parallax transforms */
-        opacity: 1 !important; /* Always visible - no fade effects */
+        transform: none !important;
+        opacity: 1 !important;  /* Always visible on mobile */
     }
 
     .capability-card-content {

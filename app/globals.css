@@ -2689,8 +2689,15 @@ body {
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
-    min-height: 800vh; /* COMFORTABLE: 200vh per card = perfect scroll pacing (was 600vh too cramped) */
+    min-height: 600vh; /* DESKTOP: 150vh per card = smooth scroll progression */
     margin-top: 0; /* No gap - smooth flow from intro text */
+}
+
+/* MOBILE: More scroll space between cards (200vh per card for breathing room) */
+@media (max-width: 768px) {
+    .capabilities-cards-wrapper {
+        min-height: 800vh; /* MOBILE: 200vh per card = comfortable pacing (Nitro standard) */
+    }
 }
 
 .capabilities-cards {

@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef, useTransition } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface CapabilityCardProps {
@@ -53,7 +53,6 @@ export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
-  const [isPending, startTransition] = useTransition();
 
   const capabilities = [
     {
@@ -104,13 +103,8 @@ export default function CapabilitiesSection() {
 
       // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
       if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        // Store ABSOLUTE position in document (rect.top + current scroll position)
-        cachedContainerTop = rect.top + window.scrollY;
-
-        // Use CSS value (800vh) instead of unreliable scrollHeight on mount
-        // 800vh = 8 * viewport height (from globals.css line 2692)
-        cachedScrollableHeight = viewportHeight * 8;
+        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
+        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
       }
     };
 
@@ -151,15 +145,13 @@ export default function CapabilitiesSection() {
             return;
           }
 
-          // CRITICAL FIX: Pure scroll calculation - NO getBoundingClientRect() call!
-          // cachedContainerTop = absolute position where container starts in document
-          // window.scrollY = current scroll position
-          // scrolledIntoContainer = how far we've scrolled INTO the container (0 = just entering)
-          const scrollY = window.scrollY;
-          const scrolledIntoContainer = scrollY - cachedContainerTop;
+          const container = containerRef.current;
 
-          // Progress from 0 (entering container) to 1 (exiting container)
-          let progress = scrolledIntoContainer / cachedScrollableHeight;
+          // PERFORMANCE: Pure scroll math - ZERO DOM reads during scroll (2025 Apple/Vercel standard)
+          const scrollY = window.scrollY;
+          const currentContainerTop = cachedContainerTop - scrollY;
+
+          let progress = -currentContainerTop / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
@@ -193,25 +185,17 @@ export default function CapabilitiesSection() {
         }
 
         if (depth >= 0 && depth < 4) {
-          // Card is in stack or exiting
+          // Card is in stack or exiting - simplified scroll-based scaling
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // MOBILE OPTIMIZATION: Binary scale (full or stacked) - no complex gradual scaling
-          // Desktop keeps smooth gradient for premium feel
-          let scale;
-          if (isMobile) {
-            // Binary: either full size (1.0) or stacked (0.9) - 50% fewer calculations
-            scale = depth < 1 ? 1 : STACK_SCALE;
-          } else {
-            // Desktop: smooth gradient scaling (premium effect)
-            const scaleProgress = Math.min(depth / 1.5, 1);
-            scale = 1 - scaleProgress * (1 - STACK_SCALE);
-          }
+          // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
+          const scaleProgress = Math.min(depth / 1.5, 1);
+          const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
-          // Simplified translate (removed complex parallax on mobile for performance)
-          const translateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const stackParallax = -depth * 4;
 
-          cardRef.style.transform = `scale(${scale}) translate3d(0, ${translateY}%, 0)`;
+          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -226,11 +210,12 @@ export default function CapabilitiesSection() {
           cardRef.style.opacity = String(opacity);
 
         } else if (depth >= 4) {
-          // Keep cards at final stack position (simplified for mobile)
+          // Keep cards at final stack position with continuous parallax
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-          const translateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${translateY}%, 0)`;
+          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;

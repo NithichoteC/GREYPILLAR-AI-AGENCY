@@ -104,8 +104,13 @@ export default function CapabilitiesSection() {
 
       // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
       if (containerRef.current) {
-        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
-        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
+        const rect = containerRef.current.getBoundingClientRect();
+        // Store ABSOLUTE position in document (rect.top + current scroll position)
+        cachedContainerTop = rect.top + window.scrollY;
+
+        // Use CSS value (800vh) instead of unreliable scrollHeight on mount
+        // 800vh = 8 * viewport height (from globals.css line 2692)
+        cachedScrollableHeight = viewportHeight * 8;
       }
     };
 
@@ -147,13 +152,14 @@ export default function CapabilitiesSection() {
           }
 
           // CRITICAL FIX: Pure scroll calculation - NO getBoundingClientRect() call!
-          // cachedContainerTop = initial position (read once on mount/resize)
-          // window.scrollY = how much user scrolled (cheap to read)
-          // Result: current position without expensive DOM read
-          const scrolled = window.scrollY;
-          const currentContainerTop = cachedContainerTop - scrolled;
+          // cachedContainerTop = absolute position where container starts in document
+          // window.scrollY = current scroll position
+          // scrolledIntoContainer = how far we've scrolled INTO the container (0 = just entering)
+          const scrollY = window.scrollY;
+          const scrolledIntoContainer = scrollY - cachedContainerTop;
 
-          let progress = -currentContainerTop / cachedScrollableHeight;
+          // Progress from 0 (entering container) to 1 (exiting container)
+          let progress = scrolledIntoContainer / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;

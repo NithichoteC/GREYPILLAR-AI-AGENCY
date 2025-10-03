@@ -2586,57 +2586,24 @@ body {
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
-/* Vertical Grid Background - Aligned with frame lines, fades at top */
-.capabilities-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background-image: repeating-linear-gradient(
-        90deg,
-        transparent 0px,
-        transparent 79px,
-        rgba(3, 6, 23, 0.04) 79px,
-        rgba(3, 6, 23, 0.04) 80px
-    );
-    background-size: 80px 100%;
-    background-position: var(--space-xl) 0; /* Offset by 32px to align first grid line with left frame line */
-    mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    pointer-events: none;
-    z-index: 0;
-}
-
 .capabilities-container {
     /* MATCH nav-container exactly - same as Silent Killers section */
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
-    position: relative; /* For pseudo-element positioning */
-    z-index: 1; /* Above grid background */
-}
+    position: relative;
+    z-index: 1;
 
-/* Left vertical line - EXACT nav border alignment with fade */
-.capabilities-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: var(--space-xl); /* Same as nav border */
-    width: 1px;
-    background: rgba(33, 37, 41, 0.1); /* Same color as nav border */
+    /* Perfect 15-column grid - Grid lines ARE the frame (1200px ÷ 80px = 15 columns exactly) */
+    background-image: repeating-linear-gradient(
+        90deg,
+        rgba(3, 6, 23, 0.04) 0px,
+        rgba(3, 6, 23, 0.04) 1px,
+        transparent 1px,
+        transparent 80px
+    );
+    background-size: 80px 100%;
+    background-position: 0 0; /* Start at container edge for perfect alignment */
     mask-image: linear-gradient(
         to bottom,
         transparent 0%,
@@ -2649,33 +2616,6 @@ body {
         black 8%,
         black 100%
     );
-    pointer-events: none;
-    z-index: 1;
-}
-
-/* Right vertical line - EXACT nav border alignment with fade */
-.capabilities-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: var(--space-xl); /* Same as nav border */
-    width: 1px;
-    background: rgba(33, 37, 41, 0.1); /* Same color as nav border */
-    mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    pointer-events: none;
-    z-index: 1;
 }
 
 .capabilities-intro {

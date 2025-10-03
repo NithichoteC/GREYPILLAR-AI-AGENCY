@@ -3069,25 +3069,8 @@ body {
         margin-bottom: var(--space-3xl);
     }
 
-    .capabilities-cards-wrapper {
-        min-height: auto !important;  /* No tall scrolling container on mobile */
-        display: block;
-    }
-
-    .capabilities-cards {
-        position: static !important;  /* Disable sticky positioning */
-        top: auto !important;
-        height: auto !important;
-        display: block;
-    }
-
-    .capability-card {
-        position: relative !important;  /* Force override JavaScript positioning */
-        inset: auto !important;
-        margin-bottom: var(--space-xl);
-        transform: none !important;
-        opacity: 1 !important;  /* Always visible on mobile */
-    }
+    /* Enable world-class parallax stacking on mobile - same as desktop */
+    /* Removed all !important overrides that were blocking JavaScript parallax */
 
     .capability-card-content {
         padding: var(--space-2xl);

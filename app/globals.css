@@ -2586,14 +2586,15 @@ body {
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
-/* Interior grid lines - 14 columns at 81px spacing (1136px content area ÷ 14 = 81.14px) */
-.capabilities-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
+.capabilities-container {
+    /* MATCH nav-container exactly - same as Silent Killers section */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+    position: relative;
+    z-index: 1;
+
+    /* Interior grid - 14 columns at 81px, constrained to content area (1136px) */
     background-image: repeating-linear-gradient(
         90deg,
         transparent 0px,
@@ -2602,7 +2603,8 @@ body {
         rgba(3, 6, 23, 0.04) 81px
     );
     background-size: 81px 100%;
-    background-position: var(--space-xl) 0; /* Start at 32px (content area edge) */
+    background-position: var(--space-xl) 0; /* Start at left frame (32px) */
+    background-clip: content-box; /* Clip to padding box - grid stays within content area */
     mask-image: linear-gradient(
         to bottom,
         transparent 0%,
@@ -2615,17 +2617,6 @@ body {
         black 8%,
         black 100%
     );
-    pointer-events: none;
-    z-index: 0;
-}
-
-.capabilities-container {
-    /* MATCH nav-container exactly - same as Silent Killers section */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-xl);
-    position: relative;
-    z-index: 1;
 }
 
 /* Left frame line - aligns with card left edge, has own fade */

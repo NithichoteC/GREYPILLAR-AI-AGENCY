@@ -2627,7 +2627,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 4rem; /* BREATHING ROOM: 64px spacing between intro and cards */
+    margin-bottom: 6rem; /* BREATHING ROOM: 96px spacing between intro and cards */
     max-width: 900px; /* Comfortable reading width */
 }
 

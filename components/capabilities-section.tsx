@@ -133,8 +133,8 @@ export default function CapabilitiesSection() {
 
       if (!ticking) {
         window.requestAnimationFrame((timestamp) => {
-          // THROTTLE: Skip if less than 16ms since last frame (60fps max)
-          if (timestamp - lastScrollTime < 16) {
+          // THROTTLE: Allow up to 120fps on modern devices (8ms minimum)
+          if (timestamp - lastScrollTime < 8) {
             ticking = false;
             return;
           }
@@ -147,9 +147,9 @@ export default function CapabilitiesSection() {
 
           const container = containerRef.current;
 
-          // PERFORMANCE: Read container position ONCE per scroll event (not per card = 75% fewer reads)
-          const containerRect = container.getBoundingClientRect();
-          const containerTop = containerRect.top;
+          // PERFORMANCE: Pure scroll math - ZERO DOM reads (eliminates getBoundingClientRect lag)
+          const scrollY = window.scrollY;
+          const containerTop = cachedContainerTop - scrollY;
 
           // Calculate scroll progress based on container position
           let progress = -containerTop / cachedScrollableHeight;

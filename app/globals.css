@@ -2696,14 +2696,14 @@ body {
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
-    min-height: 600vh; /* DESKTOP: 150vh per card = smooth scroll progression */
+    min-height: 800vh; /* DESKTOP: 200vh per card = comfortable reading pace */
     margin-top: 0; /* No gap - smooth flow from intro text */
 }
 
-/* MOBILE: More scroll space between cards (200vh per card for breathing room) */
+/* MOBILE: Extra scroll space for easier reading (250vh per card) */
 @media (max-width: 768px) {
     .capabilities-cards-wrapper {
-        min-height: 800vh; /* MOBILE: 200vh per card = comfortable pacing (Nitro standard) */
+        min-height: 1000vh; /* MOBILE: 250vh per card = MUCH more breathing room */
     }
 }
 

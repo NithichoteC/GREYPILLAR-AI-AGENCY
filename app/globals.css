@@ -2586,24 +2586,23 @@ body {
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
-.capabilities-container {
-    /* MATCH nav-container exactly - same as Silent Killers section */
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--space-xl);
-    position: relative;
-    z-index: 1;
-
-    /* Perfect 15-column grid - Grid lines ARE the frame (1200px ÷ 80px = 15 columns exactly) */
+/* Interior grid lines - 14 columns at 81px spacing (1136px content area ÷ 14 = 81.14px) */
+.capabilities-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
     background-image: repeating-linear-gradient(
         90deg,
-        rgba(3, 6, 23, 0.04) 0px,
-        rgba(3, 6, 23, 0.04) 1px,
-        transparent 1px,
-        transparent 80px
+        transparent 0px,
+        transparent 80px,
+        rgba(3, 6, 23, 0.04) 80px,
+        rgba(3, 6, 23, 0.04) 81px
     );
-    background-size: 80px 100%;
-    background-position: 0 0; /* Start at container edge for perfect alignment */
+    background-size: 81px 100%;
+    background-position: var(--space-xl) 0; /* Start at 32px (content area edge) */
     mask-image: linear-gradient(
         to bottom,
         transparent 0%,
@@ -2616,6 +2615,67 @@ body {
         black 8%,
         black 100%
     );
+    pointer-events: none;
+    z-index: 0;
+}
+
+.capabilities-container {
+    /* MATCH nav-container exactly - same as Silent Killers section */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-xl);
+    position: relative;
+    z-index: 1;
+}
+
+/* Left frame line - aligns with card left edge, has own fade */
+.capabilities-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--space-xl); /* 32px inset - aligns with content area */
+    width: 1px;
+    background: rgba(3, 6, 23, 0.04);
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    pointer-events: none;
+    z-index: 2; /* Above grid */
+}
+
+/* Right frame line - aligns with card right edge, has own fade */
+.capabilities-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: var(--space-xl); /* 32px inset - aligns with content area */
+    width: 1px;
+    background: rgba(3, 6, 23, 0.04);
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    pointer-events: none;
+    z-index: 2; /* Above grid */
 }
 
 .capabilities-intro {

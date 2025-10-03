@@ -2594,15 +2594,15 @@ body {
     position: relative;
     z-index: 1;
 
-    /* Interior grid - 14 columns at 81px, constrained to content area (1136px) */
+    /* Interior grid - 14 columns with EXACT spacing (1136px ÷ 14 = 81.142857px) */
     background-image: repeating-linear-gradient(
         90deg,
         transparent 0px,
-        transparent 80px,
-        rgba(3, 6, 23, 0.04) 80px,
-        rgba(3, 6, 23, 0.04) 81px
+        transparent calc(1136px / 14 - 1px), /* Line starts 1px before interval end */
+        rgba(3, 6, 23, 0.04) calc(1136px / 14 - 1px),
+        rgba(3, 6, 23, 0.04) calc(1136px / 14)
     );
-    background-size: 81px 100%;
+    background-size: calc(1136px / 14) 100%; /* 81.142857px exactly - no rounding errors */
     background-position: var(--space-xl) 0; /* Start at left frame (32px) */
     background-clip: content-box; /* Clip to padding box - grid stays within content area */
     mask-image: linear-gradient(

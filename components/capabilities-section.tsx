@@ -85,23 +85,31 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      if (!containerRef.current) return;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!containerRef.current) {
+            ticking = false;
+            return;
+          }
 
-      const container = containerRef.current;
-      const containerRect = container.getBoundingClientRect();
-      const scrollableHeight = container.scrollHeight - window.innerHeight;
+          const container = containerRef.current;
+          const containerRect = container.getBoundingClientRect();
+          const scrollableHeight = container.scrollHeight - window.innerHeight;
 
-      let progress = -containerRect.top / scrollableHeight;
-      progress = Math.max(0, Math.min(1, progress));
+          let progress = -containerRect.top / scrollableHeight;
+          progress = Math.max(0, Math.min(1, progress));
 
-      const numCards = capabilities.length;
-      const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
+          const numCards = capabilities.length;
+          const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
-      // Parallax constants (from pararexcode.txt)
-      const STACK_SCALE = 0.9;
-      const Y_OFFSET_PER_LEVEL = 4; // in percent
-      const MAX_VISIBLE_STACK_CARDS = 3;
+          // Parallax constants - mobile optimized
+          const isMobile = window.innerWidth <= 768;
+          const STACK_SCALE = 0.9;
+          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Reduced on mobile for better visibility
+          const MAX_VISIBLE_STACK_CARDS = 3;
 
       cardRefs.current.forEach((cardRef, index) => {
         if (!cardRef) return;
@@ -148,7 +156,7 @@ export default function CapabilitiesSection() {
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4;
 
-          cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
+          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -168,7 +176,7 @@ export default function CapabilitiesSection() {
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY + stackParallax}%)`;
+          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;
@@ -190,14 +198,19 @@ export default function CapabilitiesSection() {
           // Interpolate between start and target based on scroll progress
           const currentY = startY - (incomingProgress * startY);
 
-          cardRef.style.transform = `translateY(${currentY}px)`;
+          cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
           cardRef.style.opacity = '1'; // Always full opacity - no fade
         } else {
           // Card is off-screen below (depth <= -1)
-          cardRef.style.transform = `translateY(100vh)`;
+          cardRef.style.transform = `translate3d(0, 100vh, 0)`;
           cardRef.style.opacity = '0';
         }
       });
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });

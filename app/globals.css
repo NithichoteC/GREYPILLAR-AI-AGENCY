@@ -2706,6 +2706,9 @@ body {
     position: absolute;
     width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
     will-change: transform; /* Optimize for JavaScript animations */
+    -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
+    backface-visibility: hidden; /* Prevent flickering on mobile */
+    -webkit-backface-visibility: hidden; /* Safari-specific */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3069,12 +3072,28 @@ body {
         margin-bottom: var(--space-3xl);
     }
 
-    /* Enable world-class parallax stacking on mobile - same as desktop */
-    /* Removed all !important overrides that were blocking JavaScript parallax */
+    /* MOBILE POSITIONING FIX: Adjust sticky top for smaller viewport */
+    .capabilities-cards {
+        top: 100px; /* Mobile: higher position for 600-700px viewport (vs 250px desktop) */
+    }
+
+    /* MOBILE PERFORMANCE: Smaller cards fit viewport better */
+    .capability-card {
+        min-height: 500px; /* Reduced from 650px */
+        max-height: 600px; /* Reduced from 800px */
+    }
 
     .capability-card-content {
         padding: var(--space-2xl);
-        min-height: 400px;
+        min-height: 500px; /* Match outer card */
+    }
+
+    /* MOBILE PERFORMANCE: Remove blur (heavy GPU operation on mobile) */
+    .capability-card[data-depth="1"],
+    .capability-card[data-depth="2"],
+    .capability-card[data-depth="3"],
+    .capability-card[data-depth="4"] {
+        filter: none !important; /* Disable blur on mobile for smooth scrolling */
     }
 
     .capability-card-header {

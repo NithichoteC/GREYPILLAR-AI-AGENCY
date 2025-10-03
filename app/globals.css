@@ -2592,7 +2592,7 @@ body {
     top: 0;
     left: 50%; /* Center alignment */
     transform: translateX(-50%);
-    /* width: 100%; REMOVED - was causing mobile horizontal overflow, max-width handles sizing */
+    width: 1200px; /* Explicit width required for absolute positioning - responsive via media queries */
     max-width: 1200px; /* Match container - responsive via media queries */
     height: 100%;
     display: grid;
@@ -2637,24 +2637,28 @@ body {
 /* Grid overlay responsive breakpoints - match capabilities-container exactly */
 @media (min-width: 1440px) {
     .capabilities-grid-overlay {
+        width: 1600px; /* Explicit width for absolute positioning */
         max-width: 1600px; /* Match nav-container on large screens */
     }
 }
 
 @media (min-width: 1024px) and (max-width: 1439.98px) {
     .capabilities-grid-overlay {
+        width: calc(100vw - 4rem); /* Explicit width for absolute positioning */
         max-width: calc(100vw - 4rem); /* Match container responsive width */
     }
 }
 
 @media (min-width: 810px) and (max-width: 1023.98px) {
     .capabilities-grid-overlay {
+        width: calc(100vw - 4rem); /* Explicit width for absolute positioning */
         max-width: calc(100vw - 4rem); /* Match container responsive width */
     }
 }
 
 @media (max-width: 809.98px) {
     .capabilities-grid-overlay {
+        width: calc(100vw - 2rem); /* Explicit width for absolute positioning */
         max-width: calc(100vw - 2rem); /* Match mobile width */
         grid-template-columns: 16px repeat(14, 1fr) 16px; /* Smaller padding on mobile */
     }

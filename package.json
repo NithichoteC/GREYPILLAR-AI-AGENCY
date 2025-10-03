@@ -16,6 +16,7 @@
     "@types/three": "^0.158.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.23.22",
     "lucide-react": "^0.544.0",
     "next": "^14.0.0",
     "postprocessing": "^6.35.0",

@@ -2732,6 +2732,8 @@ body {
     position: absolute;
     width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
     will-change: auto; /* Controlled by JavaScript for battery optimization (2025 standard) */
+    transform: translateZ(0); /* Force GPU layer creation (Apple pattern) */
+    perspective: 1000px; /* Enable 3D rendering context for smoother transforms */
     -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
     backface-visibility: hidden; /* Prevent flickering on mobile */
     -webkit-backface-visibility: hidden; /* Safari-specific */

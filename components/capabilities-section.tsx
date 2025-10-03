@@ -87,7 +87,6 @@ export default function CapabilitiesSection() {
 
   useEffect(() => {
     let ticking = false;
-    let lastScrollTime = 0;
     let scrollIdleTimeout: NodeJS.Timeout | null = null;
     let resizeTimeout: NodeJS.Timeout | null = null;
 
@@ -108,10 +107,13 @@ export default function CapabilitiesSection() {
       }
     };
 
-    // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
+    // PERFORMANCE: Persistent GPU layers for smooth scrolling (Apple 2025 pattern)
     const enableGPULayers = () => {
       cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'transform';
+        if (cardRef) {
+          cardRef.style.willChange = 'transform, opacity';
+          cardRef.style.transform = cardRef.style.transform || 'translateZ(0)'; // Force GPU layer
+        }
       });
     };
 
@@ -132,14 +134,7 @@ export default function CapabilitiesSection() {
       scrollIdleTimeout = setTimeout(disableGPULayers, 150);
 
       if (!ticking) {
-        window.requestAnimationFrame((timestamp) => {
-          // THROTTLE: Allow up to 120fps on modern devices (8ms minimum)
-          if (timestamp - lastScrollTime < 8) {
-            ticking = false;
-            return;
-          }
-          lastScrollTime = timestamp;
-
+        window.requestAnimationFrame(() => {
           if (!containerRef.current) {
             ticking = false;
             return;

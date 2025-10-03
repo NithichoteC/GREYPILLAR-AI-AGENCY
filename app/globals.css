@@ -3074,39 +3074,24 @@ body {
     }
 
     .capabilities-cards-wrapper {
-        min-height: 300vh; /* Restore scroll container for parallax (was auto !important) */
+        min-height: auto !important; /* Disable tall scroll container on mobile */
         display: block;
     }
 
-    /* Mobile uses sticky positioning for scroll-based reveal */
+    .capabilities-cards {
+        position: static !important; /* Disable sticky positioning on mobile */
+        top: auto !important;
+        height: auto !important;
+        display: block;
+    }
+
+    /* Mobile: Simple vertical stack (NO parallax for performance) */
     .capability-card {
-        position: sticky !important; /* MUST override desktop's position: absolute for mobile scroll behavior */
-        top: 80px; /* Offset from top during sticky scroll */
+        position: relative !important; /* Simple vertical stacking - disables desktop absolute positioning */
+        inset: auto !important;
         margin-bottom: var(--space-xl);
-
-        /* Performance optimizations for smooth mobile parallax */
-        will-change: transform;
-        transform: translateZ(0); /* Hardware acceleration */
-
-        /* JavaScript handles transform and opacity */
-    }
-
-    /* Reduced blur intensity for better mobile GPU performance (50% less than desktop) */
-    .capability-card[data-depth="1"] {
-        filter: blur(1px) !important; /* Was 2px on desktop */
-    }
-
-    .capability-card[data-depth="2"] {
-        filter: blur(2px) !important; /* Was 4px on desktop */
-    }
-
-    .capability-card[data-depth="3"] {
-        filter: blur(3px) !important; /* Was 6px on desktop */
-    }
-
-    .capability-card[data-depth="4"],
-    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-        filter: blur(4px) !important; /* Was 8px on desktop */
+        transform: none !important; /* Disable all JavaScript parallax transforms */
+        opacity: 1 !important; /* Always visible - no fade effects */
     }
 
     .capability-card-content {

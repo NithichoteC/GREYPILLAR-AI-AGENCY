@@ -2713,7 +2713,6 @@ body {
     height: 100vh;
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    flex-direction: column; /* Force vertical stacking of cards */
     align-items: flex-start; /* START ALIGNMENT: card positioning controlled by sticky top value */
     justify-content: center;
     /* No padding-top - absolute positioned cards ignore parent padding */

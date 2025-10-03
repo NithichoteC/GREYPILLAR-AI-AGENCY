@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useTransition } from 'react';
 import Image from 'next/image';
 
 interface CapabilityCardProps {
@@ -53,6 +53,7 @@ export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
+  const [isPending, startTransition] = useTransition();
 
   const capabilities = [
     {
@@ -145,12 +146,12 @@ export default function CapabilitiesSection() {
             return;
           }
 
-          const container = containerRef.current;
-
-          // PERFORMANCE: Use cached container position (updated on scroll, no getBoundingClientRect!)
-          const currentContainerTop = window.scrollY === 0
-            ? cachedContainerTop
-            : cachedContainerTop - (cachedContainerTop - container.getBoundingClientRect().top);
+          // CRITICAL FIX: Pure scroll calculation - NO getBoundingClientRect() call!
+          // cachedContainerTop = initial position (read once on mount/resize)
+          // window.scrollY = how much user scrolled (cheap to read)
+          // Result: current position without expensive DOM read
+          const scrolled = window.scrollY;
+          const currentContainerTop = cachedContainerTop - scrolled;
 
           let progress = -currentContainerTop / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
@@ -186,17 +187,25 @@ export default function CapabilitiesSection() {
         }
 
         if (depth >= 0 && depth < 4) {
-          // Card is in stack or exiting - simplified scroll-based scaling
+          // Card is in stack or exiting
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
-          const scaleProgress = Math.min(depth / 1.5, 1);
-          const scale = 1 - scaleProgress * (1 - STACK_SCALE);
+          // MOBILE OPTIMIZATION: Binary scale (full or stacked) - no complex gradual scaling
+          // Desktop keeps smooth gradient for premium feel
+          let scale;
+          if (isMobile) {
+            // Binary: either full size (1.0) or stacked (0.9) - 50% fewer calculations
+            scale = depth < 1 ? 1 : STACK_SCALE;
+          } else {
+            // Desktop: smooth gradient scaling (premium effect)
+            const scaleProgress = Math.min(depth / 1.5, 1);
+            scale = 1 - scaleProgress * (1 - STACK_SCALE);
+          }
 
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-          const stackParallax = -depth * 4;
+          // Simplified translate (removed complex parallax on mobile for performance)
+          const translateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
 
-          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+          cardRef.style.transform = `scale(${scale}) translate3d(0, ${translateY}%, 0)`;
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -211,12 +220,11 @@ export default function CapabilitiesSection() {
           cardRef.style.opacity = String(opacity);
 
         } else if (depth >= 4) {
-          // Keep cards at final stack position with continuous parallax
+          // Keep cards at final stack position (simplified for mobile)
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-          const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
+          const translateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${translateY}%, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;

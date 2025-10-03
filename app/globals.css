@@ -2689,7 +2689,7 @@ body {
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
-    min-height: 600vh; /* INCREASED: 150vh per card = smoother scroll progression (was 500vh = 125vh/card too fast) */
+    min-height: 800vh; /* COMFORTABLE: 200vh per card = perfect scroll pacing (was 600vh too cramped) */
     margin-top: 0; /* No gap - smooth flow from intro text */
 }
 

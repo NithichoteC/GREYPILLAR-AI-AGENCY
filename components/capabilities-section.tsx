@@ -24,18 +24,14 @@ const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
       >
         <div className="capability-card-content">
           <div className="capability-card-header">
-            <div
-              className="capability-icon-circle"
-              style={{ borderColor: accentColor }}
-            >
-              <Image
-                src={iconSrc}
-                alt={title}
-                width={64}
-                height={64}
-                className="capability-icon-image"
-              />
-            </div>
+            <Image
+              src={iconSrc}
+              alt={title}
+              width={64}
+              height={64}
+              className="capability-icon"
+              priority={index === 0}
+            />
             <div>
               <h3 className="capability-card-title">{title}</h3>
               <p className="capability-card-description">{description}</p>

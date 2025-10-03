@@ -3077,15 +3077,15 @@ body {
         top: 100px; /* Mobile: higher position for 600-700px viewport (vs 250px desktop) */
     }
 
-    /* MOBILE PERFORMANCE: Smaller cards fit viewport better */
+    /* MOBILE SPACING: Larger cards provide better breathing room */
     .capability-card {
-        min-height: 500px; /* Reduced from 650px */
-        max-height: 600px; /* Reduced from 800px */
+        min-height: 550px; /* Increased from 500px for +50px content space */
+        max-height: 650px; /* Increased from 600px to match content min-height */
     }
 
     .capability-card-content {
-        padding: var(--space-2xl);
-        min-height: 500px; /* Match outer card */
+        padding: var(--space-xl); /* Reduced: 24px (was 32px) for +16px vertical space */
+        min-height: 550px; /* Increased: 550px (was 500px) for +50px breathing room */
     }
 
     /* MOBILE PERFORMANCE: Remove blur (heavy GPU operation on mobile) */
@@ -3097,7 +3097,7 @@ body {
     }
 
     .capability-card-header {
-        gap: var(--space-md);
+        gap: 0.75rem; /* Tighter: 12px (was 16px) */
     }
 
     .capability-icon {
@@ -3106,12 +3106,13 @@ body {
     }
 
     .capability-card-title {
-        font-size: clamp(1.5rem, 4vw, 1.875rem); /* Mobile responsive */
-        margin-bottom: 0.75rem;
+        font-size: clamp(1.25rem, 3.5vw, 1.5rem); /* Reduced for mobile breathing room: 20px-24px */
+        margin-bottom: 0.625rem; /* Tighter spacing: 10px */
     }
 
     .capability-card-description {
-        font-size: 1rem;
+        font-size: 0.9375rem; /* Reduced: 15px for better fit */
+        line-height: 1.6; /* Tighter line spacing */
     }
 
     .capability-tag {

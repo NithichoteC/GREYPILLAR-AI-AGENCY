@@ -86,10 +86,27 @@ export default function CapabilitiesSection() {
 
   useEffect(() => {
     let ticking = false;
+    let lastScrollTime = 0;
+
+    // PERFORMANCE: Cache viewport constants (recalculate only on resize)
+    let viewportHeight = window.innerHeight;
+    let isMobile = window.innerWidth <= 768;
+
+    const updateViewportCache = () => {
+      viewportHeight = window.innerHeight;
+      isMobile = window.innerWidth <= 768;
+    };
 
     const handleScroll = () => {
       if (!ticking) {
-        window.requestAnimationFrame(() => {
+        window.requestAnimationFrame((timestamp) => {
+          // THROTTLE: Skip if less than 16ms since last frame (60fps max)
+          if (timestamp - lastScrollTime < 16) {
+            ticking = false;
+            return;
+          }
+          lastScrollTime = timestamp;
+
           if (!containerRef.current) {
             ticking = false;
             return;
@@ -97,7 +114,7 @@ export default function CapabilitiesSection() {
 
           const container = containerRef.current;
           const containerRect = container.getBoundingClientRect();
-          const scrollableHeight = container.scrollHeight - window.innerHeight;
+          const scrollableHeight = container.scrollHeight - viewportHeight;
 
           let progress = -containerRect.top / scrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
@@ -106,7 +123,6 @@ export default function CapabilitiesSection() {
           const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
           // Parallax constants - mobile optimized
-          const isMobile = window.innerWidth <= 768;
           const STACK_SCALE = 0.9;
           const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Reduced on mobile for better visibility
           const MAX_VISIBLE_STACK_CARDS = 3;
@@ -130,27 +146,11 @@ export default function CapabilitiesSection() {
         cardRef.setAttribute('data-depth', finalDepth.toString());
 
         if (depth >= 0 && depth < 4) {
-          // Card is in stack or exiting - extended range for smooth exit
-          const depthProgress = Math.min(depth, 1);
+          // Card is in stack or exiting - simplified scroll-based scaling
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // Progressive scaling - starts before reaching middle for smooth feel
-          const cardRect = cardRef.getBoundingClientRect();
-          const cardCenter = cardRect.top + cardRect.height / 2;
-          const viewportMiddle = window.innerHeight / 2;
-
-          // Distance below middle (positive = below, negative = above)
-          const distanceBelowMiddle = cardCenter - viewportMiddle;
-
-          // Start scaling 500px before middle for smoother, earlier transition
-          const scaleStartDistance = 500;
-          const scaleRange = Math.max(0, Math.min(1, (scaleStartDistance - distanceBelowMiddle) / scaleStartDistance));
-
-          // Combine distance-based (50%) + depth-based (50%) scaling for smooth progression
-          const distanceScale = scaleRange * 0.5;
-          const depthScale = Math.min(depth / 1.5, 1) * 0.5;
-          const scaleProgress = distanceScale + depthScale;
-
+          // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
+          const scaleProgress = Math.min(depth / 1.5, 1);
           const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
@@ -213,10 +213,20 @@ export default function CapabilitiesSection() {
       }
     };
 
+    // PERFORMANCE: Update cached values on resize
+    const handleResize = () => {
+      updateViewportCache();
+      handleScroll(); // Recalculate positions
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
     handleScroll(); // Initial call
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, [capabilities.length]);
 
   return (

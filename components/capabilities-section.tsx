@@ -1,7 +1,6 @@
 'use client';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface CapabilityCardProps {
   iconSrc: string;
@@ -10,67 +9,50 @@ interface CapabilityCardProps {
   description: string;
   tags: string[];
   index: number;
-  totalCards: number;
 }
 
-const CapabilityCard = ({ iconSrc, accentColor, title, description, tags, index, totalCards }: CapabilityCardProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
+  ({ iconSrc, accentColor, title, description, tags, index }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className="capability-card"
+        data-index={index}
+        style={{
+          zIndex: index,
+        }}
+      >
+        <div className="capability-card-content">
+          <div className="capability-card-header">
+            <Image
+              src={iconSrc}
+              alt={title}
+              width={64}
+              height={64}
+              className="capability-icon"
+              priority={index === 0}
+            />
+            <div>
+              <h3 className="capability-card-title">{title}</h3>
+              <p className="capability-card-description">{description}</p>
+            </div>
+          </div>
 
-  // Track this specific card's scroll progress
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "start start"]
-  });
-
-  // Desktop: Scale from 1 → 0.9 based on card position in stack
-  const targetScale = 1 - ((totalCards - index) * 0.05);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, targetScale]);
-
-  // Last card fades out at end of scroll
-  const isLastCard = index === totalCards - 1;
-  const opacity = isLastCard
-    ? useTransform(scrollYProgress, [0.8, 1], [1, 0])
-    : 1;
-
-  return (
-    <motion.div
-      ref={cardRef}
-      style={{
-        scale,
-        opacity,
-        top: `calc(-5vh + ${index * 25}px)`,
-        zIndex: index
-      }}
-      className="capability-card"
-      data-index={index}
-    >
-      <div className="capability-card-content">
-        <div className="capability-card-header">
-          <Image
-            src={iconSrc}
-            alt={title}
-            width={64}
-            height={64}
-            className="capability-icon"
-            priority={index === 0}
-          />
-          <div>
-            <h3 className="capability-card-title">{title}</h3>
-            <p className="capability-card-description">{description}</p>
+          <div className="capability-card-tags">
+            {tags.map((tag, i) => (
+              <span key={i} className="capability-tag">{tag}</span>
+            ))}
           </div>
         </div>
-
-        <div className="capability-card-tags">
-          {tags.map((tag, i) => (
-            <span key={i} className="capability-tag">{tag}</span>
-          ))}
-        </div>
       </div>
-    </motion.div>
-  );
-};
+    );
+  }
+);
 
 export default function CapabilitiesSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   const capabilities = [
     {
       iconSrc: '/icons/revenue-recovery.png',
@@ -102,6 +84,128 @@ export default function CapabilitiesSection() {
     }
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+
+      const container = containerRef.current;
+      const containerRect = container.getBoundingClientRect();
+      const scrollableHeight = container.scrollHeight - window.innerHeight;
+
+      let progress = -containerRect.top / scrollableHeight;
+      progress = Math.max(0, Math.min(1, progress));
+
+      const numCards = capabilities.length;
+      const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
+
+      // Parallax constants (from pararexcode.txt)
+      const STACK_SCALE = 0.9;
+      const Y_OFFSET_PER_LEVEL = 4; // in percent
+      const MAX_VISIBLE_STACK_CARDS = 3;
+
+      cardRefs.current.forEach((cardRef, index) => {
+        if (!cardRef) return;
+
+        cardRef.style.zIndex = String(index);
+
+        const depth = activeCardFloat - index;
+
+        // Set data-depth for CSS styling (stacked vs front card)
+        let finalDepth = Math.floor(Math.max(0, depth));
+
+        // Last card becomes crisp (depth 0) when scroll reaches end
+        const isLastCard = index === numCards - 1;
+        if (isLastCard && activeCardFloat >= numCards) {
+          finalDepth = 0; // Crystal clear at scroll end
+        }
+
+        cardRef.setAttribute('data-depth', finalDepth.toString());
+
+        if (depth >= 0 && depth < 4) {
+          // Card is in stack or exiting - extended range for smooth exit
+          const depthProgress = Math.min(depth, 1);
+          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+
+          // Progressive scaling - starts before reaching middle for smooth feel
+          const cardRect = cardRef.getBoundingClientRect();
+          const cardCenter = cardRect.top + cardRect.height / 2;
+          const viewportMiddle = window.innerHeight / 2;
+
+          // Distance below middle (positive = below, negative = above)
+          const distanceBelowMiddle = cardCenter - viewportMiddle;
+
+          // Start scaling 500px before middle for smoother, earlier transition
+          const scaleStartDistance = 500;
+          const scaleRange = Math.max(0, Math.min(1, (scaleStartDistance - distanceBelowMiddle) / scaleStartDistance));
+
+          // Combine distance-based (50%) + depth-based (50%) scaling for smooth progression
+          const distanceScale = scaleRange * 0.5;
+          const depthScale = Math.min(depth / 1.5, 1) * 0.5;
+          const scaleProgress = distanceScale + depthScale;
+
+          const scale = 1 - scaleProgress * (1 - STACK_SCALE);
+
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const stackParallax = -depth * 4;
+
+          cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
+
+          // Simple opacity - all stacked cards stay visible
+          const isLastCard = index === numCards - 1;
+          let opacity = 1; // All cards in stack range stay fully visible
+
+          // Only last card gets exit fade (when scrolling past all cards)
+          if (isLastCard && depth > 3) {
+            const exitProgress = Math.max(0, depth - 3);
+            opacity = Math.max(0, 1 - exitProgress);
+          }
+
+          cardRef.style.opacity = String(opacity);
+
+        } else if (depth >= 4) {
+          // Keep cards at final stack position with continuous parallax
+          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+          const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
+
+          cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY + stackParallax}%)`;
+
+          // Explicitly set opacity - last card fades, others stay visible
+          const isLastCard = index === numCards - 1;
+          cardRef.style.opacity = isLastCard ? '0' : '1';
+
+        } else if (depth > -1) {
+          // Card is incoming - viewport-relative slide from bottom edge
+          const incomingProgress = 1 + depth; // 0 to 1 as card enters
+
+          // Calculate slide from bottom of viewport to stack position
+          const viewportHeight = window.innerHeight;
+          const containerTop = containerRect.top;
+
+          // Start position: bottom of viewport relative to container
+          const startY = viewportHeight - Math.max(0, containerTop);
+          // End position: stack position (0)
+          const targetY = 0;
+
+          // Interpolate between start and target based on scroll progress
+          const currentY = startY - (incomingProgress * startY);
+
+          cardRef.style.transform = `translateY(${currentY}px)`;
+          cardRef.style.opacity = '1'; // Always full opacity - no fade
+        } else {
+          // Card is off-screen below (depth <= -1)
+          cardRef.style.transform = `translateY(100vh)`;
+          cardRef.style.opacity = '0';
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [capabilities.length]);
+
   return (
     <section className="capabilities-section" id="capabilities">
       {/* Grid overlay - 14 vertical lines with CSS Grid */}
@@ -123,14 +227,14 @@ export default function CapabilitiesSection() {
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div className="capabilities-cards-wrapper">
+        <div ref={containerRef} className="capabilities-cards-wrapper">
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
               <CapabilityCard
                 key={index}
+                ref={(el) => { cardRefs.current[index] = el; }}
                 {...capability}
                 index={index}
-                totalCards={capabilities.length}
               />
             ))}
           </div>

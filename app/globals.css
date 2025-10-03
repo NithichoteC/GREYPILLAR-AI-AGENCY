@@ -2583,7 +2583,7 @@ body {
     padding: var(--space-5xl) 0; /* STANDARD: 128px top/bottom - top spacing was CORRECT */
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
-    /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
+    overflow-x: hidden; /* Prevent horizontal scroll from absolute grid overlay */
 }
 
 /* Grid overlay container - absolute positioned, full section coverage */
@@ -2592,8 +2592,8 @@ body {
     top: 0;
     left: 50%; /* Center alignment */
     transform: translateX(-50%);
-    width: 100%;
-    max-width: 1200px; /* Match container */
+    /* width: 100%; REMOVED - was causing mobile horizontal overflow, max-width handles sizing */
+    max-width: 1200px; /* Match container - responsive via media queries */
     height: 100%;
     display: grid;
     grid-template-columns: 32px repeat(14, 1fr) 32px; /* 32px padding + 14 columns + 32px */

@@ -3070,23 +3070,39 @@ body {
     }
 
     .capabilities-cards-wrapper {
-        min-height: auto !important;  /* No tall scrolling container on mobile */
+        min-height: 300vh; /* Restore scroll container for parallax (was auto !important) */
         display: block;
     }
 
-    .capabilities-cards {
-        position: static !important;  /* Disable sticky positioning */
-        top: auto !important;
-        height: auto !important;
-        display: block;
-    }
+    /* Remove .capabilities-cards overrides - let sticky positioning work */
 
     .capability-card {
-        position: relative !important;  /* Force override JavaScript positioning */
-        inset: auto !important;
+        position: sticky !important;  /* Enable sticky positioning for parallax (was relative) */
         margin-bottom: var(--space-xl);
-        transform: none !important;
-        opacity: 1 !important;  /* Always visible on mobile */
+
+        /* Performance optimizations for smooth mobile parallax */
+        will-change: transform;
+        transform: translateZ(0); /* Hardware acceleration */
+
+        /* JavaScript handles transform and opacity - removed blocking !important rules */
+    }
+
+    /* Reduced blur intensity for better mobile GPU performance (50% less than desktop) */
+    .capability-card[data-depth="1"] {
+        filter: blur(1px) !important; /* Was 2px on desktop */
+    }
+
+    .capability-card[data-depth="2"] {
+        filter: blur(2px) !important; /* Was 4px on desktop */
+    }
+
+    .capability-card[data-depth="3"] {
+        filter: blur(3px) !important; /* Was 6px on desktop */
+    }
+
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: blur(4px) !important; /* Was 8px on desktop */
     }
 
     .capability-card-content {

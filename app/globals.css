@@ -2627,7 +2627,7 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 6rem; /* BREATHING ROOM: 96px spacing between intro and cards */
+    margin-bottom: 8rem; /* BALANCED SPACING: 128px matches top section padding perfectly */
     max-width: 900px; /* Comfortable reading width */
 }
 
@@ -2660,8 +2660,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 560px; /* INCREASED: Better visual presence, less empty feel */
-    max-height: 680px; /* Slightly more room for larger cards */
+    min-height: 650px; /* TALLER: More presence and room for content */
+    max-height: 800px; /* Increased height for better visual impact */
     /* Smooth sliding animation - MUST be on same element JavaScript animates */
     /* Only animate transform - opacity changes instantly per user requirement */
     transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2675,7 +2675,7 @@ body {
     padding: 2rem; /* REDUCED: 32px tight spacing (was 64px, -50% reduction!) */
     width: 100%; /* Fill parent - matches total width of ALL 3 Silent Killers cards combined */
     height: 100%;
-    min-height: 560px; /* INCREASED: Slightly taller cards for better presence (was 520px) */
+    min-height: 650px; /* TALLER: Matches outer card height for consistency */
     display: flex;
     flex-direction: column;
     position: relative;
@@ -2893,8 +2893,8 @@ body {
 /* Icon Circle Container - Apple/Vercel Premium */
 .capability-icon-circle {
     margin-top: 0.25rem;
-    width: 64px; /* Larger for more presence */
-    height: 64px;
+    width: 80px; /* Larger for PNG icons - more presence */
+    height: 80px;
     border-radius: 9999px;
     border: 1px solid rgba(3, 6, 23, 0.06); /* Lighter, more subtle */
     background: #F8FAFC; /* Solid, clean background */
@@ -2902,11 +2902,21 @@ body {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    padding: 12px; /* Padding to crop ChatGPT-generated edges */
     /* Enhanced depth - stronger visual presence */
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.06),
         0 2px 6px rgba(0, 0, 0, 0.03),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* PNG Icon Image Styling */
+.capability-icon-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain; /* Preserve icon proportions */
+    filter: grayscale(0%); /* Keep original colors from ChatGPT */
+    opacity: 0.95; /* Subtle transparency for elegance */
 }
 
 .capability-card-icon {

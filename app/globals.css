@@ -3078,17 +3078,17 @@ body {
         display: block;
     }
 
-    /* Remove .capabilities-cards overrides - let sticky positioning work */
-
+    /* Mobile uses sticky positioning for scroll-based reveal */
     .capability-card {
-        position: sticky !important;  /* Enable sticky positioning for parallax (was relative) */
+        position: sticky; /* Enable sticky positioning for mobile scroll (desktop keeps absolute for stack) */
+        top: 80px; /* Offset from top during sticky scroll */
         margin-bottom: var(--space-xl);
 
         /* Performance optimizations for smooth mobile parallax */
         will-change: transform;
         transform: translateZ(0); /* Hardware acceleration */
 
-        /* JavaScript handles transform and opacity - removed blocking !important rules */
+        /* JavaScript handles transform and opacity */
     }
 
     /* Reduced blur intensity for better mobile GPU performance (50% less than desktop) */

@@ -208,6 +208,20 @@ export default function CapabilitiesSection() {
 
   return (
     <section className="capabilities-section" id="capabilities">
+      {/* Grid overlay - 14 vertical lines with CSS Grid */}
+      <div className="capabilities-grid-overlay" aria-hidden="true">
+        {/* Left frame line */}
+        <div className="grid-line frame-line"></div>
+
+        {/* 13 interior grid lines (between frames) */}
+        {Array.from({ length: 13 }).map((_, i) => (
+          <div key={i} className="grid-line interior-line"></div>
+        ))}
+
+        {/* Right frame line */}
+        <div className="grid-line frame-line"></div>
+      </div>
+
       <div className="capabilities-container">
         <p className="capabilities-intro">
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.

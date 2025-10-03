@@ -2586,89 +2586,87 @@ body {
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
 }
 
+/* Grid overlay container - absolute positioned, full section coverage */
+.capabilities-grid-overlay {
+    position: absolute;
+    top: 0;
+    left: 50%; /* Center alignment */
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 1200px; /* Match container */
+    height: 100%;
+    display: grid;
+    grid-template-columns: 32px repeat(14, 1fr) 32px; /* 32px padding + 14 columns + 32px */
+    gap: 0;
+    pointer-events: none; /* Don't block interactions */
+    z-index: 1;
+}
+
+/* Individual grid lines */
+.grid-line {
+    width: 1px;
+    height: 100%;
+    background: rgba(3, 6, 23, 0.04);
+    justify-self: end; /* Align to right edge of each grid cell */
+
+    /* Fade out at top - same as before */
+    mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+    -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 8%,
+        black 100%
+    );
+}
+
+/* Frame lines (left and right) - higher z-index */
+.frame-line {
+    z-index: 2;
+}
+
+/* Interior lines */
+.interior-line {
+    z-index: 1;
+}
+
+/* Grid overlay responsive breakpoints - match capabilities-container exactly */
+@media (min-width: 1440px) {
+    .capabilities-grid-overlay {
+        max-width: 1600px; /* Match nav-container on large screens */
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+    .capabilities-grid-overlay {
+        max-width: calc(100vw - 4rem); /* Match container responsive width */
+    }
+}
+
+@media (min-width: 810px) and (max-width: 1023.98px) {
+    .capabilities-grid-overlay {
+        max-width: calc(100vw - 4rem); /* Match container responsive width */
+    }
+}
+
+@media (max-width: 809.98px) {
+    .capabilities-grid-overlay {
+        max-width: calc(100vw - 2rem); /* Match mobile width */
+        grid-template-columns: 16px repeat(14, 1fr) 16px; /* Smaller padding on mobile */
+    }
+}
+
 .capabilities-container {
     /* MATCH nav-container exactly - same as Silent Killers section */
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--space-xl);
     position: relative;
-    z-index: 1;
-
-    /* Interior grid - 14 columns FIXED (professional approach like Nitro)
-       Math: (1200px max-width - 64px padding) / 14 columns = 81.14px per column
-       At larger viewports, grid becomes slightly denser (acceptable trade-off) */
-    background-image: repeating-linear-gradient(
-        90deg,
-        transparent 0px,
-        transparent 80.14px,
-        rgba(3, 6, 23, 0.04) 80.14px,
-        rgba(3, 6, 23, 0.04) 81.14px
-    );
-    background-size: 81.14px 100%;
-    background-position: 0 0; /* Start at content box edge (padding creates 32px offset automatically) */
-    background-clip: content-box; /* Clip to padding box - grid stays within content area */
-    mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-}
-
-/* Left frame line - aligns with card left edge, has own fade */
-.capabilities-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: var(--space-xl); /* 32px inset - aligns with content area */
-    width: 1px;
-    background: rgba(3, 6, 23, 0.04);
-    mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    pointer-events: none;
-    z-index: 2; /* Above grid */
-}
-
-/* Right frame line - aligns with card right edge, has own fade */
-.capabilities-container::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: var(--space-xl); /* 32px inset - aligns with content area */
-    width: 1px;
-    background: rgba(3, 6, 23, 0.04);
-    mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    -webkit-mask-image: linear-gradient(
-        to bottom,
-        transparent 0%,
-        black 8%,
-        black 100%
-    );
-    pointer-events: none;
-    z-index: 2; /* Above grid */
+    z-index: 2; /* Above grid overlay */
 }
 
 .capabilities-intro {

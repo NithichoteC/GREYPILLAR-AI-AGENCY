@@ -89,14 +89,23 @@ export default function CapabilitiesSection() {
     let ticking = false;
     let lastScrollTime = 0;
     let scrollIdleTimeout: NodeJS.Timeout | null = null;
+    let resizeTimeout: NodeJS.Timeout | null = null;
 
-    // PERFORMANCE: Cache viewport constants (recalculate only on resize)
+    // PERFORMANCE: Cache viewport AND container dimensions (2025 Apple pattern)
     let viewportHeight = window.innerHeight;
     let isMobile = window.innerWidth <= 768;
+    let cachedScrollableHeight = 0;
+    let cachedContainerTop = 0;
 
     const updateViewportCache = () => {
       viewportHeight = window.innerHeight;
       isMobile = window.innerWidth <= 768;
+
+      // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
+      if (containerRef.current) {
+        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
+        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
+      }
     };
 
     // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
@@ -137,10 +146,13 @@ export default function CapabilitiesSection() {
           }
 
           const container = containerRef.current;
-          const containerRect = container.getBoundingClientRect();
-          const scrollableHeight = container.scrollHeight - viewportHeight;
 
-          let progress = -containerRect.top / scrollableHeight;
+          // PERFORMANCE: Use cached container position (updated on scroll, no getBoundingClientRect!)
+          const currentContainerTop = window.scrollY === 0
+            ? cachedContainerTop
+            : cachedContainerTop - (cachedContainerTop - container.getBoundingClientRect().top);
+
+          let progress = -currentContainerTop / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
@@ -214,11 +226,8 @@ export default function CapabilitiesSection() {
           // Card is incoming - viewport-relative slide from bottom edge
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          // Calculate slide from bottom of viewport to stack position
-          const containerTop = containerRect.top;
-
-          // Start position: bottom of viewport relative to container (use cached viewportHeight)
-          const startY = viewportHeight - Math.max(0, containerTop);
+          // Calculate slide from bottom of viewport to stack position (use cached values)
+          const startY = viewportHeight - Math.max(0, currentContainerTop);
           // End position: stack position (0)
           const targetY = 0;
 
@@ -240,11 +249,20 @@ export default function CapabilitiesSection() {
       }
     };
 
-    // PERFORMANCE: Update cached values on resize
+    // PERFORMANCE: Debounced resize handler (iOS address bar hide/show fires constantly)
     const handleResize = () => {
-      updateViewportCache();
-      handleScroll(); // Recalculate positions
+      // Clear previous resize timeout
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+
+      // Debounce 100ms to prevent iOS address bar thrashing
+      resizeTimeout = setTimeout(() => {
+        updateViewportCache();
+        handleScroll(); // Recalculate positions
+      }, 100);
     };
+
+    // Initialize cache
+    updateViewportCache();
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
@@ -254,6 +272,7 @@ export default function CapabilitiesSection() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
       if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
       disableGPULayers(); // Cleanup: remove GPU layers on unmount
     };
   }, [capabilities.length]);

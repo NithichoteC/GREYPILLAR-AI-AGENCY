@@ -2584,6 +2584,11 @@ body {
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
+
+    /* 2025 iOS SCROLL OPTIMIZATIONS: Eliminate bounce lag and improve momentum */
+    overscroll-behavior-y: none; /* Prevent bounce at edges (reduces scroll lag) */
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling (legacy support) */
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
 }
 
 /* Grid overlay container - absolute positioned, full section coverage */
@@ -2716,6 +2721,11 @@ body {
     max-height: 800px; /* Increased height for better visual impact */
     /* NO transition on transform - JavaScript controls it directly (prevents flickering) */
     touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
+
+    /* 2025 CUTTING-EDGE: CSS Containment for 7x faster rendering */
+    content-visibility: auto; /* Only render when near viewport - 7x performance boost */
+    contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
+    contain: layout paint; /* Prevent reflow cascades to other elements */
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */
@@ -2822,53 +2832,104 @@ body {
     background: #FFFFFF; /* Solid white, no transparency */
 }
 
-/* Stacked card - First depth (subtle blur start) */
-.capability-card[data-depth="1"] .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.03);
-    box-shadow:
-        0 8px 16px -4px rgba(0, 0, 0, 0.04),
-        0 4px 8px -2px rgba(0, 0, 0, 0.06),
-        0 0 0 1px rgba(0, 0, 0, 0.02);
-    backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
-    background: rgba(247, 247, 248, 0.96); /* SOLID: Nearly opaque blocks all text bleed (was 0.65) */
-    opacity: 0.99;
+/* MOBILE: Solid backgrounds without backdrop-filter (eliminates GPU lag) */
+@media (max-width: 768px) {
+    /* Stacked card - First depth (solid background) */
+    .capability-card[data-depth="1"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.03);
+        box-shadow:
+            0 8px 16px -4px rgba(0, 0, 0, 0.04),
+            0 4px 8px -2px rgba(0, 0, 0, 0.06),
+            0 0 0 1px rgba(0, 0, 0, 0.02);
+        background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque - no blur needed */
+        opacity: 0.99;
+    }
+
+    /* Second depth - Solid background */
+    .capability-card[data-depth="2"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.025);
+        box-shadow:
+            0 6px 12px -4px rgba(0, 0, 0, 0.03),
+            0 3px 6px -2px rgba(0, 0, 0, 0.05),
+            0 0 0 1px rgba(0, 0, 0, 0.015);
+        background: rgba(245, 245, 246, 1.0); /* SOLID: Slightly darker for depth */
+        opacity: 0.985;
+    }
+
+    /* Third depth - Solid background */
+    .capability-card[data-depth="3"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 5px 10px -3px rgba(0, 0, 0, 0.025),
+            0 2px 5px -1px rgba(0, 0, 0, 0.04),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        background: rgba(243, 243, 244, 1.0); /* SOLID: More depth */
+        opacity: 0.98;
+    }
+
+    /* Fourth depth and beyond - Solid background */
+    .capability-card[data-depth="4"] .capability-card-content,
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 4px 8px -3px rgba(0, 0, 0, 0.02),
+            0 2px 4px -1px rgba(0, 0, 0, 0.03),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        background: rgba(241, 241, 242, 1.0); /* SOLID: Maximum depth */
+        opacity: 0.98;
+    }
 }
 
-/* Second depth - Medium blur */
-.capability-card[data-depth="2"] .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.025);
-    box-shadow:
-        0 6px 12px -4px rgba(0, 0, 0, 0.03),
-        0 3px 6px -2px rgba(0, 0, 0, 0.05),
-        0 0 0 1px rgba(0, 0, 0, 0.015);
-    backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
-    background: rgba(247, 247, 248, 0.98); /* SOLID: Almost opaque blocks all text bleed (was 0.80) */
-    opacity: 0.985;
-}
+/* DESKTOP: Premium backdrop-filter blur effects (min-width: 769px) */
+@media (min-width: 769px) {
+    /* Stacked card - First depth (subtle blur start) */
+    .capability-card[data-depth="1"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.03);
+        box-shadow:
+            0 8px 16px -4px rgba(0, 0, 0, 0.04),
+            0 4px 8px -2px rgba(0, 0, 0, 0.06),
+            0 0 0 1px rgba(0, 0, 0, 0.02);
+        backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
+        background: rgba(247, 247, 248, 0.96); /* SOLID: Nearly opaque blocks all text bleed (was 0.65) */
+        opacity: 0.99;
+    }
 
-/* Third depth - Strong blur */
-.capability-card[data-depth="3"] .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.02);
-    box-shadow:
-        0 5px 10px -3px rgba(0, 0, 0, 0.025),
-        0 2px 5px -1px rgba(0, 0, 0, 0.04),
-        0 0 0 1px rgba(0, 0, 0, 0.01);
-    backdrop-filter: blur(6px); /* STRONG: Building depth */
-    background: rgba(247, 247, 248, 0.99); /* SOLID: Nearly 100% opaque blocks all text bleed (was 0.90) */
-    opacity: 0.98;
-}
+    /* Second depth - Medium blur */
+    .capability-card[data-depth="2"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.025);
+        box-shadow:
+            0 6px 12px -4px rgba(0, 0, 0, 0.03),
+            0 3px 6px -2px rgba(0, 0, 0, 0.05),
+            0 0 0 1px rgba(0, 0, 0, 0.015);
+        backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
+        background: rgba(247, 247, 248, 0.98); /* SOLID: Almost opaque blocks all text bleed (was 0.80) */
+        opacity: 0.985;
+    }
 
-/* Fourth depth and beyond - Maximum blur */
-.capability-card[data-depth="4"] .capability-card-content,
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.02);
-    box-shadow:
-        0 4px 8px -3px rgba(0, 0, 0, 0.02),
-        0 2px 4px -1px rgba(0, 0, 0, 0.03),
-        0 0 0 1px rgba(0, 0, 0, 0.01);
-    backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
-    background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque completely blocks all text bleed (was 0.95) */
-    opacity: 0.98;
+    /* Third depth - Strong blur */
+    .capability-card[data-depth="3"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 5px 10px -3px rgba(0, 0, 0, 0.025),
+            0 2px 5px -1px rgba(0, 0, 0, 0.04),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        backdrop-filter: blur(6px); /* STRONG: Building depth */
+        background: rgba(247, 247, 248, 0.99); /* SOLID: Nearly 100% opaque blocks all text bleed (was 0.90) */
+        opacity: 0.98;
+    }
+
+    /* Fourth depth and beyond - Maximum blur */
+    .capability-card[data-depth="4"] .capability-card-content,
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 4px 8px -3px rgba(0, 0, 0, 0.02),
+            0 2px 4px -1px rgba(0, 0, 0, 0.03),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
+        background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque completely blocks all text bleed (was 0.95) */
+        opacity: 0.98;
+    }
 }
 
 /* Progressive text opacity - Apple approach to prevent bleed-through */

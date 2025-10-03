@@ -85,7 +85,20 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
+    let rafId: number | null = null;
+    let ticking = false;
+
     const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        rafId = requestAnimationFrame(() => {
+          updateParallax();
+          ticking = false;
+        });
+      }
+    };
+
+    const updateParallax = () => {
       if (!containerRef.current) return;
 
       const container = containerRef.current;
@@ -201,9 +214,12 @@ export default function CapabilitiesSection() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial call
+    updateParallax(); // Initial call
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [capabilities.length]);
 
   return (

@@ -2692,39 +2692,19 @@ body {
     }
 }
 
-/* Cards Wrapper - Sticky Viewport Container */
+/* Cards Wrapper - Container for sticky cards */
 .capabilities-cards-wrapper {
     position: relative;
-    width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
-    min-height: 800vh; /* DESKTOP: 200vh per card = comfortable reading pace */
-    margin-top: 0; /* No gap - smooth flow from intro text */
-}
-
-/* MOBILE: Extra scroll space for easier reading (250vh per card) */
-@media (max-width: 768px) {
-    .capabilities-cards-wrapper {
-        min-height: 1000vh; /* MOBILE: 250vh per card = MUCH more breathing room */
-    }
+    width: 100%;
+    padding-bottom: 100vh; /* Space for last card to unstick */
 }
 
 .capabilities-cards {
-    position: sticky;
-    top: 250px; /* TRUE MIDDLE: Positions ~600px card center at 50% viewport (250px + 300px = 550px center) */
-    height: 100vh;
-    width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
+    position: relative;
+    width: 100%;
     display: flex;
-    align-items: flex-start; /* START ALIGNMENT: card positioning controlled by sticky top value */
-    justify-content: center;
-    /* No padding-top - absolute positioned cards ignore parent padding */
-    /* Cards fill full container content area (1200px - 64px = 1136px) */
-    /* No max-width or margin - prevents double-centering */
-}
-
-/* MOBILE: Lower sticky position (prevents overlap with intro text) */
-@media (max-width: 768px) {
-    .capabilities-cards {
-        top: 150px; /* MOBILE: Lower position = more space from intro text bottom */
-    }
+    flex-direction: column; /* CRITICAL: Stack cards vertically for sticky to work */
+    gap: 2rem; /* Spacing between cards */
 }
 
 /* Individual Capability Card - NITRO-STYLE STICKY PARALLAX (Browser-Native 60fps!) */

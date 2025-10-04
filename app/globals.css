@@ -2692,12 +2692,17 @@ body {
     }
 }
 
-/* Cards Wrapper - Sticky Viewport Container */
+/* Cards Wrapper - Smooth Scroll Container (Pro Mobile Solution) */
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
     min-height: 800vh; /* DESKTOP: 200vh per card = comfortable reading pace */
     margin-top: 0; /* No gap - smooth flow from intro text */
+
+    /* iOS MOMENTUM SCROLLING: Enable native smooth scrolling */
+    -webkit-overflow-scrolling: touch; /* Critical for iOS performance */
+    overflow-y: auto; /* Enable scrolling */
+    scroll-behavior: smooth; /* Smooth scroll for programmatic navigation */
 }
 
 /* MOBILE: Extra scroll space for easier reading (250vh per card) */
@@ -2708,15 +2713,11 @@ body {
 }
 
 .capabilities-cards {
-    position: sticky;
-    top: 250px; /* TRUE MIDDLE: Positions ~600px card center at 50% viewport (250px + 300px = 550px center) */
-    height: 100vh;
+    position: relative; /* Changed from sticky - cards themselves are sticky now */
     width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    align-items: flex-start; /* START ALIGNMENT: card positioning controlled by absolute positioning */
-    justify-content: center;
-    /* No padding-top - absolute positioned cards ignore parent padding */
-    /* Cards fill full container content area */
+    flex-direction: column; /* Stack cards vertically for sticky positioning */
+    align-items: center; /* Center cards horizontally */
     /* No max-width or margin - prevents double-centering */
 }
 
@@ -2727,14 +2728,14 @@ body {
     }
 }
 
-/* Individual Capability Card - JavaScript-Driven Parallax */
+/* Individual Capability Card - CSS Sticky + IntersectionObserver (Pro Solution) */
 .capability-card {
-    position: absolute;
+    position: sticky; /* STICKY: Native smooth stacking without JavaScript lag */
+    top: 100px; /* Base stacking position - JS will adjust per card */
     width: 100%; /* Fill parent */
-    will-change: auto; /* Controlled by JavaScript for battery optimization (Apple 2025 pattern) */
-    transform: translateZ(0); /* Force GPU layer creation */
-    perspective: 1000px; /* Enable 3D rendering context for smoother transforms */
-    -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
+    will-change: auto; /* Controlled by IntersectionObserver for battery optimization */
+    transform: scale3d(1, 1, 1); /* GPU optimization with 3D transform */
+    -webkit-transform: scale3d(1, 1, 1); /* Force GPU acceleration on Safari */
     backface-visibility: hidden; /* Prevent flickering on mobile */
     -webkit-backface-visibility: hidden; /* Safari-specific */
     display: flex;
@@ -2742,12 +2743,36 @@ body {
     justify-content: center;
     min-height: 650px; /* TALLER: More presence and room for content */
     max-height: 800px; /* Increased height for better visual impact */
+    margin-bottom: 50vh; /* Space between cards for scroll */
     touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
+
+    /* Smooth transitions for IntersectionObserver updates */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     /* 2025 CUTTING-EDGE: CSS Containment for faster rendering */
     content-visibility: auto; /* Only render when near viewport */
     contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
     contain: layout paint; /* Prevent reflow cascades to other elements */
+}
+
+/* Progressive stacking positions for each card */
+.capability-card:nth-child(1) { top: 100px; z-index: 4; }
+.capability-card:nth-child(2) { top: 120px; z-index: 3; }
+.capability-card:nth-child(3) { top: 140px; z-index: 2; }
+.capability-card:nth-child(4) { top: 160px; z-index: 1; }
+
+/* Mobile: Tighter stacking */
+@media (max-width: 768px) {
+    .capability-card:nth-child(1) { top: 80px; }
+    .capability-card:nth-child(2) { top: 90px; }
+    .capability-card:nth-child(3) { top: 100px; }
+    .capability-card:nth-child(4) { top: 110px; }
+
+    .capability-card {
+        margin-bottom: 30vh; /* Less space on mobile */
+    }
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */

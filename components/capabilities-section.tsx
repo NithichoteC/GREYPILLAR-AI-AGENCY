@@ -86,201 +86,61 @@ export default function CapabilitiesSection() {
     });
   }, []);
 
+  // Professional Mobile Solution: IntersectionObserver for visibility-based transforms
   useEffect(() => {
-    let ticking = false;
-    let lastScrollTime = 0;
-    let scrollIdleTimeout: NodeJS.Timeout | null = null;
-    let resizeTimeout: NodeJS.Timeout | null = null;
+    const isMobile = window.innerWidth <= 768;
 
-    // Cache viewport dimensions for performance
-    let viewportHeight = window.innerHeight;
-    let isMobile = window.innerWidth <= 768;
-    let cachedScrollableHeight = 0;
+    // Create IntersectionObserver for each card
+    const observers: IntersectionObserver[] = [];
 
-    const updateViewportCache = () => {
-      viewportHeight = window.innerHeight;
-      isMobile = window.innerWidth <= 768;
+    cardRefs.current.forEach((cardRef, index) => {
+      if (!cardRef) return;
 
-      if (containerRef.current) {
-        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
-      }
-    };
+      // Observer options for smooth transitions
+      const options = {
+        root: null,
+        rootMargin: '-10% 0px -10% 0px',
+        threshold: [0, 0.1, 0.5, 0.9, 1.0]
+      };
 
-    // PERFORMANCE: Conditional will-change (Apple 2025 pattern - battery optimization)
-    const enableGPULayers = () => {
-      cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'transform';
-      });
-    };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const card = entry.target as HTMLElement;
+          const ratio = entry.intersectionRatio;
 
-    const disableGPULayers = () => {
-      cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'auto';
-      });
-    };
+          if (entry.isIntersecting) {
+            // Card is visible - apply smooth transforms
+            const scale = 0.9 + (ratio * 0.1); // Scale from 0.9 to 1.0
+            const translateY = (1 - ratio) * 10; // Subtle Y movement
 
-    const handleScroll = () => {
-      // Enable GPU layers on scroll start
-      enableGPULayers();
+            // Use scale3d for GPU optimization
+            card.style.transform = `scale3d(${scale}, ${scale}, 1) translateY(${translateY}px)`;
+            card.style.opacity = String(0.5 + (ratio * 0.5)); // Fade from 0.5 to 1.0
 
-      // Clear previous idle timeout
-      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
-
-      // Disable GPU layers after 150ms of no scrolling (battery optimization)
-      scrollIdleTimeout = setTimeout(disableGPULayers, 150);
-
-      if (!ticking) {
-        window.requestAnimationFrame((timestamp) => {
-          // Throttle: Mobile 50ms (20fps), Desktop 16ms (60fps)
-          const throttleTime = isMobile ? 50 : 16;
-          if (timestamp - lastScrollTime < throttleTime) {
-            ticking = false;
-            return;
-          }
-          lastScrollTime = timestamp;
-
-          if (!containerRef.current) {
-            ticking = false;
-            return;
-          }
-
-          const container = containerRef.current;
-          const containerRect = container.getBoundingClientRect();
-          const containerTop = containerRect.top;
-
-          // Calculate scroll progress
-          let progress = -containerTop / cachedScrollableHeight;
-          progress = Math.max(0, Math.min(1, progress));
-
-          const numCards = capabilities.length;
-          const activeCardFloat = progress * (numCards + 1.0);
-
-          // Parallax constants
-          const STACK_SCALE = 0.9;
-          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4;
-          const MAX_VISIBLE_STACK_CARDS = 3;
-
-          // Pre-calculated blur filter strings (avoid string concatenation in loop)
-          const BLUR_FILTERS = ['', 'blur(2px)', 'blur(4px)', 'blur(6px)', 'blur(8px)'];
-
-          cardRefs.current.forEach((cardRef, index) => {
-            if (!cardRef) return;
-
-            const depth = activeCardFloat - index;
-            const isLastCard = index === numCards - 1;
-
-            // PERFORMANCE: Skip off-screen cards (depth < -1 or > 5)
-            if (depth < -1 || depth > 5) {
-              // Only update if not already hidden
-              if (prevTransformsRef.current[index] !== 'translate3d(0, 100vh, 0)') {
-                cardRef.style.transform = 'translate3d(0, 100vh, 0)';
-                cardRef.style.opacity = '0';
-                cardRef.style.filter = '';
-                prevTransformsRef.current[index] = 'translate3d(0, 100vh, 0)';
-                prevOpacitiesRef.current[index] = '0';
-              }
-              return;
-            }
-
-            // Calculate new transform and opacity values
-            let newTransform = '';
-            let newOpacity = '';
-            let newFilter = '';
-
-            if (depth >= 0 && depth < 4) {
-              // Card is in stack or exiting - simplified scroll-based scaling
-              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-
-              // Depth-based scaling (pre-calculated constant to avoid division)
-              const scaleProgress = depth * 0.6667; // depth / 1.5 pre-calculated
-              const scale = 1 - Math.min(scaleProgress, 1) * 0.1; // (1 - STACK_SCALE) = 0.1
-
-              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-              const stackParallax = -depth * 4;
-
-              newTransform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
-
-              // Simple opacity - all stacked cards stay visible
-              newOpacity = isLastCard && depth > 3 ? String(Math.max(0, 1 - (depth - 3))) : '1';
-
-              // ENABLE BLUR ON MOBILE TOO (user request: "make the mobile previous cards goes blur")
-              if (depth > 0) {
-                newFilter = BLUR_FILTERS[Math.min(Math.floor(depth), 4)];
-              }
-
-            } else if (depth >= 4) {
-              // Keep cards at final stack position with continuous parallax
-              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-              const stackParallax = -depth * 4;
-
-              newTransform = `scale(0.9) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
-              newOpacity = isLastCard ? '0' : '1';
-
-              // ENABLE BLUR ON MOBILE TOO
-              newFilter = BLUR_FILTERS[4]; // Pre-calculated maximum blur
-
-            } else if (depth > -1) {
-              // Card is incoming - viewport-relative slide from bottom edge
-              const incomingProgress = 1 + depth; // 0 to 1 as card enters
-
-              // Calculate slide from bottom of viewport to stack position
-              const startY = viewportHeight - Math.max(0, containerTop);
-              const currentY = Math.round(startY - (incomingProgress * startY));
-
-              newTransform = `translate3d(0, ${currentY}px, 0)`;
-              newOpacity = '1';
+            // Reduce blur on mobile for performance
+            if (!isMobile) {
+              const blurAmount = Math.max(0, (1 - ratio) * 4);
+              card.style.filter = blurAmount > 0 ? `blur(${blurAmount}px)` : '';
             } else {
-              // Card is off-screen below (depth <= -1)
-              newTransform = `translate3d(0, 100vh, 0)`;
-              newOpacity = '0';
+              // Mobile: minimal blur for performance
+              card.style.filter = ratio < 0.5 ? 'blur(2px)' : '';
             }
-
-            // Only update styles if values changed (prevents style thrashing)
-            if (prevTransformsRef.current[index] !== newTransform) {
-              cardRef.style.transform = newTransform;
-              prevTransformsRef.current[index] = newTransform;
-            }
-
-            if (prevOpacitiesRef.current[index] !== newOpacity) {
-              cardRef.style.opacity = newOpacity;
-              prevOpacitiesRef.current[index] = newOpacity;
-            }
-
-            // Apply blur filter (both desktop AND mobile now)
-            cardRef.style.filter = newFilter;
-          });
-
-          ticking = false;
+          } else {
+            // Card is not visible - optimize by hiding
+            card.style.transform = 'scale3d(0.9, 0.9, 1) translateY(20px)';
+            card.style.opacity = '0';
+            card.style.filter = '';
+          }
         });
-        ticking = true;
-      }
-    };
+      }, options);
 
-    // PERFORMANCE: Debounced resize handler (iOS address bar hide/show fires constantly)
-    const handleResize = () => {
-      // Clear previous resize timeout
-      if (resizeTimeout) clearTimeout(resizeTimeout);
+      observer.observe(cardRef);
+      observers.push(observer);
+    });
 
-      // Debounce 100ms to prevent iOS address bar thrashing
-      resizeTimeout = setTimeout(() => {
-        updateViewportCache();
-        handleScroll();
-      }, 100);
-    };
-
-    // Initialize
-    updateViewportCache();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize, { passive: true });
-    handleScroll(); // Initial call
-
+    // Cleanup observers on unmount
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
-      if (resizeTimeout) clearTimeout(resizeTimeout);
-      disableGPULayers(); // Cleanup: remove GPU layers on unmount
+      observers.forEach(observer => observer.disconnect());
     };
   }, [capabilities.length]);
 

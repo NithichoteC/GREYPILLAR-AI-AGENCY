@@ -139,8 +139,8 @@ export default function CapabilitiesSection() {
 
       if (!ticking) {
         window.requestAnimationFrame((timestamp) => {
-          // THROTTLE: Mobile 20fps (50ms), Desktop 60fps (16ms) - iOS scroll pause compensation
-          const throttleTime = isMobile ? 50 : 16;
+          // THROTTLE: Mobile 12.5fps (80ms), Desktop 60fps (16ms) - iOS scroll freeze optimization
+          const throttleTime = isMobile ? 80 : 16;
           if (timestamp - lastScrollTime < throttleTime) {
             ticking = false;
             return;
@@ -163,7 +163,7 @@ export default function CapabilitiesSection() {
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
-          const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
+          const activeCardFloat = progress * (numCards + 2.5); // MOBILE FIX: +2.5 = 30% slower transitions for better control
 
           // Parallax constants - mobile optimized
           const STACK_SCALE = 0.9;

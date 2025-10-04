@@ -91,21 +91,13 @@ export default function CapabilitiesSection() {
     let scrollIdleTimeout: NodeJS.Timeout | null = null;
     let resizeTimeout: NodeJS.Timeout | null = null;
 
-    // PERFORMANCE: Cache viewport AND container dimensions (2025 Apple pattern)
+    // PERFORMANCE: Cache viewport dimensions (2025 Apple pattern)
     let viewportHeight = window.innerHeight;
     let isMobile = window.innerWidth <= 768;
-    let cachedScrollableHeight = 0;
-    let cachedContainerTop = 0;
 
     const updateViewportCache = () => {
       viewportHeight = window.innerHeight;
       isMobile = window.innerWidth <= 768;
-
-      // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
-      if (containerRef.current) {
-        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
-        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
-      }
     };
 
     // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
@@ -146,12 +138,10 @@ export default function CapabilitiesSection() {
           }
 
           const container = containerRef.current;
+          const containerRect = container.getBoundingClientRect();
+          const scrollableHeight = container.scrollHeight - window.innerHeight;
 
-          // PERFORMANCE: Pure scroll math - ZERO DOM reads during scroll (2025 Apple/Vercel standard)
-          const scrollY = window.scrollY;
-          const currentContainerTop = cachedContainerTop - scrollY;
-
-          let progress = -currentContainerTop / cachedScrollableHeight;
+          let progress = -containerRect.top / scrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
@@ -225,8 +215,9 @@ export default function CapabilitiesSection() {
           // Card is incoming - viewport-relative slide from bottom edge
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          // Calculate slide from bottom of viewport to stack position (use cached values)
-          const startY = viewportHeight - Math.max(0, currentContainerTop);
+          // Calculate slide from bottom of viewport to stack position
+          const containerTop = containerRect.top;
+          const startY = viewportHeight - Math.max(0, containerTop);
           // End position: stack position (0)
           const targetY = 0;
 

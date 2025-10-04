@@ -2728,50 +2728,98 @@ body {
     }
 }
 
-/* Individual Capability Card - CSS Sticky + IntersectionObserver (Pro Solution) */
+/* Individual Capability Card - Hybrid Parallax Solution */
 .capability-card {
-    position: sticky; /* STICKY: Native smooth stacking without JavaScript lag */
-    top: 100px; /* Base stacking position - JS will adjust per card */
+    position: relative; /* Changed from sticky for parallax */
     width: 100%; /* Fill parent */
-    will-change: auto; /* Controlled by IntersectionObserver for battery optimization */
-    transform: scale3d(1, 1, 1); /* GPU optimization with 3D transform */
-    -webkit-transform: scale3d(1, 1, 1); /* Force GPU acceleration on Safari */
-    backface-visibility: hidden; /* Prevent flickering on mobile */
-    -webkit-backface-visibility: hidden; /* Safari-specific */
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 650px; /* TALLER: More presence and room for content */
     max-height: 800px; /* Increased height for better visual impact */
-    margin-bottom: 50vh; /* Space between cards for scroll */
-    touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
+    margin-bottom: 20vh; /* Space between cards */
 
-    /* Smooth transitions for IntersectionObserver updates */
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                filter 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* GPU optimization defaults */
+    transform: translateY(100vh) scale3d(0.9, 0.9, 1); /* Start off-screen */
+    -webkit-transform: translateY(100vh) scale3d(0.9, 0.9, 1);
+    backface-visibility: hidden; /* Prevent flickering */
+    -webkit-backface-visibility: hidden; /* Safari-specific */
+    will-change: transform, opacity, filter; /* Optimize for animations */
+    touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
 
     /* 2025 CUTTING-EDGE: CSS Containment for faster rendering */
     content-visibility: auto; /* Only render when near viewport */
     contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
-    contain: layout paint; /* Prevent reflow cascades to other elements */
+    contain: layout style; /* Isolate layout and style changes */
 }
 
-/* Progressive stacking positions for each card */
-.capability-card:nth-child(1) { top: 100px; z-index: 4; }
-.capability-card:nth-child(2) { top: 120px; z-index: 3; }
-.capability-card:nth-child(3) { top: 140px; z-index: 2; }
-.capability-card:nth-child(4) { top: 160px; z-index: 1; }
+/* CSS Scroll-Driven Animations for Modern Browsers (Chrome 115+) */
+@supports (animation-timeline: scroll()) {
+    .capability-card.parallax-css-driven {
+        /* Use CSS animations tied to scroll position - NO JavaScript! */
+        animation: parallax-stack linear both;
+        animation-timeline: scroll();
+        animation-range: calc(var(--card-index) * 25vh) calc(100vh + var(--card-index) * 25vh);
+        will-change: auto; /* Let browser optimize */
+    }
 
-/* Mobile: Tighter stacking */
+    /* Parallax stacking animation */
+    @keyframes parallax-stack {
+        /* Entry phase */
+        0% {
+            transform: translateY(100vh) scale3d(0.9, 0.9, 1);
+            opacity: 0;
+            filter: blur(0);
+        }
+        /* Arrive at stack position */
+        20% {
+            transform: translateY(0) scale3d(1, 1, 1);
+            opacity: 1;
+            filter: blur(0);
+        }
+        /* Move back as next cards arrive */
+        60% {
+            transform: translateY(-20%) scale3d(0.95, 0.95, 1);
+            opacity: 1;
+            filter: blur(2px);
+        }
+        /* Final stacked position */
+        100% {
+            transform: translateY(-40%) scale3d(0.85, 0.85, 1);
+            opacity: 0.8;
+            filter: blur(6px);
+        }
+    }
+
+    /* Progressive z-index for each card */
+    .capability-card.parallax-css-driven:nth-child(1) { z-index: 4; }
+    .capability-card.parallax-css-driven:nth-child(2) { z-index: 3; }
+    .capability-card.parallax-css-driven:nth-child(3) { z-index: 2; }
+    .capability-card.parallax-css-driven:nth-child(4) { z-index: 1; }
+}
+
+/* Fallback for browsers without scroll-driven animation support */
+@supports not (animation-timeline: scroll()) {
+    .capability-card {
+        /* Smooth transitions for JavaScript-controlled animations */
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+                    filter 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+                    opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+}
+
+/* Mobile: Optimized for performance */
 @media (max-width: 768px) {
-    .capability-card:nth-child(1) { top: 80px; }
-    .capability-card:nth-child(2) { top: 90px; }
-    .capability-card:nth-child(3) { top: 100px; }
-    .capability-card:nth-child(4) { top: 110px; }
-
     .capability-card {
         margin-bottom: 30vh; /* Less space on mobile */
+        /* Faster transitions on mobile */
+        transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                    opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* Disable blur filter on mobile for performance */
+    .capability-card.parallax-css-driven {
+        filter: none !important;
     }
 }
 

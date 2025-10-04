@@ -86,62 +86,105 @@ export default function CapabilitiesSection() {
     });
   }, []);
 
-  // Professional Mobile Solution: IntersectionObserver for visibility-based transforms
+  // Hybrid Parallax Solution: CSS scroll-driven for desktop, optimized JS for mobile
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
+    const supportsScrollDriven = CSS.supports && CSS.supports('animation-timeline', 'scroll()');
 
-    // Create IntersectionObserver for each card
-    const observers: IntersectionObserver[] = [];
+    // Check if we should use CSS scroll-driven animations (Chrome 115+) or JavaScript
+    const useCSSAnimation = supportsScrollDriven && !isMobile;
 
-    cardRefs.current.forEach((cardRef, index) => {
-      if (!cardRef) return;
+    if (useCSSAnimation) {
+      // Modern browsers: Let CSS handle everything (no JavaScript during scroll!)
+      cardRefs.current.forEach((cardRef, index) => {
+        if (!cardRef) return;
+        cardRef.classList.add('parallax-css-driven');
+        cardRef.style.setProperty('--card-index', String(index));
+      });
+    } else {
+      // Safari/Mobile: Optimized JavaScript fallback
+      let ticking = false;
+      let frameCount = 0;
 
-      // Observer options for smooth transitions
-      const options = {
-        root: null,
-        rootMargin: '-10% 0px -10% 0px',
-        threshold: [0, 0.1, 0.5, 0.9, 1.0]
+      const handleScroll = () => {
+        // Mobile: Skip frames for better performance (30fps instead of 60fps)
+        if (isMobile) {
+          frameCount++;
+          if (frameCount % 2 !== 0) return; // Skip every other frame on mobile
+        }
+
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (!containerRef.current) {
+              ticking = false;
+              return;
+            }
+
+            const scrollY = window.scrollY;
+            const containerTop = containerRef.current.offsetTop;
+            const containerHeight = containerRef.current.offsetHeight;
+            const viewportHeight = window.innerHeight;
+
+            // Calculate scroll progress through the section
+            const scrollProgress = Math.max(0, Math.min(1,
+              (scrollY - containerTop + viewportHeight) / (containerHeight + viewportHeight)
+            ));
+
+            cardRefs.current.forEach((cardRef, index) => {
+              if (!cardRef) return;
+
+              // Calculate each card's individual progress
+              const cardProgress = scrollProgress * capabilities.length - index;
+              const clampedProgress = Math.max(-1, Math.min(2, cardProgress));
+
+              if (clampedProgress < -0.5) {
+                // Card hasn't entered yet
+                cardRef.style.transform = 'translateY(100vh) scale3d(0.9, 0.9, 1)';
+                cardRef.style.opacity = '0';
+              } else if (clampedProgress < 0) {
+                // Card is entering
+                const enterProgress = (clampedProgress + 1) * 2;
+                cardRef.style.transform = `translateY(${(1 - enterProgress) * 100}vh) scale3d(${0.9 + enterProgress * 0.1}, ${0.9 + enterProgress * 0.1}, 1)`;
+                cardRef.style.opacity = String(enterProgress);
+              } else if (clampedProgress < 1) {
+                // Card is in view - parallax effect
+                const scale = 1 - clampedProgress * 0.1;
+                const translateY = clampedProgress * -30;
+                const zIndex = capabilities.length - index;
+
+                cardRef.style.transform = `translateY(${translateY}%) scale3d(${scale}, ${scale}, 1)`;
+                cardRef.style.opacity = '1';
+                cardRef.style.zIndex = String(zIndex);
+
+                // Blur only on desktop for performance
+                if (!isMobile && clampedProgress > 0.1) {
+                  const blurAmount = Math.min(8, clampedProgress * 8);
+                  cardRef.style.filter = `blur(${blurAmount}px)`;
+                } else {
+                  cardRef.style.filter = '';
+                }
+              } else {
+                // Card has exited
+                cardRef.style.transform = 'translateY(-50%) scale3d(0.8, 0.8, 1)';
+                cardRef.style.opacity = '0.5';
+                cardRef.style.filter = isMobile ? '' : 'blur(8px)';
+              }
+            });
+
+            ticking = false;
+          });
+          ticking = true;
+        }
       };
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const card = entry.target as HTMLElement;
-          const ratio = entry.intersectionRatio;
+      // Add optimized scroll listener
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      handleScroll(); // Initial call
 
-          if (entry.isIntersecting) {
-            // Card is visible - apply smooth transforms
-            const scale = 0.9 + (ratio * 0.1); // Scale from 0.9 to 1.0
-            const translateY = (1 - ratio) * 10; // Subtle Y movement
-
-            // Use scale3d for GPU optimization
-            card.style.transform = `scale3d(${scale}, ${scale}, 1) translateY(${translateY}px)`;
-            card.style.opacity = String(0.5 + (ratio * 0.5)); // Fade from 0.5 to 1.0
-
-            // Reduce blur on mobile for performance
-            if (!isMobile) {
-              const blurAmount = Math.max(0, (1 - ratio) * 4);
-              card.style.filter = blurAmount > 0 ? `blur(${blurAmount}px)` : '';
-            } else {
-              // Mobile: minimal blur for performance
-              card.style.filter = ratio < 0.5 ? 'blur(2px)' : '';
-            }
-          } else {
-            // Card is not visible - optimize by hiding
-            card.style.transform = 'scale3d(0.9, 0.9, 1) translateY(20px)';
-            card.style.opacity = '0';
-            card.style.filter = '';
-          }
-        });
-      }, options);
-
-      observer.observe(cardRef);
-      observers.push(observer);
-    });
-
-    // Cleanup observers on unmount
-    return () => {
-      observers.forEach(observer => observer.disconnect());
-    };
+      return () => {
+        window.removeEventListener('scroll', handleScroll);
+      };
+    }
   }, [capabilities.length]);
 
   return (

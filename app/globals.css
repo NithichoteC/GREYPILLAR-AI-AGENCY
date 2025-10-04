@@ -2817,24 +2817,23 @@ body {
     }
 }
 
-/* Mobile - NO BLUR, NO DEPTH EFFECTS (simple fade-in only) */
+/* Mobile - Enable blur effects like desktop */
 @media (max-width: 768px) {
-    .capability-card[data-depth="1"],
-    .capability-card[data-depth="2"],
-    .capability-card[data-depth="3"],
-    .capability-card[data-depth="4"],
-    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-        filter: none !important; /* No blur on mobile */
+    .capability-card[data-depth="1"] {
+        filter: blur(1px); /* Lighter blur on mobile for performance */
     }
 
-    /* Override all depth-based styling on mobile */
-    .capability-card[data-depth] .capability-card-content {
-        backdrop-filter: none !important;
-        background: #FFFFFF !important;
-        opacity: 1 !important;
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08),
-                    0 10px 20px -5px rgba(0, 0, 0, 0.12),
-                    0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+    .capability-card[data-depth="2"] {
+        filter: blur(2px); /* Progressive blur */
+    }
+
+    .capability-card[data-depth="3"] {
+        filter: blur(3px); /* Increasing blur */
+    }
+
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: blur(4px); /* Maximum blur on mobile */
     }
 }
 
@@ -3092,38 +3091,17 @@ body {
         margin-bottom: var(--space-3xl);
     }
 
-    /* MOBILE: No parallax, simple layout */
+    /* MOBILE: Parallax enabled with adjusted values */
     .capabilities-cards-wrapper {
-        min-height: auto; /* No artificial height needed */
+        min-height: 400vh; /* Reduced from 600vh for mobile scrolling */
     }
 
-    /* MOBILE: Static positioning, no sticky */
+    /* MOBILE: Keep sticky but adjust top position */
     .capabilities-cards {
-        position: relative !important; /* Override sticky */
-        top: 0 !important;
+        top: 150px !important; /* Better positioning for mobile viewport */
     }
 
-    /* MOBILE: Cards stack naturally with margin */
-    .capability-card {
-        position: relative !important; /* Override absolute */
-        margin-bottom: var(--space-2xl);
-        transform: none !important; /* No JS transforms */
-        opacity: 1; /* Start visible for no-JS fallback */
-    }
-
-    /* MOBILE: Fade-in animation classes */
-    .capability-card.card-mobile-hidden {
-        opacity: 0;
-        transform: translateY(30px) !important;
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .capability-card.card-visible {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-    }
-
-    /* Let JavaScript handle parallax on mobile too - just adjust styling */
+    /* MOBILE: Smaller padding for better mobile fit */
     .capability-card-content {
         padding: var(--space-2xl);
         min-height: 400px;

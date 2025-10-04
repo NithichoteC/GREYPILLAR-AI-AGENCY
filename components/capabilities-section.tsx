@@ -86,47 +86,7 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
-    // Check if mobile on mount
-    const isMobile = window.innerWidth <= 768;
-
-    // MOBILE: Simple fade-in with IntersectionObserver (no parallax)
-    if (isMobile) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            const card = entry.target as HTMLElement;
-            if (entry.isIntersecting) {
-              // Add visible class for CSS transition
-              card.classList.add('card-visible');
-              // Once visible, don't need to observe anymore
-              observer.unobserve(card);
-            }
-          });
-        },
-        {
-          threshold: 0.2, // Trigger when 20% visible
-          rootMargin: '0px 0px -50px 0px' // Trigger slightly before fully in view
-        }
-      );
-
-      // Observe all cards
-      cardRefs.current.forEach((card) => {
-        if (card) {
-          // Start with cards invisible
-          card.classList.add('card-mobile-hidden');
-          observer.observe(card);
-        }
-      });
-
-      // Cleanup
-      return () => {
-        cardRefs.current.forEach((card) => {
-          if (card) observer.unobserve(card);
-        });
-      };
-    }
-
-    // DESKTOP: Full parallax system (existing code)
+    // UNIFIED PARALLAX: Works on both mobile and desktop
     let ticking = false;
     let lastScrollTime = 0;
     let resizeTimeout: NodeJS.Timeout | null = null;
@@ -150,9 +110,10 @@ export default function CapabilitiesSection() {
     // PERFORMANCE: Set will-change once on init (no toggling to prevent jitter)
 
     const handleScroll = () => {
-      // THROTTLE: Desktop only at 60fps
+      // THROTTLE: Optimized for both mobile and desktop
       const now = performance.now();
-      const throttleTime = 16; // 60fps desktop only
+      const isMobile = window.innerWidth <= 768;
+      const throttleTime = isMobile ? 8 : 16; // 120fps mobile, 60fps desktop
 
       if (now - lastScrollTime < throttleTime) {
         return; // Skip this frame entirely
@@ -179,9 +140,10 @@ export default function CapabilitiesSection() {
           const numCards = capabilities.length;
           const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
-          // Parallax constants - desktop only
-          const STACK_SCALE = 0.9;
-          const Y_OFFSET_PER_LEVEL = 4; // Desktop spacing
+          // Parallax constants - adjusted for mobile/desktop
+          const isMobile = window.innerWidth <= 768;
+          const STACK_SCALE = isMobile ? 0.95 : 0.9; // Less scaling on mobile
+          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Tighter spacing on mobile
           const MAX_VISIBLE_STACK_CARDS = 3;
 
       cardRefs.current.forEach((cardRef, index) => {
@@ -216,7 +178,7 @@ export default function CapabilitiesSection() {
 
           // Use pixels for all transforms (no % to prevent rounding jitter)
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Convert to pixels
-          const stackParallax = -depth * 40; // Convert to pixels
+          const stackParallax = isMobile ? -depth * 20 : -depth * 40; // Less parallax movement on mobile
 
           cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}px, 0)`;
 
@@ -236,7 +198,7 @@ export default function CapabilitiesSection() {
           // Keep cards at final stack position with continuous parallax
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Pixels
-          const stackParallax = -depth * 40; // Pixels - maintains continuous parallax
+          const stackParallax = isMobile ? -depth * 20 : -depth * 40; // Less parallax on mobile
 
           cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}px, 0)`;
 

@@ -2742,7 +2742,7 @@ body {
     justify-content: center;
     min-height: 650px; /* TALLER: More presence and room for content */
     max-height: 800px; /* Increased height for better visual impact */
-    transition: transform 0.08s ease-out; /* iOS FIX: Smooth interpolation between JS updates */
+    /* NO transition on transform - JavaScript controls it directly (prevents CSS/JS conflicts) */
     touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
 
     /* 2025 CUTTING-EDGE: CSS Containment for 7x faster rendering */

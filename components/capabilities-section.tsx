@@ -89,6 +89,7 @@ export default function CapabilitiesSection() {
 
   useEffect(() => {
     let ticking = false;
+    let lastScrollTime = 0;
     let scrollIdleTimeout: NodeJS.Timeout | null = null;
     let resizeTimeout: NodeJS.Timeout | null = null;
 
@@ -109,13 +110,10 @@ export default function CapabilitiesSection() {
       }
     };
 
-    // PERFORMANCE: Persistent GPU layers for smooth scrolling (Apple 2025 pattern)
+    // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
     const enableGPULayers = () => {
       cardRefs.current.forEach(cardRef => {
-        if (cardRef) {
-          cardRef.style.willChange = 'transform, opacity';
-          cardRef.style.transform = cardRef.style.transform || 'translateZ(0)'; // Force GPU layer
-        }
+        if (cardRef) cardRef.style.willChange = 'transform, opacity';
       });
     };
 
@@ -136,20 +134,26 @@ export default function CapabilitiesSection() {
       scrollIdleTimeout = setTimeout(disableGPULayers, 150);
 
       if (!ticking) {
-        window.requestAnimationFrame(() => {
+        window.requestAnimationFrame((timestamp) => {
+          // THROTTLE: Mobile 30fps (33ms), Desktop 60fps (16ms) - Mozilla 2025 guidance
+          const throttleTime = isMobile ? 33 : 16;
+          if (timestamp - lastScrollTime < throttleTime) {
+            ticking = false;
+            return;
+          }
+          lastScrollTime = timestamp;
+
           if (!containerRef.current) {
             ticking = false;
             return;
           }
 
-          const container = containerRef.current;
-
-          // PERFORMANCE: Read container position ONCE per scroll (not per card = 94% fewer reads)
-          const containerRect = container.getBoundingClientRect();
-          const containerTop = containerRect.top;
+          // PERFORMANCE: Pure scroll math - ZERO DOM reads (Chrome 2025 standard)
+          const scrollY = window.scrollY;
+          const currentContainerTop = cachedContainerTop - scrollY;
 
           // Calculate scroll progress based on container position
-          let progress = -containerTop / cachedScrollableHeight;
+          let progress = -currentContainerTop / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;

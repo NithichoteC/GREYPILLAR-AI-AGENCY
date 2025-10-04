@@ -150,7 +150,7 @@ export default function CapabilitiesSection() {
 
               cardRef.style.transform = `scale(${scale}) translateY(-${yOffset}px)`;
               cardRef.style.opacity = '1';
-              cardRef.style.zIndex = String(capabilities.length - index);
+              cardRef.style.zIndex = String(index);
 
             } else if (depth < 0 && depth > -1) {
               // Card entering from bottom
@@ -159,13 +159,13 @@ export default function CapabilitiesSection() {
 
               cardRef.style.transform = `translateY(${yPos}px)`;
               cardRef.style.opacity = String(enterProgress);
-              cardRef.style.zIndex = String(capabilities.length - index);
+              cardRef.style.zIndex = String(index);
 
             } else if (depth >= 3) {
               // Card stacked deep
               cardRef.style.transform = `scale(${MOBILE_SCALE}) translateY(-60px)`;
               cardRef.style.opacity = index === capabilities.length - 1 ? '0' : '1';
-              cardRef.style.zIndex = String(capabilities.length - index);
+              cardRef.style.zIndex = String(index);
 
             } else {
               // Card off-screen
@@ -325,11 +325,11 @@ export default function CapabilitiesSection() {
           if (index === 0) {
             cardRef.style.transform = 'translateY(0)';
             cardRef.style.opacity = '1';
-            cardRef.style.zIndex = '4';
+            cardRef.style.zIndex = '0';
           } else {
             cardRef.style.transform = `translateY(${viewportHeight}px)`;
             cardRef.style.opacity = '0';
-            cardRef.style.zIndex = String(4 - index);
+            cardRef.style.zIndex = String(index);
           }
         }
       });

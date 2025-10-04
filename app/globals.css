@@ -2692,87 +2692,63 @@ body {
     }
 }
 
-/* Cards Wrapper - Container for sticky cards */
+/* Cards Wrapper - Sticky Viewport Container */
 .capabilities-cards-wrapper {
     position: relative;
-    width: 100%;
-    padding-bottom: 100vh; /* Space for last card to unstick */
+    width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
+    min-height: 800vh; /* DESKTOP: 200vh per card = comfortable reading pace */
+    margin-top: 0; /* No gap - smooth flow from intro text */
+}
+
+/* MOBILE: Extra scroll space for easier reading (250vh per card) */
+@media (max-width: 768px) {
+    .capabilities-cards-wrapper {
+        min-height: 1000vh; /* MOBILE: 250vh per card = MUCH more breathing room */
+    }
 }
 
 .capabilities-cards {
-    position: relative;
-    width: 100%;
+    position: sticky;
+    top: 250px; /* TRUE MIDDLE: Positions ~600px card center at 50% viewport (250px + 300px = 550px center) */
+    height: 100vh;
+    width: 100%; /* CRITICAL: Force full width, prevent flex shrink-wrap */
     display: flex;
-    flex-direction: column; /* CRITICAL: Stack cards vertically for sticky to work */
-    gap: 2rem; /* Spacing between cards */
+    align-items: flex-start; /* START ALIGNMENT: card positioning controlled by absolute positioning */
+    justify-content: center;
+    /* No padding-top - absolute positioned cards ignore parent padding */
+    /* Cards fill full container content area */
+    /* No max-width or margin - prevents double-centering */
 }
 
-/* Individual Capability Card - HYBRID STICKY + PARALLAX */
+/* MOBILE: Lower sticky position (prevents overlap with intro text) */
+@media (max-width: 768px) {
+    .capabilities-cards {
+        top: 150px; /* MOBILE: Lower position = more space from intro text bottom */
+    }
+}
+
+/* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
 .capability-card {
-    position: sticky;
-    top: 160px; /* Stick point - smooth browser-native stacking */
-    width: 100%;
+    position: absolute;
+    width: 100%; /* Fill parent */
+    will-change: auto; /* Controlled by JavaScript for battery optimization */
+    transform: translateZ(0); /* Force GPU layer creation */
+    perspective: 1000px; /* Enable 3D rendering context for smoother transforms */
+    -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
+    backface-visibility: hidden; /* Prevent flickering on mobile */
+    -webkit-backface-visibility: hidden; /* Safari-specific */
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 650px;
-    margin-bottom: 2rem; /* Spacing between cards */
+    min-height: 650px; /* TALLER: More presence and room for content */
+    max-height: 800px; /* Increased height for better visual impact */
+    /* NO transition on transform - JavaScript controls it directly (prevents flickering) */
+    touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
 
-    /* Browser-native GPU acceleration */
-    transform: translateZ(0);
-    will-change: transform, opacity, filter;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-
-    /* Smooth transitions for depth effects */
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
-}
-
-/* Depth-Based Scaling - Cards shrink as they stack behind */
-.capability-card[data-depth="0"] {
-    transform: translateZ(0) scale(1); /* Active card - full size */
-    opacity: 1;
-}
-
-.capability-card[data-depth="1"] {
-    transform: translateZ(0) scale(0.98); /* 1st stacked - slightly smaller */
-    opacity: 0.99;
-}
-
-.capability-card[data-depth="2"] {
-    transform: translateZ(0) scale(0.96); /* 2nd stacked - more shrinkage */
-    opacity: 0.985;
-}
-
-.capability-card[data-depth="3"] {
-    transform: translateZ(0) scale(0.94); /* 3rd stacked - maximum shrinkage */
-    opacity: 0.98;
-}
-
-.capability-card[data-depth="4"],
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-    transform: translateZ(0) scale(0.94); /* Deep stack - same as 3rd */
-    opacity: 0.98;
-}
-
-/* Desktop Blur Effects - ONLY on hover-capable devices for glass effect */
-@media (min-width: 769px) and (hover: hover) {
-    .capability-card[data-depth="1"] {
-        filter: blur(2px); /* Light blur on 1st stacked card */
-    }
-
-    .capability-card[data-depth="2"] {
-        filter: blur(4px); /* Medium blur on 2nd stacked */
-    }
-
-    .capability-card[data-depth="3"] {
-        filter: blur(6px); /* Strong blur on 3rd stacked */
-    }
-
-    .capability-card[data-depth="4"],
-    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-        filter: blur(8px); /* Maximum blur on deepest stack */
-    }
+    /* 2025 CUTTING-EDGE: CSS Containment for faster rendering */
+    content-visibility: auto; /* Only render when near viewport */
+    contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
+    contain: layout paint; /* Prevent reflow cascades to other elements */
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */

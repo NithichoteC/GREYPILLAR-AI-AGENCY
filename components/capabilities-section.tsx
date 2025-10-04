@@ -46,6 +46,8 @@ export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevDepthsRef = useRef<number[]>([]);
+  const prevTransformsRef = useRef<string[]>([]); // Cache previous transforms
+  const prevOpacitiesRef = useRef<string[]>([]); // Cache previous opacities
 
   const capabilities = [
     {
@@ -83,14 +85,16 @@ export default function CapabilitiesSection() {
     let lastScrollTime = 0;
 
     // Cache viewport dimensions for performance
+    let viewportHeight = window.innerHeight;
     let isMobile = window.innerWidth <= 768;
     let cachedScrollableHeight = 0;
 
     const updateViewportCache = () => {
+      viewportHeight = window.innerHeight;
       isMobile = window.innerWidth <= 768;
 
       if (containerRef.current) {
-        cachedScrollableHeight = containerRef.current.scrollHeight - window.innerHeight;
+        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
       }
     };
 
@@ -121,6 +125,11 @@ export default function CapabilitiesSection() {
           const numCards = capabilities.length;
           const activeCardFloat = progress * (numCards + 1.0);
 
+          // Parallax constants
+          const STACK_SCALE = 0.9;
+          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4;
+          const MAX_VISIBLE_STACK_CARDS = 3;
+
           cardRefs.current.forEach((cardRef, index) => {
             if (!cardRef) return;
 
@@ -138,6 +147,84 @@ export default function CapabilitiesSection() {
               cardRef.setAttribute('data-depth', finalDepth.toString());
               prevDepthsRef.current[index] = finalDepth;
             }
+
+            // Calculate new transform and opacity values
+            let newTransform = '';
+            let newOpacity = '';
+            let newFilter = '';
+
+            if (depth >= 0 && depth < 4) {
+              // Card is in stack or exiting - simplified scroll-based scaling
+              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+
+              // Depth-based scaling
+              const scaleProgress = Math.min(depth / 1.5, 1);
+              const scale = 1 - scaleProgress * (1 - STACK_SCALE);
+
+              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+              const stackParallax = -depth * 4;
+
+              newTransform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+
+              // Simple opacity - all stacked cards stay visible
+              let opacity = 1;
+
+              // Only last card gets exit fade (when scrolling past all cards)
+              if (isLastCard && depth > 3) {
+                const exitProgress = Math.max(0, depth - 3);
+                opacity = Math.max(0, 1 - exitProgress);
+              }
+
+              newOpacity = String(opacity);
+
+              // Desktop blur - progressive based on depth
+              if (!isMobile && depth > 0) {
+                const blurAmount = Math.min(depth * 2, 8); // 2px, 4px, 6px, 8px max
+                newFilter = `blur(${blurAmount}px)`;
+              }
+
+            } else if (depth >= 4) {
+              // Keep cards at final stack position with continuous parallax
+              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
+              const stackParallax = -depth * 4;
+
+              newTransform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+              newOpacity = isLastCard ? '0' : '1';
+
+              if (!isMobile) {
+                newFilter = 'blur(8px)'; // Maximum blur
+              }
+
+            } else if (depth > -1) {
+              // Card is incoming - viewport-relative slide from bottom edge
+              const incomingProgress = 1 + depth; // 0 to 1 as card enters
+
+              // Calculate slide from bottom of viewport to stack position
+              const startY = viewportHeight - Math.max(0, containerTop);
+              const currentY = Math.round(startY - (incomingProgress * startY));
+
+              newTransform = `translate3d(0, ${currentY}px, 0)`;
+              newOpacity = '1';
+            } else {
+              // Card is off-screen below (depth <= -1)
+              newTransform = `translate3d(0, 100vh, 0)`;
+              newOpacity = '0';
+            }
+
+            // Only update styles if values changed (prevents style thrashing)
+            if (prevTransformsRef.current[index] !== newTransform) {
+              cardRef.style.transform = newTransform;
+              prevTransformsRef.current[index] = newTransform;
+            }
+
+            if (prevOpacitiesRef.current[index] !== newOpacity) {
+              cardRef.style.opacity = newOpacity;
+              prevOpacitiesRef.current[index] = newOpacity;
+            }
+
+            // Apply blur filter (desktop only, no caching needed)
+            cardRef.style.filter = newFilter;
           });
 
           ticking = false;

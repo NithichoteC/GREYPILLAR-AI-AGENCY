@@ -3105,7 +3105,7 @@ body {
 
     /* MOBILE: Optimized parallax settings */
     .capabilities-cards-wrapper {
-        min-height: 240vh; /* Shorter scroll for smoother experience - 60vh per card */
+        min-height: 400vh; /* Comfortable reading pace - 100vh per card */
         margin-top: var(--space-2xl); /* Add top margin to prevent overlap */
     }
 

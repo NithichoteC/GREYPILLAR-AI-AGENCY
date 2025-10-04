@@ -131,7 +131,7 @@ export default function CapabilitiesSection() {
           const progress = cachedScrollableHeight > 0
             ? Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight))
             : 0;
-          const activeCard = progress * (capabilities.length + 0.5);
+          const activeCard = progress * (capabilities.length + 1.5); // Slower progression for reading time
 
           // Mobile constants - proper stacking values
           const MOBILE_SCALE = 0.92; // Slightly smaller scale for mobile
@@ -146,9 +146,9 @@ export default function CapabilitiesSection() {
             if (depth >= 0 && depth < 3) {
               // Card in view or stacking
               // Scale cards based on depth for visual hierarchy
-              const scale = 1 - (depth * 0.02); // 1, 0.98, 0.96, etc.
+              const scale = Math.round((1 - (depth * 0.02)) * 100) / 100; // Round to 2 decimals
               // Stack cards with proper overlap (show 50px of each stacked card)
-              const yOffset = Math.round(index * MOBILE_OFFSET);
+              const yOffset = Math.round(index * MOBILE_OFFSET / 5) * 5; // Round to nearest 5px
 
               cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = '1';
@@ -157,16 +157,16 @@ export default function CapabilitiesSection() {
             } else if (depth < 0 && depth > -1) {
               // Card entering from bottom
               const enterProgress = 1 + depth;
-              const yPos = Math.round(viewportHeight * (1 - enterProgress));
+              const yPos = Math.round(viewportHeight * (1 - enterProgress) / 5) * 5; // Round to nearest 5px
 
               cardRef.style.transform = `translateY(${yPos}px)`;
-              cardRef.style.opacity = String(enterProgress);
+              cardRef.style.opacity = '1'; // Full opacity immediately, no fade
               cardRef.style.zIndex = String(index);
 
             } else if (depth >= 3) {
               // Card stacked deep - maintain stacking position
               const scale = 0.94; // Smallest scale for deep cards
-              const yOffset = Math.round(index * MOBILE_OFFSET);
+              const yOffset = Math.round(index * MOBILE_OFFSET / 5) * 5; // Round to nearest 5px
 
               cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = index === capabilities.length - 1 ? '0' : '1';

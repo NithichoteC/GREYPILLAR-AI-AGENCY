@@ -159,11 +159,27 @@ export default function CapabilitiesSection() {
           const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4;
           const MAX_VISIBLE_STACK_CARDS = 3;
 
+          // Pre-calculated blur filter strings (avoid string concatenation in loop)
+          const BLUR_FILTERS = ['', 'blur(2px)', 'blur(4px)', 'blur(6px)', 'blur(8px)'];
+
           cardRefs.current.forEach((cardRef, index) => {
             if (!cardRef) return;
 
             const depth = activeCardFloat - index;
             const isLastCard = index === numCards - 1;
+
+            // PERFORMANCE: Skip off-screen cards (depth < -1 or > 5)
+            if (depth < -1 || depth > 5) {
+              // Only update if not already hidden
+              if (prevTransformsRef.current[index] !== 'translate3d(0, 100vh, 0)') {
+                cardRef.style.transform = 'translate3d(0, 100vh, 0)';
+                cardRef.style.opacity = '0';
+                cardRef.style.filter = '';
+                prevTransformsRef.current[index] = 'translate3d(0, 100vh, 0)';
+                prevOpacitiesRef.current[index] = '0';
+              }
+              return;
+            }
 
             // Calculate new transform and opacity values
             let newTransform = '';
@@ -174,9 +190,9 @@ export default function CapabilitiesSection() {
               // Card is in stack or exiting - simplified scroll-based scaling
               const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-              // Depth-based scaling
-              const scaleProgress = Math.min(depth / 1.5, 1);
-              const scale = 1 - scaleProgress * (1 - STACK_SCALE);
+              // Depth-based scaling (pre-calculated constant to avoid division)
+              const scaleProgress = depth * 0.6667; // depth / 1.5 pre-calculated
+              const scale = 1 - Math.min(scaleProgress, 1) * 0.1; // (1 - STACK_SCALE) = 0.1
 
               const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
               const stackParallax = -depth * 4;
@@ -184,20 +200,11 @@ export default function CapabilitiesSection() {
               newTransform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
               // Simple opacity - all stacked cards stay visible
-              let opacity = 1;
+              newOpacity = isLastCard && depth > 3 ? String(Math.max(0, 1 - (depth - 3))) : '1';
 
-              // Only last card gets exit fade (when scrolling past all cards)
-              if (isLastCard && depth > 3) {
-                const exitProgress = Math.max(0, depth - 3);
-                opacity = Math.max(0, 1 - exitProgress);
-              }
-
-              newOpacity = String(opacity);
-
-              // Desktop blur - progressive based on depth
+              // Desktop blur - use pre-calculated strings (skip assignment on mobile)
               if (!isMobile && depth > 0) {
-                const blurAmount = Math.min(depth * 2, 8); // 2px, 4px, 6px, 8px max
-                newFilter = `blur(${blurAmount}px)`;
+                newFilter = BLUR_FILTERS[Math.min(Math.floor(depth), 4)];
               }
 
             } else if (depth >= 4) {
@@ -206,11 +213,12 @@ export default function CapabilitiesSection() {
               const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
               const stackParallax = -depth * 4;
 
-              newTransform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+              newTransform = `scale(0.9) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
               newOpacity = isLastCard ? '0' : '1';
 
+              // Desktop blur - skip on mobile to avoid empty assignment
               if (!isMobile) {
-                newFilter = 'blur(8px)'; // Maximum blur
+                newFilter = BLUR_FILTERS[4]; // Pre-calculated maximum blur
               }
 
             } else if (depth > -1) {

@@ -110,10 +110,9 @@ export default function CapabilitiesSection() {
     // PERFORMANCE: Set will-change once on init (no toggling to prevent jitter)
 
     const handleScroll = () => {
-      // THROTTLE: Optimized for both mobile and desktop
+      // THROTTLE: 60fps for both mobile and desktop for consistency
       const now = performance.now();
-      const isMobile = window.innerWidth <= 768;
-      const throttleTime = isMobile ? 8 : 16; // 120fps mobile, 60fps desktop
+      const throttleTime = 16; // Consistent 60fps - better than trying 120fps on mobile
 
       if (now - lastScrollTime < throttleTime) {
         return; // Skip this frame entirely
@@ -130,6 +129,9 @@ export default function CapabilitiesSection() {
 
           const container = containerRef.current;
 
+          // Calculate isMobile ONCE at the start
+          const isMobile = window.innerWidth <= 768;
+
           // Pure math - NO DOM reads during scroll for smooth mobile performance
           const scrollY = window.scrollY;
           const containerViewportTop = cachedDocumentTop - scrollY;
@@ -140,10 +142,9 @@ export default function CapabilitiesSection() {
           const numCards = capabilities.length;
           const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
-          // Parallax constants - adjusted for mobile/desktop
-          const isMobile = window.innerWidth <= 768;
-          const STACK_SCALE = isMobile ? 0.95 : 0.9; // Less scaling on mobile
-          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Tighter spacing on mobile
+          // Parallax constants - adjusted for mobile/desktop (using isMobile from above)
+          const STACK_SCALE = isMobile ? 0.98 : 0.9; // Even less scaling on mobile for performance
+          const Y_OFFSET_PER_LEVEL = isMobile ? 1 : 4; // Minimal spacing on mobile
           const MAX_VISIBLE_STACK_CARDS = 3;
 
       cardRefs.current.forEach((cardRef, index) => {
@@ -162,10 +163,13 @@ export default function CapabilitiesSection() {
           finalDepth = 0; // Crystal clear at scroll end
         }
 
-        // PERFORMANCE: Only update data-depth when value changes (prevents flickering)
-        if (prevDepthsRef.current[index] !== finalDepth) {
+        // PERFORMANCE: Only update data-depth on desktop (mobile doesn't use blur)
+        if (!isMobile && prevDepthsRef.current[index] !== finalDepth) {
           cardRef.setAttribute('data-depth', finalDepth.toString());
           prevDepthsRef.current[index] = finalDepth;
+        } else if (isMobile) {
+          // Clear data-depth on mobile to prevent blur CSS from applying
+          cardRef.removeAttribute('data-depth');
         }
 
         if (depth >= 0 && depth < 4) {
@@ -178,9 +182,13 @@ export default function CapabilitiesSection() {
 
           // Use pixels for all transforms (no % to prevent rounding jitter)
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Convert to pixels
-          const stackParallax = isMobile ? -depth * 20 : -depth * 40; // Less parallax movement on mobile
+          const stackParallax = isMobile ? -depth * 10 : -depth * 40; // Much less parallax on mobile
 
-          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}px, 0)`;
+          // Round values to avoid subpixel rendering issues
+          const roundedY = Math.round(baseTranslateY + stackParallax);
+
+          // Use translate3d with z:0 to force GPU acceleration
+          cardRef.style.transform = `scale(${scale}) translate3d(0, ${roundedY}px, 0)`;
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -198,9 +206,12 @@ export default function CapabilitiesSection() {
           // Keep cards at final stack position with continuous parallax
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Pixels
-          const stackParallax = isMobile ? -depth * 20 : -depth * 40; // Less parallax on mobile
+          const stackParallax = isMobile ? -depth * 10 : -depth * 40; // Much less parallax on mobile
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}px, 0)`;
+          // Round values for performance
+          const roundedY = Math.round(baseTranslateY + stackParallax);
+
+          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${roundedY}px, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;
@@ -216,7 +227,7 @@ export default function CapabilitiesSection() {
           const targetY = 0;
 
           // Interpolate between start and target based on scroll progress
-          const currentY = startY - (incomingProgress * startY);
+          const currentY = Math.round(startY - (incomingProgress * startY));
 
           cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
           cardRef.style.opacity = '1'; // Always full opacity - no fade

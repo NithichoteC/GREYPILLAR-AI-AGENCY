@@ -2817,23 +2817,30 @@ body {
     }
 }
 
-/* Mobile - Enable blur effects like desktop */
+/* Mobile - NO BLUR for performance */
 @media (max-width: 768px) {
-    .capability-card[data-depth="1"] {
-        filter: blur(1px); /* Lighter blur on mobile for performance */
-    }
-
-    .capability-card[data-depth="2"] {
-        filter: blur(2px); /* Progressive blur */
-    }
-
-    .capability-card[data-depth="3"] {
-        filter: blur(3px); /* Increasing blur */
-    }
-
+    .capability-card[data-depth="1"],
+    .capability-card[data-depth="2"],
+    .capability-card[data-depth="3"],
     .capability-card[data-depth="4"],
-    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-        filter: blur(4px); /* Maximum blur on mobile */
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]),
+    .capability-card {
+        filter: none !important; /* Completely disable blur on mobile */
+        -webkit-filter: none !important;
+    }
+
+    /* Use opacity for depth indication instead of blur */
+    .capability-card[data-depth="1"] .capability-card-content {
+        opacity: 0.95 !important;
+    }
+
+    .capability-card[data-depth="2"] .capability-card-content {
+        opacity: 0.9 !important;
+    }
+
+    .capability-card[data-depth="3"] .capability-card-content,
+    .capability-card[data-depth="4"] .capability-card-content {
+        opacity: 0.85 !important;
     }
 }
 
@@ -3084,6 +3091,10 @@ body {
 @media (max-width: 768px) {
     .capabilities-section {
         padding: var(--space-3xl) 0;
+        /* iOS smooth scrolling */
+        -webkit-overflow-scrolling: touch;
+        /* Prevent bounce on iOS */
+        overscroll-behavior: contain;
     }
 
     .capabilities-intro {
@@ -3093,18 +3104,29 @@ body {
 
     /* MOBILE: Parallax enabled with adjusted values */
     .capabilities-cards-wrapper {
-        min-height: 400vh; /* Reduced from 600vh for mobile scrolling */
+        min-height: 300vh; /* Even less scroll distance - 75vh per card */
     }
 
     /* MOBILE: Keep sticky but adjust top position */
     .capabilities-cards {
-        top: 150px !important; /* Better positioning for mobile viewport */
+        top: 100px !important; /* Better centering for mobile viewport */
     }
 
-    /* MOBILE: Smaller padding for better mobile fit */
+    /* MOBILE: Much shorter cards to prevent overlap */
+    .capability-card {
+        min-height: 280px !important; /* Much shorter for mobile */
+        max-height: 320px !important; /* Constrain maximum height */
+        /* Force GPU acceleration on mobile */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+
+    /* MOBILE: Smaller padding and height for card content */
     .capability-card-content {
-        padding: var(--space-2xl);
-        min-height: 400px;
+        padding: var(--space-xl); /* Reduced padding */
+        min-height: 260px !important; /* Much shorter */
+        height: auto !important; /* Allow natural height */
     }
 
     .capability-card-header {

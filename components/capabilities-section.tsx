@@ -56,6 +56,13 @@ export default function CapabilitiesSection() {
   const prevTransformsRef = useRef<string[]>([]); // Cache previous transforms (prevent style thrashing)
   const prevOpacitiesRef = useRef<string[]>([]); // Cache previous opacities (prevent style thrashing)
 
+  // PERFORMANCE: Set static zIndex only ONCE on mount (not every frame!)
+  useEffect(() => {
+    cardRefs.current.forEach((cardRef, index) => {
+      if (cardRef) cardRef.style.zIndex = String(index);
+    });
+  }, []);
+
   const capabilities = [
     {
       iconSrc: '/icons/revenue-recovery.png',
@@ -124,9 +131,6 @@ export default function CapabilitiesSection() {
     };
 
     const handleScroll = () => {
-      // Enable GPU layers on first scroll
-      enableGPULayers();
-
       // Clear previous idle timeout
       if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
 
@@ -135,8 +139,8 @@ export default function CapabilitiesSection() {
 
       if (!ticking) {
         window.requestAnimationFrame((timestamp) => {
-          // THROTTLE: Mobile 30fps (33ms), Desktop 60fps (16ms) - Mozilla 2025 guidance
-          const throttleTime = isMobile ? 33 : 16;
+          // THROTTLE: Mobile 20fps (50ms), Desktop 60fps (16ms) - iOS scroll pause compensation
+          const throttleTime = isMobile ? 50 : 16;
           if (timestamp - lastScrollTime < throttleTime) {
             ticking = false;
             return;
@@ -168,8 +172,6 @@ export default function CapabilitiesSection() {
 
       cardRefs.current.forEach((cardRef, index) => {
         if (!cardRef) return;
-
-        cardRef.style.zIndex = String(index);
 
         const depth = activeCardFloat - index;
 
@@ -237,7 +239,8 @@ export default function CapabilitiesSection() {
           const targetY = 0;
 
           // Interpolate between start and target based on scroll progress
-          const currentY = startY - (incomingProgress * startY);
+          // MOBILE OPTIMIZATION: Round to nearest pixel (research: sub-pixel precision wastes GPU)
+          const currentY = Math.round(startY - (incomingProgress * startY));
 
           newTransform = `translate3d(0, ${currentY}px, 0)`;
           newOpacity = '1'; // Always full opacity - no fade
@@ -283,6 +286,7 @@ export default function CapabilitiesSection() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
     handleScroll(); // Initial call
+    enableGPULayers(); // Enable GPU layers once on mount (not every scroll!)
 
     return () => {
       window.removeEventListener('scroll', handleScroll);

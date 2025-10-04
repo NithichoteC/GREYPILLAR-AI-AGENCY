@@ -143,8 +143,8 @@ export default function CapabilitiesSection() {
           const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
           // Parallax constants - adjusted for mobile/desktop (using isMobile from above)
-          const STACK_SCALE = isMobile ? 0.98 : 0.9; // Even less scaling on mobile for performance
-          const Y_OFFSET_PER_LEVEL = isMobile ? 1 : 4; // Minimal spacing on mobile
+          const STACK_SCALE = isMobile ? 0.92 : 0.9; // More noticeable scale on mobile
+          const Y_OFFSET_PER_LEVEL = isMobile ? 6 : 4; // More visible spacing on mobile
           const MAX_VISIBLE_STACK_CARDS = 3;
 
       cardRefs.current.forEach((cardRef, index) => {
@@ -182,13 +182,17 @@ export default function CapabilitiesSection() {
 
           // Use pixels for all transforms (no % to prevent rounding jitter)
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Convert to pixels
-          const stackParallax = isMobile ? -depth * 10 : -depth * 40; // Much less parallax on mobile
+          const stackParallax = isMobile ? -depth * 15 : -depth * 40; // Balanced parallax on mobile
 
           // Round values to avoid subpixel rendering issues
           const roundedY = Math.round(baseTranslateY + stackParallax);
 
-          // Use translate3d with z:0 to force GPU acceleration
-          cardRef.style.transform = `scale(${scale}) translate3d(0, ${roundedY}px, 0)`;
+          // Use simpler transform for mobile, translate3d for desktop
+          if (isMobile) {
+            cardRef.style.transform = `scale(${scale}) translateY(${roundedY}px)`;
+          } else {
+            cardRef.style.transform = `scale(${scale}) translate3d(0, ${roundedY}px, 0)`;
+          }
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -206,12 +210,16 @@ export default function CapabilitiesSection() {
           // Keep cards at final stack position with continuous parallax
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Pixels
-          const stackParallax = isMobile ? -depth * 10 : -depth * 40; // Much less parallax on mobile
+          const stackParallax = isMobile ? -depth * 15 : -depth * 40; // Balanced parallax on mobile
 
           // Round values for performance
           const roundedY = Math.round(baseTranslateY + stackParallax);
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${roundedY}px, 0)`;
+          if (isMobile) {
+            cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${roundedY}px)`;
+          } else {
+            cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${roundedY}px, 0)`;
+          }
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;
@@ -221,15 +229,17 @@ export default function CapabilitiesSection() {
           // Card is incoming - viewport-relative slide from bottom edge
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          // Calculate slide from bottom of viewport to stack position (use cached math)
-          const startY = viewportHeight - Math.max(0, containerViewportTop);
-          // End position: stack position (0)
-          const targetY = 0;
+          // Simpler calculation for mobile
+          const startY = isMobile ? viewportHeight * 0.8 : viewportHeight - Math.max(0, containerViewportTop);
 
           // Interpolate between start and target based on scroll progress
-          const currentY = Math.round(startY - (incomingProgress * startY));
+          const currentY = Math.round(startY * (1 - incomingProgress));
 
-          cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
+          if (isMobile) {
+            cardRef.style.transform = `translateY(${currentY}px)`;
+          } else {
+            cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
+          }
           cardRef.style.opacity = '1'; // Always full opacity - no fade
         } else {
           // Card is off-screen below (depth <= -1)
@@ -260,15 +270,10 @@ export default function CapabilitiesSection() {
     updateCache();
 
     // Set will-change once on all cards (no toggling)
-    // Also set initial position for mobile cards
-    cardRefs.current.forEach((cardRef, index) => {
+    cardRefs.current.forEach((cardRef) => {
       if (cardRef) {
         cardRef.style.willChange = 'transform, opacity';
-        // Start cards below viewport on mobile
-        if (window.innerWidth <= 768) {
-          cardRef.style.transform = 'translate3d(0, 100vh, 0)';
-          cardRef.style.opacity = '0';
-        }
+        // Let handleScroll set initial position - don't override
       }
     });
 

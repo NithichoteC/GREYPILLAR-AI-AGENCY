@@ -3114,12 +3114,14 @@ body {
 
     /* MOBILE: Much shorter cards to prevent overlap */
     .capability-card {
-        min-height: 280px !important; /* Much shorter for mobile */
-        max-height: 320px !important; /* Constrain maximum height */
+        position: absolute !important; /* Ensure absolute positioning */
+        min-height: 300px !important; /* Slightly taller for content */
+        max-height: 350px !important; /* Constrain maximum height */
+        height: auto !important; /* Allow natural height */
         /* GPU acceleration WITHOUT overriding transforms */
         /* DO NOT SET transform here - JavaScript needs to control it */
         backface-visibility: hidden;
-        perspective: 1000px;
+        -webkit-backface-visibility: hidden;
         will-change: transform, opacity; /* Tell browser what will change */
     }
 

@@ -3069,26 +3069,7 @@ body {
         margin-bottom: var(--space-3xl);
     }
 
-    .capabilities-cards-wrapper {
-        min-height: 400vh;  /* Enough height for mobile parallax scrolling */
-        display: block;
-    }
-
-    .capabilities-cards {
-        position: relative;  /* Change from sticky to relative for mobile */
-        top: 0;  /* Reset top positioning */
-        height: auto;  /* Let JavaScript control height */
-        display: block;
-    }
-
-    .capability-card {
-        position: absolute;  /* Keep absolute for JavaScript parallax control */
-        inset: auto;  /* Let JavaScript control positioning */
-        margin-bottom: 0;  /* No margin - JavaScript controls spacing */
-        /* Remove transform: none - let JavaScript handle transforms */
-        /* Remove opacity override - let JavaScript handle visibility */
-    }
-
+    /* Let JavaScript handle parallax on mobile too - just adjust styling */
     .capability-card-content {
         padding: var(--space-2xl);
         min-height: 400px;

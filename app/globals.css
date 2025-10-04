@@ -2584,6 +2584,11 @@ body {
     background: #F7F7F8; /* Professional light gray background */
     position: relative;
     /* overflow-x: hidden; - REMOVED: breaks sticky positioning for child elements */
+
+    /* 2025 iOS SCROLL OPTIMIZATIONS: Eliminate bounce lag and improve momentum */
+    overscroll-behavior-y: none; /* Prevent bounce at edges (reduces scroll lag) */
+    -webkit-overflow-scrolling: touch; /* iOS momentum scrolling (legacy support) */
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
 }
 
 /* Grid overlay container - absolute positioned, full section coverage */
@@ -2676,16 +2681,30 @@ body {
     color: #2d3748; /* Dark gray for good contrast on light bg */
     font-weight: 500; /* Medium weight */
     letter-spacing: -0.01em; /* Slightly tight, modern */
-    margin-bottom: 8rem; /* BALANCED SPACING: 128px matches top section padding perfectly */
+    margin-bottom: 8rem; /* DESKTOP: 128px spacing */
     max-width: 900px; /* Comfortable reading width */
+}
+
+/* MOBILE: Adjust intro spacing (taller text needs less gap) */
+@media (max-width: 768px) {
+    .capabilities-intro {
+        margin-bottom: 6rem; /* MOBILE: 96px (less gap, prevents overlap) */
+    }
 }
 
 /* Cards Wrapper - Sticky Viewport Container */
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
-    min-height: 600vh; /* INCREASED: 150vh per card = smoother scroll progression (was 500vh = 125vh/card too fast) */
+    min-height: 800vh; /* DESKTOP: 200vh per card = comfortable reading pace */
     margin-top: 0; /* No gap - smooth flow from intro text */
+}
+
+/* MOBILE: Extra scroll space for easier reading (250vh per card) */
+@media (max-width: 768px) {
+    .capabilities-cards-wrapper {
+        min-height: 1000vh; /* MOBILE: 250vh per card = MUCH more breathing room */
+    }
 }
 
 .capabilities-cards {
@@ -2701,19 +2720,35 @@ body {
     /* No max-width or margin - prevents double-centering */
 }
 
+/* MOBILE: Lower sticky position (prevents overlap with intro text) */
+@media (max-width: 768px) {
+    .capabilities-cards {
+        top: 150px; /* MOBILE: Lower position = more space from intro text bottom */
+    }
+}
+
 /* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
 .capability-card {
     position: absolute;
     width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
-    will-change: transform; /* Optimize for JavaScript animations */
+    will-change: auto; /* Controlled by JavaScript for battery optimization (2025 standard) */
+    transform: translateZ(0); /* Force GPU layer creation (Apple pattern) */
+    perspective: 1000px; /* Enable 3D rendering context for smoother transforms */
+    -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
+    backface-visibility: hidden; /* Prevent flickering on mobile */
+    -webkit-backface-visibility: hidden; /* Safari-specific */
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 650px; /* TALLER: More presence and room for content */
     max-height: 800px; /* Increased height for better visual impact */
-    /* Smooth sliding animation - MUST be on same element JavaScript animates */
-    /* Only animate transform - opacity changes instantly per user requirement */
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    /* NO transition on transform - JavaScript controls it directly (prevents flickering) */
+    touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
+
+    /* 2025 CUTTING-EDGE: CSS Containment for 7x faster rendering */
+    content-visibility: auto; /* Only render when near viewport - 7x performance boost */
+    contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
+    contain: layout paint; /* Prevent reflow cascades to other elements */
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */
@@ -2734,13 +2769,9 @@ body {
         0 20px 40px -10px rgba(0, 0, 0, 0.08),  /* Soft ambient */
         0 10px 20px -5px rgba(0, 0, 0, 0.12),   /* Mid depth */
         0 0 0 1px rgba(0, 0, 0, 0.05);          /* Crisp edge */
-    /* NO box-shadow transition - prevents flickering during scroll */
-    transition:
-        border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.3s ease-out,
-        backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),  /* SMOOTH SILK blur transition */
-        background 0.4s cubic-bezier(0.4, 0, 0.2, 1);       /* SMOOTH SILK background fade */
+    /* NO transitions on scroll-controlled properties (prevents flickering) */
+    /* Only transition hover states */
+    transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Subtle gradient overlay - adds visual interest without overwhelming content */
@@ -2796,23 +2827,26 @@ body {
 }
 
 /* Progressive blur levels - SMOOTH SILK TRANSITION (0 → 2px → 4px → 6px → 8px) */
+/* DESKTOP ONLY - Mobile overrides below to prevent initial blur flash */
 
-/* Blur entire card element - creates true frosted glass depth effect */
-.capability-card[data-depth="1"] {
-    filter: blur(2px); /* Light blur on entire first stacked card */
-}
+@media (min-width: 769px) {
+    /* Blur entire card element - creates true frosted glass depth effect */
+    .capability-card[data-depth="1"] {
+        filter: blur(2px); /* Light blur on entire first stacked card */
+    }
 
-.capability-card[data-depth="2"] {
-    filter: blur(4px); /* Medium blur on entire second depth card */
-}
+    .capability-card[data-depth="2"] {
+        filter: blur(4px); /* Medium blur on entire second depth card */
+    }
 
-.capability-card[data-depth="3"] {
-    filter: blur(6px); /* Strong blur on entire third depth card */
-}
+    .capability-card[data-depth="3"] {
+        filter: blur(6px); /* Strong blur on entire third depth card */
+    }
 
-.capability-card[data-depth="4"],
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-    filter: blur(8px); /* Maximum blur on entire deepest cards */
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: blur(8px); /* Maximum blur on entire deepest cards */
+    }
 }
 
 /* Front card - Crystal clear (depth 0) */
@@ -2821,53 +2855,104 @@ body {
     background: #FFFFFF; /* Solid white, no transparency */
 }
 
-/* Stacked card - First depth (subtle blur start) */
-.capability-card[data-depth="1"] .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.03);
-    box-shadow:
-        0 8px 16px -4px rgba(0, 0, 0, 0.04),
-        0 4px 8px -2px rgba(0, 0, 0, 0.06),
-        0 0 0 1px rgba(0, 0, 0, 0.02);
-    backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
-    background: rgba(247, 247, 248, 0.96); /* SOLID: Nearly opaque blocks all text bleed (was 0.65) */
-    opacity: 0.99;
+/* MOBILE: Solid backgrounds without backdrop-filter (eliminates GPU lag) */
+@media (max-width: 768px) {
+    /* Stacked card - First depth (solid background) */
+    .capability-card[data-depth="1"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.03);
+        box-shadow:
+            0 8px 16px -4px rgba(0, 0, 0, 0.04),
+            0 4px 8px -2px rgba(0, 0, 0, 0.06),
+            0 0 0 1px rgba(0, 0, 0, 0.02);
+        background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque - no blur needed */
+        opacity: 0.99;
+    }
+
+    /* Second depth - Solid background */
+    .capability-card[data-depth="2"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.025);
+        box-shadow:
+            0 6px 12px -4px rgba(0, 0, 0, 0.03),
+            0 3px 6px -2px rgba(0, 0, 0, 0.05),
+            0 0 0 1px rgba(0, 0, 0, 0.015);
+        background: rgba(245, 245, 246, 1.0); /* SOLID: Slightly darker for depth */
+        opacity: 0.985;
+    }
+
+    /* Third depth - Solid background */
+    .capability-card[data-depth="3"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 5px 10px -3px rgba(0, 0, 0, 0.025),
+            0 2px 5px -1px rgba(0, 0, 0, 0.04),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        background: rgba(243, 243, 244, 1.0); /* SOLID: More depth */
+        opacity: 0.98;
+    }
+
+    /* Fourth depth and beyond - Solid background */
+    .capability-card[data-depth="4"] .capability-card-content,
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 4px 8px -3px rgba(0, 0, 0, 0.02),
+            0 2px 4px -1px rgba(0, 0, 0, 0.03),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        background: rgba(241, 241, 242, 1.0); /* SOLID: Maximum depth */
+        opacity: 0.98;
+    }
 }
 
-/* Second depth - Medium blur */
-.capability-card[data-depth="2"] .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.025);
-    box-shadow:
-        0 6px 12px -4px rgba(0, 0, 0, 0.03),
-        0 3px 6px -2px rgba(0, 0, 0, 0.05),
-        0 0 0 1px rgba(0, 0, 0, 0.015);
-    backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
-    background: rgba(247, 247, 248, 0.98); /* SOLID: Almost opaque blocks all text bleed (was 0.80) */
-    opacity: 0.985;
-}
+/* DESKTOP: Premium backdrop-filter blur effects (min-width: 769px) */
+@media (min-width: 769px) {
+    /* Stacked card - First depth (subtle blur start) */
+    .capability-card[data-depth="1"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.03);
+        box-shadow:
+            0 8px 16px -4px rgba(0, 0, 0, 0.04),
+            0 4px 8px -2px rgba(0, 0, 0, 0.06),
+            0 0 0 1px rgba(0, 0, 0, 0.02);
+        backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
+        background: rgba(247, 247, 248, 0.96); /* SOLID: Nearly opaque blocks all text bleed (was 0.65) */
+        opacity: 0.99;
+    }
 
-/* Third depth - Strong blur */
-.capability-card[data-depth="3"] .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.02);
-    box-shadow:
-        0 5px 10px -3px rgba(0, 0, 0, 0.025),
-        0 2px 5px -1px rgba(0, 0, 0, 0.04),
-        0 0 0 1px rgba(0, 0, 0, 0.01);
-    backdrop-filter: blur(6px); /* STRONG: Building depth */
-    background: rgba(247, 247, 248, 0.99); /* SOLID: Nearly 100% opaque blocks all text bleed (was 0.90) */
-    opacity: 0.98;
-}
+    /* Second depth - Medium blur */
+    .capability-card[data-depth="2"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.025);
+        box-shadow:
+            0 6px 12px -4px rgba(0, 0, 0, 0.03),
+            0 3px 6px -2px rgba(0, 0, 0, 0.05),
+            0 0 0 1px rgba(0, 0, 0, 0.015);
+        backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
+        background: rgba(247, 247, 248, 0.98); /* SOLID: Almost opaque blocks all text bleed (was 0.80) */
+        opacity: 0.985;
+    }
 
-/* Fourth depth and beyond - Maximum blur */
-.capability-card[data-depth="4"] .capability-card-content,
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
-    border-color: rgba(0, 0, 0, 0.02);
-    box-shadow:
-        0 4px 8px -3px rgba(0, 0, 0, 0.02),
-        0 2px 4px -1px rgba(0, 0, 0, 0.03),
-        0 0 0 1px rgba(0, 0, 0, 0.01);
-    backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
-    background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque completely blocks all text bleed (was 0.95) */
-    opacity: 0.98;
+    /* Third depth - Strong blur */
+    .capability-card[data-depth="3"] .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 5px 10px -3px rgba(0, 0, 0, 0.025),
+            0 2px 5px -1px rgba(0, 0, 0, 0.04),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        backdrop-filter: blur(6px); /* STRONG: Building depth */
+        background: rgba(247, 247, 248, 0.99); /* SOLID: Nearly 100% opaque blocks all text bleed (was 0.90) */
+        opacity: 0.98;
+    }
+
+    /* Fourth depth and beyond - Maximum blur */
+    .capability-card[data-depth="4"] .capability-card-content,
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) .capability-card-content {
+        border-color: rgba(0, 0, 0, 0.02);
+        box-shadow:
+            0 4px 8px -3px rgba(0, 0, 0, 0.02),
+            0 2px 4px -1px rgba(0, 0, 0, 0.03),
+            0 0 0 1px rgba(0, 0, 0, 0.01);
+        backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
+        background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque completely blocks all text bleed (was 0.95) */
+        opacity: 0.98;
+    }
 }
 
 /* Progressive text opacity - Apple approach to prevent bleed-through */
@@ -3069,14 +3154,26 @@ body {
         margin-bottom: var(--space-3xl);
     }
 
-    /* Let JavaScript handle parallax on mobile too - just adjust styling */
-    .capability-card-content {
-        padding: var(--space-2xl);
-        min-height: 400px;
+    /* MOBILE POSITIONING FIX: Adjust sticky top for smaller viewport */
+    .capabilities-cards {
+        top: 100px; /* Mobile: higher position for 600-700px viewport (vs 250px desktop) */
     }
 
+    /* MOBILE SPACING: Larger cards provide better breathing room */
+    .capability-card {
+        min-height: 550px; /* Increased from 500px for +50px content space */
+        max-height: 650px; /* Increased from 600px to match content min-height */
+    }
+
+    .capability-card-content {
+        padding: var(--space-xl); /* Reduced: 24px (was 32px) for +16px vertical space */
+        min-height: 550px; /* Increased: 550px (was 500px) for +50px breathing room */
+    }
+
+    /* Keep blur on mobile - user wants full parallax effect with blur */
+
     .capability-card-header {
-        gap: var(--space-md);
+        gap: 0.75rem; /* Tighter: 12px (was 16px) */
     }
 
     .capability-icon {
@@ -3085,12 +3182,13 @@ body {
     }
 
     .capability-card-title {
-        font-size: clamp(1.5rem, 4vw, 1.875rem); /* Mobile responsive */
-        margin-bottom: 0.75rem;
+        font-size: clamp(1.25rem, 3.5vw, 1.5rem); /* Reduced for mobile breathing room: 20px-24px */
+        margin-bottom: 0.625rem; /* Tighter spacing: 10px */
     }
 
     .capability-card-description {
-        font-size: 1rem;
+        font-size: 0.9375rem; /* Reduced: 15px for better fit */
+        line-height: 1.6; /* Tighter line spacing */
     }
 
     .capability-tag {

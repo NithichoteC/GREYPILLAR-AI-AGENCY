@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 interface CapabilityCardProps {
@@ -11,58 +11,36 @@ interface CapabilityCardProps {
   index: number;
 }
 
-const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
-  ({ iconSrc, accentColor, title, description, tags, index }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className="capability-card"
-        data-index={index}
-        style={{
-          zIndex: index,
-        }}
-      >
-        <div className="capability-card-content">
-          <div className="capability-card-header">
-            <Image
-              src={iconSrc}
-              alt={title}
-              width={64}
-              height={64}
-              className="capability-icon"
-              priority={index === 0}
-            />
-            <div>
-              <h3 className="capability-card-title">{title}</h3>
-              <p className="capability-card-description">{description}</p>
-            </div>
-          </div>
-
-          <div className="capability-card-tags">
-            {tags.map((tag, i) => (
-              <span key={i} className="capability-tag">{tag}</span>
-            ))}
+const CapabilityCard: React.FC<CapabilityCardProps> = ({ iconSrc, accentColor, title, description, tags, index }) => {
+  return (
+    <div className="capability-card" data-index={index}>
+      <div className="capability-card-content">
+        <div className="capability-card-header">
+          <Image
+            src={iconSrc}
+            alt={title}
+            width={64}
+            height={64}
+            className="capability-icon"
+            priority={index === 0}
+          />
+          <div>
+            <h3 className="capability-card-title">{title}</h3>
+            <p className="capability-card-description">{description}</p>
           </div>
         </div>
+
+        <div className="capability-card-tags">
+          {tags.map((tag, i) => (
+            <span key={i} className="capability-tag">{tag}</span>
+          ))}
+        </div>
       </div>
-    );
-  }
-);
+    </div>
+  );
+};
 
 export default function CapabilitiesSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
-  const prevTransformsRef = useRef<string[]>([]); // Cache previous transforms (prevent style thrashing)
-  const prevOpacitiesRef = useRef<string[]>([]); // Cache previous opacities (prevent style thrashing)
-
-  // PERFORMANCE: Set static zIndex only ONCE on mount (not every frame!)
-  useEffect(() => {
-    cardRefs.current.forEach((cardRef, index) => {
-      if (cardRef) cardRef.style.zIndex = String(index);
-    });
-  }, []);
-
   const capabilities = [
     {
       iconSrc: '/icons/revenue-recovery.png',
@@ -94,206 +72,6 @@ export default function CapabilitiesSection() {
     }
   ];
 
-  useEffect(() => {
-    let ticking = false;
-    let lastScrollTime = 0;
-    let scrollIdleTimeout: NodeJS.Timeout | null = null;
-    let resizeTimeout: NodeJS.Timeout | null = null;
-
-    // PERFORMANCE: Cache viewport AND container dimensions (2025 Apple pattern)
-    let viewportHeight = window.innerHeight;
-    let isMobile = window.innerWidth <= 768;
-    let cachedScrollableHeight = 0;
-    let cachedContainerTop = 0;
-
-    const updateViewportCache = () => {
-      viewportHeight = window.innerHeight;
-      isMobile = window.innerWidth <= 768;
-
-      // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
-      if (containerRef.current) {
-        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
-        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
-      }
-    };
-
-    // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
-    const enableGPULayers = () => {
-      cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'transform';
-      });
-    };
-
-    const disableGPULayers = () => {
-      cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'auto';
-      });
-    };
-
-    const handleScroll = () => {
-      // Clear previous idle timeout
-      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
-
-      // Disable GPU layers after 2000ms of no scrolling (prevent layer thrashing flickering)
-      scrollIdleTimeout = setTimeout(disableGPULayers, 2000);
-
-      if (!ticking) {
-        window.requestAnimationFrame((timestamp) => {
-          // THROTTLE: Mobile 12.5fps (80ms), Desktop 60fps (16ms) - iOS scroll freeze optimization
-          const throttleTime = isMobile ? 80 : 16;
-          if (timestamp - lastScrollTime < throttleTime) {
-            ticking = false;
-            return;
-          }
-          lastScrollTime = timestamp;
-
-          if (!containerRef.current) {
-            ticking = false;
-            return;
-          }
-
-          const container = containerRef.current;
-
-          // PERFORMANCE: Read container position ONCE per scroll (not per card = 94% fewer reads)
-          const containerRect = container.getBoundingClientRect();
-          const containerTop = containerRect.top;
-
-          // Calculate scroll progress based on container position
-          let progress = -containerTop / cachedScrollableHeight;
-          progress = Math.max(0, Math.min(1, progress));
-
-          const numCards = capabilities.length;
-          const activeCardFloat = progress * (numCards + 2.5); // MOBILE FIX: +2.5 = 30% slower transitions for better control
-
-          // Parallax constants - mobile optimized
-          const STACK_SCALE = 0.9;
-          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Reduced on mobile for better visibility
-          const MAX_VISIBLE_STACK_CARDS = 3;
-
-      cardRefs.current.forEach((cardRef, index) => {
-        if (!cardRef) return;
-
-        const depth = activeCardFloat - index;
-
-        // Set data-depth for CSS styling (stacked vs front card)
-        let finalDepth = Math.floor(Math.max(0, depth));
-
-        // Last card becomes crisp (depth 0) when scroll reaches end
-        const isLastCard = index === numCards - 1;
-        if (isLastCard && activeCardFloat >= numCards) {
-          finalDepth = 0; // Crystal clear at scroll end
-        }
-
-        // MOBILE FIX: Removed data-depth setAttribute (only used for desktop blur, causes lag on mobile)
-        // Desktop blur protection moved to CSS media query (min-width: 1024px + hover: hover)
-
-        // Calculate new transform and opacity values
-        let newTransform = '';
-        let newOpacity = '';
-
-        if (depth >= 0 && depth < 4) {
-          // Card is in stack or exiting - simplified scroll-based scaling
-          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-
-          // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
-          const scaleProgress = Math.min(depth / 1.5, 1);
-          const scale = 1 - scaleProgress * (1 - STACK_SCALE);
-
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-          const stackParallax = -depth * 4;
-
-          newTransform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
-
-          // Simple opacity - all stacked cards stay visible
-          let opacity = 1; // All cards in stack range stay fully visible
-
-          // Only last card gets exit fade (when scrolling past all cards)
-          if (isLastCard && depth > 3) {
-            const exitProgress = Math.max(0, depth - 3);
-            opacity = Math.max(0, 1 - exitProgress);
-          }
-
-          newOpacity = String(opacity);
-
-        } else if (depth >= 4) {
-          // Keep cards at final stack position with continuous parallax
-          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-          const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
-
-          newTransform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
-
-          // Explicitly set opacity - last card fades, others stay visible
-          newOpacity = isLastCard ? '0' : '1';
-
-        } else if (depth > -1) {
-          // Card is incoming - viewport-relative slide from bottom edge
-          const incomingProgress = 1 + depth; // 0 to 1 as card enters
-
-          // Calculate slide from bottom of viewport to stack position
-          const startY = viewportHeight - Math.max(0, containerTop);
-          // End position: stack position (0)
-          const targetY = 0;
-
-          // Interpolate between start and target based on scroll progress
-          // MOBILE OPTIMIZATION: Round to nearest pixel (research: sub-pixel precision wastes GPU)
-          const currentY = Math.round(startY - (incomingProgress * startY));
-
-          newTransform = `translate3d(0, ${currentY}px, 0)`;
-          newOpacity = '1'; // Always full opacity - no fade
-        } else {
-          // Card is off-screen below (depth <= -1)
-          newTransform = `translate3d(0, 100vh, 0)`;
-          newOpacity = '0';
-        }
-
-        // PERFORMANCE: Only update styles if values changed (prevents style thrashing)
-        if (prevTransformsRef.current[index] !== newTransform) {
-          cardRef.style.transform = newTransform;
-          prevTransformsRef.current[index] = newTransform;
-        }
-
-        if (prevOpacitiesRef.current[index] !== newOpacity) {
-          cardRef.style.opacity = newOpacity;
-          prevOpacitiesRef.current[index] = newOpacity;
-        }
-      });
-
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    // PERFORMANCE: Debounced resize handler (iOS address bar hide/show fires constantly)
-    const handleResize = () => {
-      // Clear previous resize timeout
-      if (resizeTimeout) clearTimeout(resizeTimeout);
-
-      // Debounce 100ms to prevent iOS address bar thrashing
-      resizeTimeout = setTimeout(() => {
-        updateViewportCache();
-        handleScroll(); // Recalculate positions
-      }, 100);
-    };
-
-    // Initialize cache
-    updateViewportCache();
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize, { passive: true });
-    handleScroll(); // Initial call
-    enableGPULayers(); // Enable GPU layers once on mount (not every scroll!)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleResize);
-      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
-      if (resizeTimeout) clearTimeout(resizeTimeout);
-      disableGPULayers(); // Cleanup: remove GPU layers on unmount
-    };
-  }, [capabilities.length]);
-
   return (
     <section className="capabilities-section" id="capabilities">
       {/* Grid overlay - 14 vertical lines with CSS Grid */}
@@ -315,12 +93,11 @@ export default function CapabilitiesSection() {
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div ref={containerRef} className="capabilities-cards-wrapper">
+        <div className="capabilities-cards-wrapper">
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
               <CapabilityCard
                 key={index}
-                ref={(el) => { cardRefs.current[index] = el; }}
                 {...capability}
                 index={index}
               />

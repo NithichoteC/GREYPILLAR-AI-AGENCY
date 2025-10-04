@@ -2727,28 +2727,38 @@ body {
     }
 }
 
-/* Individual Capability Card - Nitro-Style JavaScript-Driven Parallax */
+/* Individual Capability Card - NITRO-STYLE STICKY PARALLAX (Browser-Native 60fps!) */
 .capability-card {
-    position: absolute;
-    width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
-    will-change: auto; /* Controlled by JavaScript for battery optimization (2025 standard) */
-    transform: translateZ(0); /* Force GPU layer creation (Apple pattern) */
-    perspective: 1000px; /* Enable 3D rendering context for smoother transforms */
-    -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */
-    backface-visibility: hidden; /* Prevent flickering on mobile */
-    -webkit-backface-visibility: hidden; /* Safari-specific */
+    position: sticky;
+    top: 160px; /* Stick point - matches Nitro exactly */
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 650px; /* TALLER: More presence and room for content */
-    max-height: 800px; /* Increased height for better visual impact */
-    /* NO transition on transform - JavaScript controls it directly (prevents CSS/JS conflicts) */
-    touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
+    min-height: 650px;
+    margin-bottom: 2rem; /* Spacing between cards */
 
-    /* 2025 CUTTING-EDGE: CSS Containment for 7x faster rendering */
-    content-visibility: auto; /* Only render when near viewport - 7x performance boost */
-    contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
-    contain: layout paint; /* Prevent reflow cascades to other elements */
+    /* Browser-native GPU acceleration */
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    /* Smooth transitions for depth effects */
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Nitro-Style Depth Scaling - Cards shrink slightly as they stack */
+.capability-card[data-index="1"] {
+    transform: translateZ(0) scale(0.98);
+}
+
+.capability-card[data-index="2"] {
+    transform: translateZ(0) scale(0.96);
+}
+
+.capability-card[data-index="3"] {
+    transform: translateZ(0) scale(0.94);
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */

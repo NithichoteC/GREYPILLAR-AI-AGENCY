@@ -135,8 +135,9 @@ export default function CapabilitiesSection() {
             // Update viewport height in real-time for iOS Safari address bar changes
             viewportHeight = window.innerHeight;
 
-            // Ensure cache is updated if not initialized or if mobile state changed
-            if (cachedDocumentTop === 0 || cachedScrollableHeight === 0 || isMobile !== currentIsMobile) {
+            // CRITICAL: Always update cache on mobile to ensure proper initialization
+            // Cache can be 0 legitimately, so we check scrollableHeight <= 0 as invalid state
+            if (cachedScrollableHeight <= 0 || isMobile !== currentIsMobile) {
               updateCache();
             }
 

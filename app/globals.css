@@ -2795,24 +2795,37 @@ body {
     opacity: 0;
 }
 
-/* Progressive blur levels - SMOOTH SILK TRANSITION (0 → 2px → 4px → 6px → 8px) */
+/* Progressive blur - DESKTOP ONLY (mobile can't handle blur filters) */
 
-/* Blur entire card element - creates true frosted glass depth effect */
-.capability-card[data-depth="1"] {
-    filter: blur(2px); /* Light blur on entire first stacked card */
+/* Desktop blur effects */
+@media (min-width: 769px) {
+    .capability-card[data-depth="1"] {
+        filter: blur(2px); /* Light blur on entire first stacked card */
+    }
+
+    .capability-card[data-depth="2"] {
+        filter: blur(4px); /* Medium blur on entire second depth card */
+    }
+
+    .capability-card[data-depth="3"] {
+        filter: blur(6px); /* Strong blur on entire third depth card */
+    }
+
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: blur(8px); /* Maximum blur on entire deepest cards */
+    }
 }
 
-.capability-card[data-depth="2"] {
-    filter: blur(4px); /* Medium blur on entire second depth card */
-}
-
-.capability-card[data-depth="3"] {
-    filter: blur(6px); /* Strong blur on entire third depth card */
-}
-
-.capability-card[data-depth="4"],
-.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
-    filter: blur(8px); /* Maximum blur on entire deepest cards */
+/* Mobile - NO BLUR (use opacity only for performance) */
+@media (max-width: 768px) {
+    .capability-card[data-depth="1"],
+    .capability-card[data-depth="2"],
+    .capability-card[data-depth="3"],
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: none !important; /* No blur on mobile for smooth performance */
+    }
 }
 
 /* Front card - Crystal clear (depth 0) */

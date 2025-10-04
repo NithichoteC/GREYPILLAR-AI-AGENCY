@@ -110,38 +110,20 @@ export default function CapabilitiesSection() {
       }
     };
 
-    // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
-    const enableGPULayers = () => {
-      cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'transform';
-      });
-    };
-
-    const disableGPULayers = () => {
-      cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'auto';
-      });
-    };
+    // PERFORMANCE: Set will-change once on init (no toggling to prevent jitter)
 
     const handleScroll = () => {
-      // Enable GPU layers on first scroll
-      enableGPULayers();
+      // THROTTLE: Check timing BEFORE scheduling RAF (prevents jitter)
+      const now = performance.now();
+      const throttleTime = isMobile ? 33 : 16; // 30fps mobile, 60fps desktop
 
-      // Clear previous idle timeout
-      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
-
-      // Disable GPU layers after 150ms of no scrolling (battery optimization)
-      scrollIdleTimeout = setTimeout(disableGPULayers, 150);
+      if (now - lastScrollTime < throttleTime) {
+        return; // Skip this frame entirely
+      }
 
       if (!ticking) {
-        window.requestAnimationFrame((timestamp) => {
-          // THROTTLE: Mobile 30fps (33ms), Desktop 60fps (16ms) for better performance
-          const throttleTime = isMobile ? 33 : 16;
-          if (timestamp - lastScrollTime < throttleTime) {
-            ticking = false;
-            return;
-          }
-          lastScrollTime = timestamp;
+        window.requestAnimationFrame(() => {
+          lastScrollTime = performance.now();
 
           if (!containerRef.current) {
             ticking = false;
@@ -195,10 +177,11 @@ export default function CapabilitiesSection() {
           const scaleProgress = Math.min(depth / 1.5, 1);
           const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-          const stackParallax = -depth * 4;
+          // Use pixels for all transforms (no % to prevent rounding jitter)
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Convert to pixels
+          const stackParallax = -depth * 40; // Convert to pixels
 
-          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}px, 0)`;
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -215,10 +198,10 @@ export default function CapabilitiesSection() {
         } else if (depth >= 4) {
           // Keep cards at final stack position with continuous parallax
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
-          const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
+          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Pixels
+          const stackParallax = -depth * 40; // Pixels - maintains continuous parallax
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
+          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}px, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;
@@ -266,6 +249,11 @@ export default function CapabilitiesSection() {
     // Initialize cache
     updateCache();
 
+    // Set will-change once on all cards (no toggling)
+    cardRefs.current.forEach(cardRef => {
+      if (cardRef) cardRef.style.willChange = 'transform, opacity';
+    });
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
     handleScroll(); // Initial call
@@ -273,9 +261,11 @@ export default function CapabilitiesSection() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
-      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
       if (resizeTimeout) clearTimeout(resizeTimeout);
-      disableGPULayers(); // Cleanup: remove GPU layers on unmount
+      // Clean up will-change on unmount
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'auto';
+      });
     };
   }, [capabilities.length]);
 

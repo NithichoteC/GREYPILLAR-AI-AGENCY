@@ -152,7 +152,7 @@ export default function CapabilitiesSection() {
 
               cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = '1';
-              cardRef.style.zIndex = String(3 - index); // Reverse z-index so first card is on top
+              cardRef.style.zIndex = String(index); // Later cards on top
 
             } else if (depth < 0 && depth > -1) {
               // Card entering from bottom
@@ -161,7 +161,7 @@ export default function CapabilitiesSection() {
 
               cardRef.style.transform = `translateY(${yPos}px)`;
               cardRef.style.opacity = String(enterProgress);
-              cardRef.style.zIndex = String(3 - index);
+              cardRef.style.zIndex = String(index);
 
             } else if (depth >= 3) {
               // Card stacked deep - maintain stacking position
@@ -170,7 +170,7 @@ export default function CapabilitiesSection() {
 
               cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = index === capabilities.length - 1 ? '0' : '1';
-              cardRef.style.zIndex = String(3 - index);
+              cardRef.style.zIndex = String(index);
 
             } else {
               // Card off-screen
@@ -330,14 +330,14 @@ export default function CapabilitiesSection() {
           if (index === 0) {
             cardRef.style.transform = 'translateY(0)';
             cardRef.style.opacity = '1';
-            cardRef.style.zIndex = '3';
+            cardRef.style.zIndex = '0';
           } else {
-            // Stack subsequent cards behind with 50px offset
+            // Stack subsequent cards on top with 50px offset
             const yOffset = index * 50;
             const scale = 1 - (index * 0.02);
             cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
             cardRef.style.opacity = '1';
-            cardRef.style.zIndex = String(3 - index);
+            cardRef.style.zIndex = String(index);
           }
         }
       });

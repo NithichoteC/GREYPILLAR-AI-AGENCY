@@ -105,10 +105,17 @@ export default function CapabilitiesSection() {
         const rect = containerRef.current.getBoundingClientRect();
         cachedDocumentTop = rect.top + window.scrollY;
         cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
+        console.log('Cache updated:', {
+          isMobile,
+          cachedDocumentTop,
+          cachedScrollableHeight,
+          viewportHeight
+        });
       }
     };
 
     const handleScroll = () => {
+      console.log('handleScroll called, isMobile:', isMobile, 'ticking:', ticking);
       // Mobile uses simpler calculations, no throttling needed
       if (isMobile) {
         if (!ticking) {
@@ -118,11 +125,27 @@ export default function CapabilitiesSection() {
               return;
             }
 
+            // Ensure cache is updated if not initialized
+            if (cachedDocumentTop === 0 || cachedScrollableHeight === 0) {
+              updateCache();
+            }
+
             // Simple mobile calculations
             const scrollY = window.scrollY;
             const containerTop = cachedDocumentTop - scrollY;
-            const progress = Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight));
+            const progress = cachedScrollableHeight > 0
+              ? Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight))
+              : 0;
             const activeCard = progress * (capabilities.length + 0.5);
+
+            console.log('Mobile scroll:', {
+              scrollY,
+              containerTop,
+              progress,
+              activeCard,
+              cachedDocumentTop,
+              cachedScrollableHeight
+            });
 
             // Mobile constants - simpler values
             const MOBILE_SCALE = 0.95;
@@ -310,13 +333,30 @@ export default function CapabilitiesSection() {
     // Initialize cache
     updateCache();
 
-    // Set will-change once on all cards (no toggling)
-    cardRefs.current.forEach((cardRef) => {
-      if (cardRef) {
-        cardRef.style.willChange = 'transform, opacity';
-        // Let handleScroll set initial position - don't override
-      }
-    });
+    // Set initial positions for mobile cards
+    if (isMobile) {
+      cardRefs.current.forEach((cardRef, index) => {
+        if (cardRef) {
+          cardRef.style.willChange = 'transform, opacity';
+          // Set initial positions - cards start off screen
+          if (index === 0) {
+            cardRef.style.transform = 'translateY(0)';
+            cardRef.style.opacity = '1';
+            cardRef.style.zIndex = '4';
+          } else {
+            cardRef.style.transform = `translateY(${viewportHeight}px)`;
+            cardRef.style.opacity = '0';
+            cardRef.style.zIndex = String(4 - index);
+          }
+        }
+      });
+    } else {
+      cardRefs.current.forEach((cardRef) => {
+        if (cardRef) {
+          cardRef.style.willChange = 'transform, opacity';
+        }
+      });
+    }
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });

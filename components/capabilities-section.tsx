@@ -148,12 +148,14 @@ export default function CapabilitiesSection() {
             return;
           }
 
-          // PERFORMANCE: Pure scroll math - ZERO DOM reads (Chrome 2025 standard)
-          const scrollY = window.scrollY;
-          const currentContainerTop = cachedContainerTop - scrollY;
+          const container = containerRef.current;
+
+          // PERFORMANCE: Read container position ONCE per scroll (not per card = 94% fewer reads)
+          const containerRect = container.getBoundingClientRect();
+          const containerTop = containerRect.top;
 
           // Calculate scroll progress based on container position
-          let progress = -currentContainerTop / cachedScrollableHeight;
+          let progress = -containerTop / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
@@ -230,7 +232,7 @@ export default function CapabilitiesSection() {
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
           // Calculate slide from bottom of viewport to stack position
-          const startY = viewportHeight - Math.max(0, currentContainerTop);
+          const startY = viewportHeight - Math.max(0, containerTop);
           // End position: stack position (0)
           const targetY = 0;
 

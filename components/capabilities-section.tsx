@@ -132,6 +132,9 @@ export default function CapabilitiesSection() {
               return;
             }
 
+            // Update viewport height in real-time for iOS Safari address bar changes
+            viewportHeight = window.innerHeight;
+
             // Ensure cache is updated if not initialized or if mobile state changed
             if (cachedDocumentTop === 0 || cachedScrollableHeight === 0 || isMobile !== currentIsMobile) {
               updateCache();
@@ -167,8 +170,8 @@ export default function CapabilitiesSection() {
                 const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL; // NEGATIVE to stack UP
                 const stackParallax = -depth * 4; // NEGATIVE parallax
 
-                // Convert percentages to pixels for iOS GPU compositing
-                const translateYPixels = Math.round(((baseTranslateY + stackParallax) / 100) * viewportHeight);
+                // Convert percentages to pixels for iOS GPU compositing (subpixel precision for smooth animation)
+                const translateYPixels = ((baseTranslateY + stackParallax) / 100) * viewportHeight;
                 cardRef.style.transform = `scale(${scale}) translate3d(0, ${translateYPixels}px, 0)`;
                 cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
 
@@ -176,8 +179,8 @@ export default function CapabilitiesSection() {
               } else if (depth > -1) {
                 const incomingProgress = 1 + depth;
                 const translateY = 100 - (incomingProgress * 100);
-                // Convert percentage to pixels for iOS GPU compositing
-                const translateYPixels = Math.round((translateY / 100) * viewportHeight);
+                // Convert percentage to pixels for iOS GPU compositing (subpixel precision for smooth animation)
+                const translateYPixels = (translateY / 100) * viewportHeight;
                 cardRef.style.transform = `translate3d(0, ${translateYPixels}px, 0)`;
                 cardRef.style.opacity = '1';
 

@@ -3116,10 +3116,11 @@ body {
     .capability-card {
         min-height: 280px !important; /* Much shorter for mobile */
         max-height: 320px !important; /* Constrain maximum height */
-        /* Force GPU acceleration on mobile */
-        transform: translateZ(0);
+        /* GPU acceleration WITHOUT overriding transforms */
+        /* DO NOT SET transform here - JavaScript needs to control it */
         backface-visibility: hidden;
         perspective: 1000px;
+        will-change: transform, opacity; /* Tell browser what will change */
     }
 
     /* MOBILE: Smaller padding and height for card content */

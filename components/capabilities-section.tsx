@@ -167,7 +167,7 @@ export default function CapabilitiesSection() {
         if (!isMobile && prevDepthsRef.current[index] !== finalDepth) {
           cardRef.setAttribute('data-depth', finalDepth.toString());
           prevDepthsRef.current[index] = finalDepth;
-        } else if (isMobile) {
+        } else if (isMobile && cardRef.hasAttribute('data-depth')) {
           // Clear data-depth on mobile to prevent blur CSS from applying
           cardRef.removeAttribute('data-depth');
         }
@@ -260,8 +260,16 @@ export default function CapabilitiesSection() {
     updateCache();
 
     // Set will-change once on all cards (no toggling)
-    cardRefs.current.forEach(cardRef => {
-      if (cardRef) cardRef.style.willChange = 'transform, opacity';
+    // Also set initial position for mobile cards
+    cardRefs.current.forEach((cardRef, index) => {
+      if (cardRef) {
+        cardRef.style.willChange = 'transform, opacity';
+        // Start cards below viewport on mobile
+        if (window.innerWidth <= 768) {
+          cardRef.style.transform = 'translate3d(0, 100vh, 0)';
+          cardRef.style.opacity = '0';
+        }
+      }
     });
 
     window.addEventListener('scroll', handleScroll, { passive: true });

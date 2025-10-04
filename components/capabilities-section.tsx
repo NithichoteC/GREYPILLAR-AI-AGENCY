@@ -154,9 +154,9 @@ export default function CapabilitiesSection() {
 
           const container = containerRef.current;
 
-          // MOBILE FIX: Pure scroll math - ZERO DOM reads (eliminate getBoundingClientRect reflow)
-          const scrollY = window.scrollY;
-          const containerTop = cachedContainerTop - scrollY;
+          // PERFORMANCE: Read container position ONCE per scroll (not per card = 94% fewer reads)
+          const containerRect = container.getBoundingClientRect();
+          const containerTop = containerRect.top;
 
           // Calculate scroll progress based on container position
           let progress = -containerTop / cachedScrollableHeight;

@@ -3119,30 +3119,8 @@ body {
     }
 }
 
-/* Responsive Behavior */
-@media (max-width: 1024px) {
-    .capabilities-cards-wrapper {
-        min-height: 300vh;
-    }
-
-    .capability-card-content {
-        padding: var(--space-3xl);
-    }
-
-    .capability-card-title {
-        font-size: clamp(1.75rem, 3.5vw, 2.25rem); /* Scaled down but responsive */
-        margin-bottom: 0.875rem;
-    }
-
-    .capability-card-description {
-        font-size: 1rem;
-    }
-
-    .capability-icon {
-        width: 80px; /* Slightly smaller for tablet */
-        height: 80px;
-    }
-}
+/* REMOVED CONFLICTING TABLET BREAKPOINT - Was overriding mobile 1000vh with 300vh */
+/* Mobile breakpoint below handles all small screens properly */
 
 @media (max-width: 768px) {
     .capabilities-section {
@@ -3156,7 +3134,7 @@ body {
 
     /* MOBILE POSITIONING FIX: Adjust sticky top for smaller viewport */
     .capabilities-cards {
-        top: 100px; /* Mobile: higher position for 600-700px viewport (vs 250px desktop) */
+        top: 150px; /* Mobile: higher position for 600-700px viewport (vs 250px desktop) - prevents intro overlap */
     }
 
     /* MOBILE SPACING: Larger cards provide better breathing room */

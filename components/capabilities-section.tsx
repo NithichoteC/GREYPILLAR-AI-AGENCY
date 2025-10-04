@@ -45,7 +45,6 @@ const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
 export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const prevDepthsRef = useRef<number[]>([]);
   const prevTransformsRef = useRef<string[]>([]); // Cache previous transforms
   const prevOpacitiesRef = useRef<string[]>([]); // Cache previous opacities
 
@@ -80,9 +79,18 @@ export default function CapabilitiesSection() {
     }
   ];
 
+  // PERFORMANCE: Set static zIndex only ONCE on mount (not every frame!)
+  useEffect(() => {
+    cardRefs.current.forEach((cardRef, index) => {
+      if (cardRef) cardRef.style.zIndex = String(index);
+    });
+  }, []);
+
   useEffect(() => {
     let ticking = false;
     let lastScrollTime = 0;
+    let scrollIdleTimeout: NodeJS.Timeout | null = null;
+    let resizeTimeout: NodeJS.Timeout | null = null;
 
     // Cache viewport dimensions for performance
     let viewportHeight = window.innerHeight;
@@ -98,7 +106,28 @@ export default function CapabilitiesSection() {
       }
     };
 
+    // PERFORMANCE: Conditional will-change (Apple 2025 pattern - battery optimization)
+    const enableGPULayers = () => {
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'transform';
+      });
+    };
+
+    const disableGPULayers = () => {
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'auto';
+      });
+    };
+
     const handleScroll = () => {
+      // Enable GPU layers on scroll start
+      enableGPULayers();
+
+      // Clear previous idle timeout
+      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
+
+      // Disable GPU layers after 150ms of no scrolling (battery optimization)
+      scrollIdleTimeout = setTimeout(disableGPULayers, 150);
       if (!ticking) {
         window.requestAnimationFrame((timestamp) => {
           // Throttle: Mobile 50ms (20fps), Desktop 16ms (60fps)
@@ -134,19 +163,7 @@ export default function CapabilitiesSection() {
             if (!cardRef) return;
 
             const depth = activeCardFloat - index;
-            let finalDepth = Math.floor(Math.max(0, depth));
-
-            // Last card becomes crisp (depth 0) when scroll reaches end
             const isLastCard = index === numCards - 1;
-            if (isLastCard && activeCardFloat >= numCards) {
-              finalDepth = 0;
-            }
-
-            // Only update data-depth when value changes (prevents flickering)
-            if (prevDepthsRef.current[index] !== finalDepth) {
-              cardRef.setAttribute('data-depth', finalDepth.toString());
-              prevDepthsRef.current[index] = finalDepth;
-            }
 
             // Calculate new transform and opacity values
             let newTransform = '';
@@ -233,9 +250,16 @@ export default function CapabilitiesSection() {
       }
     };
 
+    // PERFORMANCE: Debounced resize handler (iOS address bar hide/show fires constantly)
     const handleResize = () => {
-      updateViewportCache();
-      handleScroll();
+      // Clear previous resize timeout
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+
+      // Debounce 100ms to prevent iOS address bar thrashing
+      resizeTimeout = setTimeout(() => {
+        updateViewportCache();
+        handleScroll();
+      }, 100);
     };
 
     // Initialize
@@ -247,6 +271,9 @@ export default function CapabilitiesSection() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
+      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      disableGPULayers(); // Cleanup: remove GPU layers on unmount
     };
   }, [capabilities.length]);
 

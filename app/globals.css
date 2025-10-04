@@ -2731,7 +2731,7 @@ body {
 .capability-card {
     position: absolute;
     width: 100%; /* Fill parent */
-    will-change: auto; /* Controlled by JavaScript for battery optimization */
+    will-change: auto; /* Controlled by JavaScript for battery optimization (Apple 2025 pattern) */
     transform: translateZ(0); /* Force GPU layer creation */
     perspective: 1000px; /* Enable 3D rendering context for smoother transforms */
     -webkit-transform: translate3d(0,0,0); /* Force GPU acceleration on Safari */

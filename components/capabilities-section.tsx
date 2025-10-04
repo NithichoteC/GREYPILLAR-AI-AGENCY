@@ -147,8 +147,8 @@ export default function CapabilitiesSection() {
               // Card in view or stacking
               // Scale cards based on depth for visual hierarchy
               const scale = Math.round((1 - (depth * 0.02)) * 100) / 100; // Round to 2 decimals
-              // Stack cards with proper overlap (show 50px of each stacked card)
-              const yOffset = Math.round(index * MOBILE_OFFSET / 5) * 5; // Round to nearest 5px
+              // Stack cards based on depth for smooth transitions (no jumps)
+              const yOffset = Math.round(depth * MOBILE_OFFSET / 5) * 5; // Round to nearest 5px
 
               cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = '1';
@@ -166,7 +166,7 @@ export default function CapabilitiesSection() {
             } else if (depth >= 3) {
               // Card stacked deep - maintain stacking position
               const scale = 0.94; // Smallest scale for deep cards
-              const yOffset = Math.round(index * MOBILE_OFFSET / 5) * 5; // Round to nearest 5px
+              const yOffset = Math.round(depth * MOBILE_OFFSET / 5) * 5; // Round to nearest 5px
 
               cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = index === capabilities.length - 1 ? '0' : '1';

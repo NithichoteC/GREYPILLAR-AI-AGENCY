@@ -3118,7 +3118,7 @@ body {
     .capability-card {
         position: absolute !important; /* Ensure absolute positioning */
         min-height: 320px !important; /* Optimal height for content */
-        max-height: 360px !important; /* Constrain maximum height */
+        /* Removed max-height to allow full content visibility */
         height: auto !important; /* Allow natural height */
         /* CRITICAL: No transforms or will-change - JavaScript controls everything */
         /* Only GPU hints that don't interfere */
@@ -3127,10 +3127,10 @@ body {
         /* Removed will-change to prevent conflicts */
     }
 
-    /* MOBILE: Smaller padding and height for card content */
+    /* MOBILE: Smaller padding for more content space */
     .capability-card-content {
-        padding: var(--space-xl); /* Reduced padding */
-        min-height: 260px !important; /* Much shorter */
+        padding: var(--space-lg); /* Compact padding for more content space */
+        /* Removed min-height to allow natural sizing */
         height: auto !important; /* Allow natural height */
     }
 

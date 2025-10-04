@@ -2827,10 +2827,11 @@ body {
 }
 
 /* Progressive blur levels - SMOOTH SILK TRANSITION (0 → 2px → 4px → 6px → 8px) */
-/* DESKTOP ONLY - Mobile overrides below to prevent initial blur flash */
+/* DESKTOP ONLY - Strict protection to prevent blur on ANY mobile/touch device */
 
-@media (min-width: 769px) {
+@media (min-width: 1024px) and (hover: hover) {
     /* Blur entire card element - creates true frosted glass depth effect */
+    /* hover: hover = NOT touch device (eliminates tablets, large phones) */
     .capability-card[data-depth="1"] {
         filter: blur(2px); /* Light blur on entire first stacked card */
     }

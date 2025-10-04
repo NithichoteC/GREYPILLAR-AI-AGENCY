@@ -154,9 +154,9 @@ export default function CapabilitiesSection() {
 
           const container = containerRef.current;
 
-          // PERFORMANCE: Read container position ONCE per scroll (not per card = 94% fewer reads)
-          const containerRect = container.getBoundingClientRect();
-          const containerTop = containerRect.top;
+          // MOBILE FIX: Pure scroll math - ZERO DOM reads (eliminate getBoundingClientRect reflow)
+          const scrollY = window.scrollY;
+          const containerTop = cachedContainerTop - scrollY;
 
           // Calculate scroll progress based on container position
           let progress = -containerTop / cachedScrollableHeight;
@@ -184,11 +184,8 @@ export default function CapabilitiesSection() {
           finalDepth = 0; // Crystal clear at scroll end
         }
 
-        // PERFORMANCE: Only update data-depth when value changes (prevents flickering)
-        if (prevDepthsRef.current[index] !== finalDepth) {
-          cardRef.setAttribute('data-depth', finalDepth.toString());
-          prevDepthsRef.current[index] = finalDepth;
-        }
+        // MOBILE FIX: Removed data-depth setAttribute (only used for desktop blur, causes lag on mobile)
+        // Desktop blur protection moved to CSS media query (min-width: 1024px + hover: hover)
 
         // Calculate new transform and opacity values
         let newTransform = '';

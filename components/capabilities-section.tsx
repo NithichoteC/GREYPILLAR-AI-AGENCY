@@ -113,7 +113,7 @@ export default function CapabilitiesSection() {
     // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
     const enableGPULayers = () => {
       cardRefs.current.forEach(cardRef => {
-        if (cardRef) cardRef.style.willChange = 'transform, opacity';
+        if (cardRef) cardRef.style.willChange = 'transform';
       });
     };
 
@@ -230,7 +230,7 @@ export default function CapabilitiesSection() {
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
           // Calculate slide from bottom of viewport to stack position
-          const startY = viewportHeight - Math.max(0, containerTop);
+          const startY = viewportHeight - Math.max(0, currentContainerTop);
           // End position: stack position (0)
           const targetY = 0;
 

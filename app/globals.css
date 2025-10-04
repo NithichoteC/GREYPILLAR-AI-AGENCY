@@ -2912,7 +2912,7 @@ body {
             0 8px 16px -4px rgba(0, 0, 0, 0.04),
             0 4px 8px -2px rgba(0, 0, 0, 0.06),
             0 0 0 1px rgba(0, 0, 0, 0.02);
-        backdrop-filter: blur(2px); /* SUBTLE: Gentle blur start */
+        /* REMOVED backdrop-filter to prevent DOUBLE BLUR (filter: blur already on card element) */
         background: rgba(247, 247, 248, 0.96); /* SOLID: Nearly opaque blocks all text bleed (was 0.65) */
         opacity: 0.99;
     }
@@ -2924,7 +2924,7 @@ body {
             0 6px 12px -4px rgba(0, 0, 0, 0.03),
             0 3px 6px -2px rgba(0, 0, 0, 0.05),
             0 0 0 1px rgba(0, 0, 0, 0.015);
-        backdrop-filter: blur(4px); /* MEDIUM: Gradual progression */
+        /* REMOVED backdrop-filter to prevent DOUBLE BLUR (filter: blur already on card element) */
         background: rgba(247, 247, 248, 0.98); /* SOLID: Almost opaque blocks all text bleed (was 0.80) */
         opacity: 0.985;
     }
@@ -2936,7 +2936,7 @@ body {
             0 5px 10px -3px rgba(0, 0, 0, 0.025),
             0 2px 5px -1px rgba(0, 0, 0, 0.04),
             0 0 0 1px rgba(0, 0, 0, 0.01);
-        backdrop-filter: blur(6px); /* STRONG: Building depth */
+        /* REMOVED backdrop-filter to prevent DOUBLE BLUR (filter: blur already on card element) */
         background: rgba(247, 247, 248, 0.99); /* SOLID: Nearly 100% opaque blocks all text bleed (was 0.90) */
         opacity: 0.98;
     }
@@ -2949,7 +2949,7 @@ body {
             0 4px 8px -3px rgba(0, 0, 0, 0.02),
             0 2px 4px -1px rgba(0, 0, 0, 0.03),
             0 0 0 1px rgba(0, 0, 0, 0.01);
-        backdrop-filter: blur(8px); /* MAXIMUM: Deep stack blur */
+        /* REMOVED backdrop-filter to prevent DOUBLE BLUR (filter: blur already on card element) */
         background: rgba(247, 247, 248, 1.0); /* SOLID: 100% opaque completely blocks all text bleed (was 0.95) */
         opacity: 0.98;
     }

@@ -3069,6 +3069,16 @@ body {
         margin-bottom: var(--space-3xl);
     }
 
+    /* MOBILE PARALLAX OPTIMIZATIONS from be4b7aa */
+    .capabilities-cards-wrapper {
+        min-height: 800vh; /* MOBILE: 200vh per card = comfortable pacing */
+    }
+
+    /* MOBILE POSITIONING: Adjust sticky top for smaller viewport */
+    .capabilities-cards {
+        top: 100px; /* Mobile: higher position for 600-700px viewport (vs 250px desktop) */
+    }
+
     /* Let JavaScript handle parallax on mobile too - just adjust styling */
     .capability-card-content {
         padding: var(--space-2xl);

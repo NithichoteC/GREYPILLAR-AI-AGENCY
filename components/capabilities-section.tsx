@@ -101,11 +101,11 @@ export default function CapabilitiesSection() {
       viewportHeight = window.innerHeight;
       isMobile = window.innerWidth <= 768;
 
-      // Cache container's ABSOLUTE position in document to avoid getBoundingClientRect() in scroll
+      // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
       if (containerRef.current) {
         cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
-        // Get absolute position: current viewport position + current scroll
-        cachedContainerTop = containerRef.current.getBoundingClientRect().top + window.scrollY;
+        // Cache initial position (when called at init, scroll is 0, so this IS the absolute position)
+        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
       }
     };
 

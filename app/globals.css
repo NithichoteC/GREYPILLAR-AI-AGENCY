@@ -3099,30 +3099,32 @@ body {
 
     .capabilities-intro {
         font-size: 1.125rem;
-        margin-bottom: var(--space-3xl);
+        margin-bottom: var(--space-2xl); /* Reduced to prevent overlap */
+        padding-bottom: var(--space-xl); /* Add extra padding buffer */
     }
 
-    /* MOBILE: Parallax enabled with adjusted values */
+    /* MOBILE: Optimized parallax settings */
     .capabilities-cards-wrapper {
-        min-height: 300vh; /* Even less scroll distance - 75vh per card */
+        min-height: 240vh; /* Shorter scroll for smoother experience - 60vh per card */
+        margin-top: var(--space-2xl); /* Add top margin to prevent overlap */
     }
 
-    /* MOBILE: Keep sticky but adjust top position */
+    /* MOBILE: Adjusted sticky position to prevent overlap */
     .capabilities-cards {
-        top: 100px !important; /* Better centering for mobile viewport */
+        top: 200px !important; /* Increased from 100px to prevent overlap with intro */
     }
 
-    /* MOBILE: Much shorter cards to prevent overlap */
+    /* MOBILE: Optimized card sizing and removed conflicts */
     .capability-card {
         position: absolute !important; /* Ensure absolute positioning */
-        min-height: 300px !important; /* Slightly taller for content */
-        max-height: 350px !important; /* Constrain maximum height */
+        min-height: 320px !important; /* Optimal height for content */
+        max-height: 360px !important; /* Constrain maximum height */
         height: auto !important; /* Allow natural height */
-        /* GPU acceleration WITHOUT overriding transforms */
-        /* DO NOT SET transform here - JavaScript needs to control it */
-        backface-visibility: hidden;
+        /* CRITICAL: No transforms or will-change - JavaScript controls everything */
+        /* Only GPU hints that don't interfere */
         -webkit-backface-visibility: hidden;
-        will-change: transform, opacity; /* Tell browser what will change */
+        backface-visibility: hidden;
+        /* Removed will-change to prevent conflicts */
     }
 
     /* MOBILE: Smaller padding and height for card content */

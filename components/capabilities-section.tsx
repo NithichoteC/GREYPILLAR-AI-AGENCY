@@ -86,20 +86,21 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
-    // UNIFIED PARALLAX: Works on both mobile and desktop
+    // OPTIMIZED MOBILE PARALLAX: Simplified calculations for smooth performance
     let ticking = false;
-    let lastScrollTime = 0;
+    let lastScrollTime = 0; // Define here for desktop throttling
     let resizeTimeout: NodeJS.Timeout | null = null;
 
-    // Cache viewport AND container dimensions
+    // Cache all dimensions once
     let viewportHeight = window.innerHeight;
+    let isMobile = window.innerWidth <= 768;
     let cachedDocumentTop = 0;
     let cachedScrollableHeight = 0;
 
     const updateCache = () => {
       viewportHeight = window.innerHeight;
+      isMobile = window.innerWidth <= 768;
 
-      // Cache container's absolute position in document
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         cachedDocumentTop = rect.top + window.scrollY;
@@ -107,146 +108,186 @@ export default function CapabilitiesSection() {
       }
     };
 
-    // PERFORMANCE: Set will-change once on init (no toggling to prevent jitter)
-
     const handleScroll = () => {
-      // THROTTLE: 60fps for both mobile and desktop for consistency
+      // Mobile uses simpler calculations, no throttling needed
+      if (isMobile) {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (!containerRef.current) {
+              ticking = false;
+              return;
+            }
+
+            // Simple mobile calculations
+            const scrollY = window.scrollY;
+            const containerTop = cachedDocumentTop - scrollY;
+            const progress = Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight));
+            const activeCard = progress * (capabilities.length + 0.5);
+
+            // Mobile constants - simpler values
+            const MOBILE_SCALE = 0.95;
+            const MOBILE_OFFSET = 20; // Fixed pixel offset
+
+            cardRefs.current.forEach((cardRef, index) => {
+              if (!cardRef) return;
+
+              const depth = activeCard - index;
+
+              // Simple mobile transforms - no complex calculations
+              if (depth >= 0 && depth < 3) {
+                // Card in view or stacking
+                const scale = depth > 0 ? MOBILE_SCALE : 1;
+                const yOffset = Math.round(depth * MOBILE_OFFSET);
+
+                cardRef.style.transform = `scale(${scale}) translateY(-${yOffset}px)`;
+                cardRef.style.opacity = '1';
+                cardRef.style.zIndex = String(capabilities.length - index);
+
+              } else if (depth < 0 && depth > -1) {
+                // Card entering from bottom
+                const enterProgress = 1 + depth;
+                const yPos = Math.round(viewportHeight * (1 - enterProgress));
+
+                cardRef.style.transform = `translateY(${yPos}px)`;
+                cardRef.style.opacity = String(enterProgress);
+                cardRef.style.zIndex = String(capabilities.length - index);
+
+              } else if (depth >= 3) {
+                // Card stacked deep
+                cardRef.style.transform = `scale(${MOBILE_SCALE}) translateY(-60px)`;
+                cardRef.style.opacity = index === capabilities.length - 1 ? '0' : '1';
+                cardRef.style.zIndex = String(capabilities.length - index);
+
+              } else {
+                // Card off-screen
+                cardRef.style.transform = 'translateY(100vh)';
+                cardRef.style.opacity = '0';
+                cardRef.style.zIndex = '0';
+              }
+            });
+
+            ticking = false;
+          });
+          ticking = true;
+        }
+        return; // Exit early for mobile
+      }
+
+      // Desktop uses original complex calculations with throttling
       const now = performance.now();
-      const throttleTime = 16; // Consistent 60fps - better than trying 120fps on mobile
+      const throttleTime = 16; // 60fps for desktop
 
       if (now - lastScrollTime < throttleTime) {
-        return; // Skip this frame entirely
+        return;
       }
+      lastScrollTime = now;
 
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          lastScrollTime = performance.now();
-
           if (!containerRef.current) {
             ticking = false;
             return;
           }
 
-          const container = containerRef.current;
-
-          // Calculate isMobile ONCE at the start
-          const isMobile = window.innerWidth <= 768;
-
-          // Pure math - NO DOM reads during scroll for smooth mobile performance
           const scrollY = window.scrollY;
           const containerViewportTop = cachedDocumentTop - scrollY;
-
           let progress = -containerViewportTop / cachedScrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
-          const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
+          const activeCardFloat = progress * (numCards + 1.0);
 
-          // Parallax constants - adjusted for mobile/desktop (using isMobile from above)
-          const STACK_SCALE = isMobile ? 0.92 : 0.9; // More noticeable scale on mobile
-          const Y_OFFSET_PER_LEVEL = isMobile ? 6 : 4; // More visible spacing on mobile
+          // Desktop constants
+          const STACK_SCALE = 0.9;
+          const Y_OFFSET_PER_LEVEL = 4;
           const MAX_VISIBLE_STACK_CARDS = 3;
 
-      cardRefs.current.forEach((cardRef, index) => {
-        if (!cardRef) return;
+          cardRefs.current.forEach((cardRef, index) => {
+            if (!cardRef) return;
 
-        cardRef.style.zIndex = String(index);
+            cardRef.style.zIndex = String(index);
 
-        const depth = activeCardFloat - index;
+            const depth = activeCardFloat - index;
 
-        // Set data-depth for CSS styling (stacked vs front card)
-        let finalDepth = Math.floor(Math.max(0, depth));
+            // Set data-depth for CSS styling (stacked vs front card)
+            let finalDepth = Math.floor(Math.max(0, depth));
 
-        // Last card becomes crisp (depth 0) when scroll reaches end
-        const isLastCard = index === numCards - 1;
-        if (isLastCard && activeCardFloat >= numCards) {
-          finalDepth = 0; // Crystal clear at scroll end
-        }
+            // Last card becomes crisp (depth 0) when scroll reaches end
+            const isLastCard = index === numCards - 1;
+            if (isLastCard && activeCardFloat >= numCards) {
+              finalDepth = 0; // Crystal clear at scroll end
+            }
 
-        // PERFORMANCE: Only update data-depth on desktop (mobile doesn't use blur)
-        if (!isMobile && prevDepthsRef.current[index] !== finalDepth) {
-          cardRef.setAttribute('data-depth', finalDepth.toString());
-          prevDepthsRef.current[index] = finalDepth;
-        } else if (isMobile && cardRef.hasAttribute('data-depth')) {
-          // Clear data-depth on mobile to prevent blur CSS from applying
-          cardRef.removeAttribute('data-depth');
-        }
+            // Desktop only: update data-depth for blur effects
+            if (prevDepthsRef.current[index] !== finalDepth) {
+              cardRef.setAttribute('data-depth', finalDepth.toString());
+              prevDepthsRef.current[index] = finalDepth;
+            }
 
-        if (depth >= 0 && depth < 4) {
-          // Card is in stack or exiting - simplified scroll-based scaling
-          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+            if (depth >= 0 && depth < 4) {
+              // Card is in stack or exiting - simplified scroll-based scaling
+              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
-          const scaleProgress = Math.min(depth / 1.5, 1);
-          const scale = 1 - scaleProgress * (1 - STACK_SCALE);
+              // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
+              const scaleProgress = Math.min(depth / 1.5, 1);
+              const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
-          // Use pixels for all transforms (no % to prevent rounding jitter)
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Convert to pixels
-          const stackParallax = isMobile ? -depth * 15 : -depth * 40; // Balanced parallax on mobile
+              // Use pixels for all transforms (no % to prevent rounding jitter)
+              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Convert to pixels
+              const stackParallax = -depth * 40; // Desktop parallax
 
-          // Round values to avoid subpixel rendering issues
-          const roundedY = Math.round(baseTranslateY + stackParallax);
+              // Round values to avoid subpixel rendering issues
+              const roundedY = Math.round(baseTranslateY + stackParallax);
 
-          // Use simpler transform for mobile, translate3d for desktop
-          if (isMobile) {
-            cardRef.style.transform = `scale(${scale}) translateY(${roundedY}px)`;
-          } else {
-            cardRef.style.transform = `scale(${scale}) translate3d(0, ${roundedY}px, 0)`;
-          }
+              // Desktop uses translate3d for GPU acceleration
+              cardRef.style.transform = `scale(${scale}) translate3d(0, ${roundedY}px, 0)`;
 
-          // Simple opacity - all stacked cards stay visible
-          const isLastCard = index === numCards - 1;
-          let opacity = 1; // All cards in stack range stay fully visible
+              // Simple opacity - all stacked cards stay visible
+              let opacity = 1; // All cards in stack range stay fully visible
 
-          // Only last card gets exit fade (when scrolling past all cards)
-          if (isLastCard && depth > 3) {
-            const exitProgress = Math.max(0, depth - 3);
-            opacity = Math.max(0, 1 - exitProgress);
-          }
+              // Only last card gets exit fade (when scrolling past all cards)
+              if (isLastCard && depth > 3) {
+                const exitProgress = Math.max(0, depth - 3);
+                opacity = Math.max(0, 1 - exitProgress);
+              }
 
-          cardRef.style.opacity = String(opacity);
+              cardRef.style.opacity = String(opacity);
 
-        } else if (depth >= 4) {
-          // Keep cards at final stack position with continuous parallax
-          const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-          const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Pixels
-          const stackParallax = isMobile ? -depth * 15 : -depth * 40; // Balanced parallax on mobile
+            } else if (depth >= 4) {
+              // Keep cards at final stack position with continuous parallax
+              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL * 10; // Pixels
+              const stackParallax = -depth * 40; // Desktop parallax
 
-          // Round values for performance
-          const roundedY = Math.round(baseTranslateY + stackParallax);
+              // Round values for performance
+              const roundedY = Math.round(baseTranslateY + stackParallax);
 
-          if (isMobile) {
-            cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${roundedY}px)`;
-          } else {
-            cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${roundedY}px, 0)`;
-          }
+              // Desktop transform
+              cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${roundedY}px, 0)`;
 
-          // Explicitly set opacity - last card fades, others stay visible
-          const isLastCard = index === numCards - 1;
-          cardRef.style.opacity = isLastCard ? '0' : '1';
+              // Explicitly set opacity - last card fades, others stay visible
+              cardRef.style.opacity = isLastCard ? '0' : '1';
 
-        } else if (depth > -1) {
-          // Card is incoming - viewport-relative slide from bottom edge
-          const incomingProgress = 1 + depth; // 0 to 1 as card enters
+            } else if (depth > -1) {
+              // Card is incoming - viewport-relative slide from bottom edge
+              const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          // Simpler calculation for mobile
-          const startY = isMobile ? viewportHeight * 0.8 : viewportHeight - Math.max(0, containerViewportTop);
+              // Desktop calculation
+              const startY = viewportHeight - Math.max(0, containerViewportTop);
 
-          // Interpolate between start and target based on scroll progress
-          const currentY = Math.round(startY * (1 - incomingProgress));
+              // Interpolate between start and target based on scroll progress
+              const currentY = Math.round(startY * (1 - incomingProgress));
 
-          if (isMobile) {
-            cardRef.style.transform = `translateY(${currentY}px)`;
-          } else {
-            cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
-          }
-          cardRef.style.opacity = '1'; // Always full opacity - no fade
-        } else {
-          // Card is off-screen below (depth <= -1)
-          cardRef.style.transform = `translate3d(0, 100vh, 0)`;
-          cardRef.style.opacity = '0';
-        }
-      });
+              // Desktop transform
+              cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
+              cardRef.style.opacity = '1'; // Always full opacity - no fade
+
+            } else {
+              // Card is off-screen below (depth <= -1)
+              cardRef.style.transform = `translate3d(0, 100vh, 0)`;
+              cardRef.style.opacity = '0';
+            }
+          });
 
           ticking = false;
         });

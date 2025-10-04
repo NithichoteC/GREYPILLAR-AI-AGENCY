@@ -133,24 +133,26 @@ export default function CapabilitiesSection() {
             : 0;
           const activeCard = progress * (capabilities.length + 0.5);
 
-          // Mobile constants - simpler values
-          const MOBILE_SCALE = 0.95;
-          const MOBILE_OFFSET = 20; // Fixed pixel offset
+          // Mobile constants - proper stacking values
+          const MOBILE_SCALE = 0.92; // Slightly smaller scale for mobile
+          const MOBILE_OFFSET = 50; // Show 50px of each stacked card
 
           cardRefs.current.forEach((cardRef, index) => {
             if (!cardRef) return;
 
             const depth = activeCard - index;
 
-            // Simple mobile transforms - no complex calculations
+            // Simple mobile transforms - proper stacking with significant overlap
             if (depth >= 0 && depth < 3) {
               // Card in view or stacking
-              const scale = depth > 0 ? MOBILE_SCALE : 1;
-              const yOffset = Math.round(depth * MOBILE_OFFSET);
+              // Scale cards based on depth for visual hierarchy
+              const scale = 1 - (depth * 0.02); // 1, 0.98, 0.96, etc.
+              // Stack cards with proper overlap (show 50px of each stacked card)
+              const yOffset = Math.round(index * MOBILE_OFFSET);
 
-              cardRef.style.transform = `scale(${scale}) translateY(-${yOffset}px)`;
+              cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = '1';
-              cardRef.style.zIndex = String(index);
+              cardRef.style.zIndex = String(3 - index); // Reverse z-index so first card is on top
 
             } else if (depth < 0 && depth > -1) {
               // Card entering from bottom
@@ -159,13 +161,16 @@ export default function CapabilitiesSection() {
 
               cardRef.style.transform = `translateY(${yPos}px)`;
               cardRef.style.opacity = String(enterProgress);
-              cardRef.style.zIndex = String(index);
+              cardRef.style.zIndex = String(3 - index);
 
             } else if (depth >= 3) {
-              // Card stacked deep
-              cardRef.style.transform = `scale(${MOBILE_SCALE}) translateY(-60px)`;
+              // Card stacked deep - maintain stacking position
+              const scale = 0.94; // Smallest scale for deep cards
+              const yOffset = Math.round(index * MOBILE_OFFSET);
+
+              cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
               cardRef.style.opacity = index === capabilities.length - 1 ? '0' : '1';
-              cardRef.style.zIndex = String(index);
+              cardRef.style.zIndex = String(3 - index);
 
             } else {
               // Card off-screen
@@ -321,15 +326,18 @@ export default function CapabilitiesSection() {
       cardRefs.current.forEach((cardRef, index) => {
         if (cardRef) {
           cardRef.style.willChange = 'transform, opacity';
-          // Set initial positions - cards start off screen
+          // Set initial positions - stack cards with proper overlap
           if (index === 0) {
             cardRef.style.transform = 'translateY(0)';
             cardRef.style.opacity = '1';
-            cardRef.style.zIndex = '0';
+            cardRef.style.zIndex = '3';
           } else {
-            cardRef.style.transform = `translateY(${viewportHeight}px)`;
-            cardRef.style.opacity = '0';
-            cardRef.style.zIndex = String(index);
+            // Stack subsequent cards behind with 50px offset
+            const yOffset = index * 50;
+            const scale = 1 - (index * 0.02);
+            cardRef.style.transform = `scale(${scale}) translateY(${yOffset}px)`;
+            cardRef.style.opacity = '1';
+            cardRef.style.zIndex = String(3 - index);
           }
         }
       });

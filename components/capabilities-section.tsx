@@ -167,19 +167,24 @@ export default function CapabilitiesSection() {
                 const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL; // NEGATIVE to stack UP
                 const stackParallax = -depth * 4; // NEGATIVE parallax
 
-                cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
+                // Convert percentages to pixels for iOS GPU compositing
+                const translateYPixels = Math.round(((baseTranslateY + stackParallax) / 100) * viewportHeight);
+                cardRef.style.transform = `scale(${scale}) translate3d(0, ${translateYPixels}px, 0)`;
                 cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
 
               // Reference implementation: cards entering from bottom
               } else if (depth > -1) {
                 const incomingProgress = 1 + depth;
                 const translateY = 100 - (incomingProgress * 100);
-                cardRef.style.transform = `translateY(${translateY}%)`;
+                // Convert percentage to pixels for iOS GPU compositing
+                const translateYPixels = Math.round((translateY / 100) * viewportHeight);
+                cardRef.style.transform = `translate3d(0, ${translateYPixels}px, 0)`;
                 cardRef.style.opacity = '1';
 
               // Cards off-screen
               } else {
-                cardRef.style.transform = `translateY(100%)`;
+                // Use translate3d for iOS GPU compositing
+                cardRef.style.transform = `translate3d(0, ${viewportHeight}px, 0)`;
                 cardRef.style.opacity = '0';
               }
             });

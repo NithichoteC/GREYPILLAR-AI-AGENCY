@@ -91,22 +91,13 @@ export default function CapabilitiesSection() {
     let scrollIdleTimeout: NodeJS.Timeout | null = null;
     let resizeTimeout: NodeJS.Timeout | null = null;
 
-    // PERFORMANCE: Cache viewport AND container dimensions (2025 Apple pattern)
+    // PERFORMANCE: Cache viewport dimensions only
     let viewportHeight = window.innerHeight;
     let isMobile = window.innerWidth <= 768;
-    let cachedScrollableHeight = 0;
-    let cachedContainerTop = 0; // Absolute position in document
 
     const updateViewportCache = () => {
       viewportHeight = window.innerHeight;
       isMobile = window.innerWidth <= 768;
-
-      // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
-      if (containerRef.current) {
-        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
-        // Cache initial position (when called at init, scroll is 0, so this IS the absolute position)
-        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
-      }
     };
 
     // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
@@ -149,11 +140,11 @@ export default function CapabilitiesSection() {
 
           const container = containerRef.current;
 
-          // PERFORMANCE: Pure scroll math - ZERO DOM reads during scroll
-          const scrollY = window.scrollY;
-          const currentContainerTop = cachedContainerTop - scrollY;
+          // Use getBoundingClientRect() directly - stable October 2 approach
+          const containerRect = container.getBoundingClientRect();
+          const scrollableHeight = container.scrollHeight - viewportHeight;
 
-          let progress = -currentContainerTop / cachedScrollableHeight;
+          let progress = -containerRect.top / scrollableHeight;
           progress = Math.max(0, Math.min(1, progress));
 
           const numCards = capabilities.length;
@@ -227,8 +218,8 @@ export default function CapabilitiesSection() {
           // Card is incoming - viewport-relative slide from bottom edge
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          // Calculate slide from bottom of viewport to stack position (use cached values)
-          const startY = viewportHeight - Math.max(0, currentContainerTop);
+          // Calculate slide from bottom of viewport to stack position
+          const startY = viewportHeight - Math.max(0, containerRect.top);
           // End position: stack position (0)
           const targetY = 0;
 

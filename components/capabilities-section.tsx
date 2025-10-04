@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 interface CapabilityCardProps {
@@ -11,36 +11,42 @@ interface CapabilityCardProps {
   index: number;
 }
 
-const CapabilityCard: React.FC<CapabilityCardProps> = ({ iconSrc, accentColor, title, description, tags, index }) => {
-  return (
-    <div className="capability-card" data-index={index}>
-      <div className="capability-card-content">
-        <div className="capability-card-header">
-          <Image
-            src={iconSrc}
-            alt={title}
-            width={64}
-            height={64}
-            className="capability-icon"
-            priority={index === 0}
-          />
-          <div>
-            <h3 className="capability-card-title">{title}</h3>
-            <p className="capability-card-description">{description}</p>
+const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
+  ({ iconSrc, accentColor, title, description, tags, index }, ref) => {
+    return (
+      <div ref={ref} className="capability-card" data-index={index}>
+        <div className="capability-card-content">
+          <div className="capability-card-header">
+            <Image
+              src={iconSrc}
+              alt={title}
+              width={64}
+              height={64}
+              className="capability-icon"
+              priority={index === 0}
+            />
+            <div>
+              <h3 className="capability-card-title">{title}</h3>
+              <p className="capability-card-description">{description}</p>
+            </div>
+          </div>
+
+          <div className="capability-card-tags">
+            {tags.map((tag, i) => (
+              <span key={i} className="capability-tag">{tag}</span>
+            ))}
           </div>
         </div>
-
-        <div className="capability-card-tags">
-          {tags.map((tag, i) => (
-            <span key={i} className="capability-tag">{tag}</span>
-          ))}
-        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default function CapabilitiesSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prevDepthsRef = useRef<number[]>([]);
+
   const capabilities = [
     {
       iconSrc: '/icons/revenue-recovery.png',
@@ -72,6 +78,91 @@ export default function CapabilitiesSection() {
     }
   ];
 
+  useEffect(() => {
+    let ticking = false;
+    let lastScrollTime = 0;
+
+    // Cache viewport dimensions for performance
+    let isMobile = window.innerWidth <= 768;
+    let cachedScrollableHeight = 0;
+
+    const updateViewportCache = () => {
+      isMobile = window.innerWidth <= 768;
+
+      if (containerRef.current) {
+        cachedScrollableHeight = containerRef.current.scrollHeight - window.innerHeight;
+      }
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame((timestamp) => {
+          // Throttle: Mobile 50ms (20fps), Desktop 16ms (60fps)
+          const throttleTime = isMobile ? 50 : 16;
+          if (timestamp - lastScrollTime < throttleTime) {
+            ticking = false;
+            return;
+          }
+          lastScrollTime = timestamp;
+
+          if (!containerRef.current) {
+            ticking = false;
+            return;
+          }
+
+          const container = containerRef.current;
+          const containerRect = container.getBoundingClientRect();
+          const containerTop = containerRect.top;
+
+          // Calculate scroll progress
+          let progress = -containerTop / cachedScrollableHeight;
+          progress = Math.max(0, Math.min(1, progress));
+
+          const numCards = capabilities.length;
+          const activeCardFloat = progress * (numCards + 1.0);
+
+          cardRefs.current.forEach((cardRef, index) => {
+            if (!cardRef) return;
+
+            const depth = activeCardFloat - index;
+            let finalDepth = Math.floor(Math.max(0, depth));
+
+            // Last card becomes crisp (depth 0) when scroll reaches end
+            const isLastCard = index === numCards - 1;
+            if (isLastCard && activeCardFloat >= numCards) {
+              finalDepth = 0;
+            }
+
+            // Only update data-depth when value changes (prevents flickering)
+            if (prevDepthsRef.current[index] !== finalDepth) {
+              cardRef.setAttribute('data-depth', finalDepth.toString());
+              prevDepthsRef.current[index] = finalDepth;
+            }
+          });
+
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    const handleResize = () => {
+      updateViewportCache();
+      handleScroll();
+    };
+
+    // Initialize
+    updateViewportCache();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
+    handleScroll(); // Initial call
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [capabilities.length]);
+
   return (
     <section className="capabilities-section" id="capabilities">
       {/* Grid overlay - 14 vertical lines with CSS Grid */}
@@ -93,11 +184,12 @@ export default function CapabilitiesSection() {
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div className="capabilities-cards-wrapper">
+        <div ref={containerRef} className="capabilities-cards-wrapper">
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
               <CapabilityCard
                 key={index}
+                ref={(el) => { cardRefs.current[index] = el; }}
                 {...capability}
                 index={index}
               />

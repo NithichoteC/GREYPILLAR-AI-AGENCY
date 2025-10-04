@@ -2707,10 +2707,10 @@ body {
     gap: 2rem; /* Spacing between cards */
 }
 
-/* Individual Capability Card - NITRO-STYLE STICKY PARALLAX (Browser-Native 60fps!) */
+/* Individual Capability Card - HYBRID STICKY + PARALLAX */
 .capability-card {
     position: sticky;
-    top: 160px; /* Stick point - matches Nitro exactly */
+    top: 160px; /* Stick point - smooth browser-native stacking */
     width: 100%;
     display: flex;
     align-items: center;
@@ -2720,25 +2720,59 @@ body {
 
     /* Browser-native GPU acceleration */
     transform: translateZ(0);
-    will-change: transform;
+    will-change: transform, opacity, filter;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 
     /* Smooth transitions for depth effects */
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out, filter 0.3s ease-out;
 }
 
-/* Nitro-Style Depth Scaling - Cards shrink slightly as they stack */
-.capability-card[data-index="1"] {
-    transform: translateZ(0) scale(0.98);
+/* Depth-Based Scaling - Cards shrink as they stack behind */
+.capability-card[data-depth="0"] {
+    transform: translateZ(0) scale(1); /* Active card - full size */
+    opacity: 1;
 }
 
-.capability-card[data-index="2"] {
-    transform: translateZ(0) scale(0.96);
+.capability-card[data-depth="1"] {
+    transform: translateZ(0) scale(0.98); /* 1st stacked - slightly smaller */
+    opacity: 0.99;
 }
 
-.capability-card[data-index="3"] {
-    transform: translateZ(0) scale(0.94);
+.capability-card[data-depth="2"] {
+    transform: translateZ(0) scale(0.96); /* 2nd stacked - more shrinkage */
+    opacity: 0.985;
+}
+
+.capability-card[data-depth="3"] {
+    transform: translateZ(0) scale(0.94); /* 3rd stacked - maximum shrinkage */
+    opacity: 0.98;
+}
+
+.capability-card[data-depth="4"],
+.capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+    transform: translateZ(0) scale(0.94); /* Deep stack - same as 3rd */
+    opacity: 0.98;
+}
+
+/* Desktop Blur Effects - ONLY on hover-capable devices for glass effect */
+@media (min-width: 769px) and (hover: hover) {
+    .capability-card[data-depth="1"] {
+        filter: blur(2px); /* Light blur on 1st stacked card */
+    }
+
+    .capability-card[data-depth="2"] {
+        filter: blur(4px); /* Medium blur on 2nd stacked */
+    }
+
+    .capability-card[data-depth="3"] {
+        filter: blur(6px); /* Strong blur on 3rd stacked */
+    }
+
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]):not([data-depth="1"]):not([data-depth="2"]):not([data-depth="3"]) {
+        filter: blur(8px); /* Maximum blur on deepest stack */
+    }
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */

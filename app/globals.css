@@ -2692,17 +2692,12 @@ body {
     }
 }
 
-/* Cards Wrapper - Scroll Snap Container (2024 Best Practice) */
+/* Cards Wrapper - Sticky Viewport Container */
 .capabilities-cards-wrapper {
     position: relative;
     width: 100%; /* CRITICAL: Fill parent container - prevent shrink-wrap */
     min-height: 800vh; /* DESKTOP: 200vh per card = comfortable reading pace */
     margin-top: 0; /* No gap - smooth flow from intro text */
-
-    /* CSS SCROLL SNAP: Native smooth scrolling with card locking */
-    scroll-snap-type: y proximity; /* Proximity allows free scrolling but snaps when close */
-    overflow-y: auto; /* Enable scrolling (browser handles smoothly) */
-    scroll-behavior: smooth; /* Smooth scroll for keyboard/programmatic navigation */
 }
 
 /* MOBILE: Extra scroll space for easier reading (250vh per card) */
@@ -2732,7 +2727,7 @@ body {
     }
 }
 
-/* Individual Capability Card - Modern CSS Scroll-Driven Parallax */
+/* Individual Capability Card - JavaScript-Driven Parallax */
 .capability-card {
     position: absolute;
     width: 100%; /* Fill parent */
@@ -2749,37 +2744,10 @@ body {
     max-height: 800px; /* Increased height for better visual impact */
     touch-action: pan-y; /* iOS optimization: only allow vertical scrolling */
 
-    /* CSS SCROLL SNAP: Lock card into view when scrolling */
-    scroll-snap-align: center; /* Card centers in viewport when scrolling */
-    scroll-snap-stop: normal; /* Allow scrolling through multiple cards */
-
     /* 2025 CUTTING-EDGE: CSS Containment for faster rendering */
     content-visibility: auto; /* Only render when near viewport */
     contain-intrinsic-size: auto 650px; /* Prevent layout shift with placeholder height */
     contain: layout paint; /* Prevent reflow cascades to other elements */
-}
-
-/* CSS SCROLL-DRIVEN ANIMATIONS (2024 Cutting-Edge - Safari 17.5+, Chrome 115+) */
-@supports (animation-timeline: scroll()) {
-    /* Parallax stack animation driven by scroll position */
-    .capability-card {
-        animation: parallax-card-stack linear both;
-        animation-timeline: scroll(root); /* Track page scroll */
-        animation-range: entry 0% cover 40%; /* Animate as card enters and covers */
-    }
-
-    @keyframes parallax-card-stack {
-        from {
-            transform: scale(1) translateY(0) translateZ(0);
-            filter: blur(0px);
-            opacity: 1;
-        }
-        to {
-            transform: scale(0.9) translateY(-2%) translateZ(0);
-            filter: blur(8px);
-            opacity: 0.98;
-        }
-    }
 }
 
 /* Capability Card Content - Nitro 2025 Premium Design */

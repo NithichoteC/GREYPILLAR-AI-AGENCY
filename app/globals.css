@@ -3089,6 +3089,15 @@ body {
         opacity: 1 !important;  /* Always visible on mobile */
     }
 
+    /* CRITICAL: Disable all blur filters on mobile - cards should be crystal clear */
+    .capability-card[data-depth="1"],
+    .capability-card[data-depth="2"],
+    .capability-card[data-depth="3"],
+    .capability-card[data-depth="4"],
+    .capability-card[data-depth]:not([data-depth="0"]) {
+        filter: none !important; /* Remove blur on mobile */
+    }
+
     .capability-card-content {
         padding: var(--space-2xl);
         min-height: 400px;

@@ -86,9 +86,10 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
-    // OPTIMIZED MOBILE PARALLAX: Simplified calculations for smooth performance
+    // OPTIMIZED MOBILE PARALLAX: Throttled calculations for smooth 120fps performance
     let ticking = false;
-    let lastScrollTime = 0; // Define here for desktop throttling
+    let lastScrollTime = 0; // Desktop throttling
+    let mobileLastScrollTime = 0; // Mobile throttling (separate timer)
     let resizeTimeout: NodeJS.Timeout | null = null;
 
     // Cache all dimensions once
@@ -112,66 +113,81 @@ export default function CapabilitiesSection() {
       // Check mobile state in real-time to handle browser testing
       const currentIsMobile = window.innerWidth <= 768;
 
-      // Mobile uses simpler calculations, no throttling needed
+      // Mobile uses throttled calculations for smooth 120fps performance
       if (currentIsMobile) {
-        // Remove ticking flag for mobile - it's causing issues
-        window.requestAnimationFrame(() => {
-          if (!containerRef.current) {
-            return;
-          }
+        const now = performance.now();
+        const mobileThrottleTime = 8; // 120fps cap for smooth touch scrolling
 
-          // Ensure cache is updated if not initialized or if mobile state changed
-          if (cachedDocumentTop === 0 || cachedScrollableHeight === 0 || isMobile !== currentIsMobile) {
-            updateCache();
-          }
+        // Throttle scroll events to prevent RAF call stacking
+        if (now - mobileLastScrollTime < mobileThrottleTime) {
+          return; // Skip this scroll event
+        }
+        mobileLastScrollTime = now;
 
-          // Mobile calculations using reference implementation
-          const scrollY = window.scrollY;
-          const containerTop = cachedDocumentTop - scrollY;
-          const progress = cachedScrollableHeight > 0
-            ? Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight))
-            : 0;
-
-          // Reference implementation: progress * (numCards - 1)
-          const activeCard = progress * (capabilities.length - 1);
-
-          // Reference constants for smooth GPU-optimized animations
-          const STACK_SCALE = 0.9;
-          const Y_OFFSET_PER_LEVEL = 4; // in percent
-          const MAX_VISIBLE_STACK_CARDS = 3;
-
-          cardRefs.current.forEach((cardRef, index) => {
-            if (!cardRef) return;
-
-            cardRef.style.zIndex = String(index);
-
-            const depth = activeCard - index;
-
-            // Reference implementation: cards that are stacking or in view
-            if (depth >= 0) {
-              const depthProgress = Math.min(depth, 1);
-              const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-              const scale = depth > 1 ? STACK_SCALE : 1 - depthProgress * (1 - STACK_SCALE);
-              const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL; // NEGATIVE to stack UP
-              const stackParallax = -depth * 4; // NEGATIVE parallax
-
-              cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
-              cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
-
-            // Reference implementation: cards entering from bottom
-            } else if (depth > -1) {
-              const incomingProgress = 1 + depth;
-              const translateY = 100 - (incomingProgress * 100);
-              cardRef.style.transform = `translateY(${translateY}%)`;
-              cardRef.style.opacity = '1';
-
-            // Cards off-screen
-            } else {
-              cardRef.style.transform = `translateY(100%)`;
-              cardRef.style.opacity = '0';
+        // Ticking flag prevents multiple simultaneous RAF calls
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (!containerRef.current) {
+              ticking = false;
+              return;
             }
+
+            // Ensure cache is updated if not initialized or if mobile state changed
+            if (cachedDocumentTop === 0 || cachedScrollableHeight === 0 || isMobile !== currentIsMobile) {
+              updateCache();
+            }
+
+            // Mobile calculations using reference implementation
+            const scrollY = window.scrollY;
+            const containerTop = cachedDocumentTop - scrollY;
+            const progress = cachedScrollableHeight > 0
+              ? Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight))
+              : 0;
+
+            // Reference implementation: progress * (numCards - 1)
+            const activeCard = progress * (capabilities.length - 1);
+
+            // Reference constants for smooth GPU-optimized animations
+            const STACK_SCALE = 0.9;
+            const Y_OFFSET_PER_LEVEL = 4; // in percent
+            const MAX_VISIBLE_STACK_CARDS = 3;
+
+            cardRefs.current.forEach((cardRef, index) => {
+              if (!cardRef) return;
+
+              cardRef.style.zIndex = String(index);
+
+              const depth = activeCard - index;
+
+              // Reference implementation: cards that are stacking or in view
+              if (depth >= 0) {
+                const depthProgress = Math.min(depth, 1);
+                const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
+                const scale = depth > 1 ? STACK_SCALE : 1 - depthProgress * (1 - STACK_SCALE);
+                const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL; // NEGATIVE to stack UP
+                const stackParallax = -depth * 4; // NEGATIVE parallax
+
+                cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
+                cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
+
+              // Reference implementation: cards entering from bottom
+              } else if (depth > -1) {
+                const incomingProgress = 1 + depth;
+                const translateY = 100 - (incomingProgress * 100);
+                cardRef.style.transform = `translateY(${translateY}%)`;
+                cardRef.style.opacity = '1';
+
+              // Cards off-screen
+              } else {
+                cardRef.style.transform = `translateY(100%)`;
+                cardRef.style.opacity = '0';
+              }
+            });
+
+            ticking = false; // Reset ticking flag after RAF completes
           });
-        });
+          ticking = true; // Set ticking flag before RAF call
+        }
         return; // Exit early for mobile
       }
 

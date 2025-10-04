@@ -52,6 +52,7 @@ const CapabilityCard = React.forwardRef<HTMLDivElement, CapabilityCardProps>(
 export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
 
   const capabilities = [
     {
@@ -85,36 +86,81 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
-    let rafId: number | null = null;
     let ticking = false;
+    let lastScrollTime = 0;
+    let scrollIdleTimeout: NodeJS.Timeout | null = null;
+    let resizeTimeout: NodeJS.Timeout | null = null;
 
-    const handleScroll = () => {
-      if (!ticking) {
-        ticking = true;
-        rafId = requestAnimationFrame(() => {
-          updateParallax();
-          ticking = false;
-        });
+    // PERFORMANCE: Cache viewport AND container dimensions (2025 Apple pattern)
+    let viewportHeight = window.innerHeight;
+    let isMobile = window.innerWidth <= 768;
+    let cachedScrollableHeight = 0;
+    let cachedContainerTop = 0;
+
+    const updateViewportCache = () => {
+      viewportHeight = window.innerHeight;
+      isMobile = window.innerWidth <= 768;
+
+      // Cache container dimensions to eliminate getBoundingClientRect() in scroll loop
+      if (containerRef.current) {
+        cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
+        cachedContainerTop = containerRef.current.getBoundingClientRect().top;
       }
     };
 
-    const updateParallax = () => {
-      if (!containerRef.current) return;
+    // PERFORMANCE: Conditional will-change (Apple 2025 pattern)
+    const enableGPULayers = () => {
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'transform';
+      });
+    };
 
-      const container = containerRef.current;
-      const containerRect = container.getBoundingClientRect();
-      const scrollableHeight = container.scrollHeight - window.innerHeight;
+    const disableGPULayers = () => {
+      cardRefs.current.forEach(cardRef => {
+        if (cardRef) cardRef.style.willChange = 'auto';
+      });
+    };
 
-      let progress = -containerRect.top / scrollableHeight;
-      progress = Math.max(0, Math.min(1, progress));
+    const handleScroll = () => {
+      // Enable GPU layers on first scroll
+      enableGPULayers();
 
-      const numCards = capabilities.length;
-      const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
+      // Clear previous idle timeout
+      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
 
-      // Parallax constants (from pararexcode.txt)
-      const STACK_SCALE = 0.9;
-      const Y_OFFSET_PER_LEVEL = 4; // in percent
-      const MAX_VISIBLE_STACK_CARDS = 3;
+      // Disable GPU layers after 150ms of no scrolling (battery optimization)
+      scrollIdleTimeout = setTimeout(disableGPULayers, 150);
+
+      if (!ticking) {
+        window.requestAnimationFrame((timestamp) => {
+          // THROTTLE: Skip if less than 16ms since last frame (60fps max)
+          if (timestamp - lastScrollTime < 16) {
+            ticking = false;
+            return;
+          }
+          lastScrollTime = timestamp;
+
+          if (!containerRef.current) {
+            ticking = false;
+            return;
+          }
+
+          const container = containerRef.current;
+
+          // PERFORMANCE: Pure scroll math - ZERO DOM reads during scroll (2025 Apple/Vercel standard)
+          const scrollY = window.scrollY;
+          const currentContainerTop = cachedContainerTop - scrollY;
+
+          let progress = -currentContainerTop / cachedScrollableHeight;
+          progress = Math.max(0, Math.min(1, progress));
+
+          const numCards = capabilities.length;
+          const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
+
+          // Parallax constants - mobile optimized
+          const STACK_SCALE = 0.9;
+          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Reduced on mobile for better visibility
+          const MAX_VISIBLE_STACK_CARDS = 3;
 
       cardRefs.current.forEach((cardRef, index) => {
         if (!cardRef) return;
@@ -132,36 +178,24 @@ export default function CapabilitiesSection() {
           finalDepth = 0; // Crystal clear at scroll end
         }
 
-        cardRef.setAttribute('data-depth', finalDepth.toString());
+        // PERFORMANCE: Only update data-depth when value changes (prevents flickering)
+        if (prevDepthsRef.current[index] !== finalDepth) {
+          cardRef.setAttribute('data-depth', finalDepth.toString());
+          prevDepthsRef.current[index] = finalDepth;
+        }
 
         if (depth >= 0 && depth < 4) {
-          // Card is in stack or exiting - extended range for smooth exit
-          const depthProgress = Math.min(depth, 1);
+          // Card is in stack or exiting - simplified scroll-based scaling
           const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
 
-          // Progressive scaling - starts before reaching middle for smooth feel
-          const cardRect = cardRef.getBoundingClientRect();
-          const cardCenter = cardRect.top + cardRect.height / 2;
-          const viewportMiddle = window.innerHeight / 2;
-
-          // Distance below middle (positive = below, negative = above)
-          const distanceBelowMiddle = cardCenter - viewportMiddle;
-
-          // Start scaling 500px before middle for smoother, earlier transition
-          const scaleStartDistance = 500;
-          const scaleRange = Math.max(0, Math.min(1, (scaleStartDistance - distanceBelowMiddle) / scaleStartDistance));
-
-          // Combine distance-based (50%) + depth-based (50%) scaling for smooth progression
-          const distanceScale = scaleRange * 0.5;
-          const depthScale = Math.min(depth / 1.5, 1) * 0.5;
-          const scaleProgress = distanceScale + depthScale;
-
+          // SIMPLIFIED: Depth-based scaling only (no expensive getBoundingClientRect)
+          const scaleProgress = Math.min(depth / 1.5, 1);
           const scale = 1 - scaleProgress * (1 - STACK_SCALE);
 
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4;
 
-          cardRef.style.transform = `scale(${scale}) translateY(${baseTranslateY + stackParallax}%)`;
+          cardRef.style.transform = `scale(${scale}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Simple opacity - all stacked cards stay visible
           const isLastCard = index === numCards - 1;
@@ -181,7 +215,7 @@ export default function CapabilitiesSection() {
           const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL;
           const stackParallax = -depth * 4; // MAINTAIN parallax - prevents jump from -27% to -12%!
 
-          cardRef.style.transform = `scale(${STACK_SCALE}) translateY(${baseTranslateY + stackParallax}%)`;
+          cardRef.style.transform = `scale(${STACK_SCALE}) translate3d(0, ${baseTranslateY + stackParallax}%, 0)`;
 
           // Explicitly set opacity - last card fades, others stay visible
           const isLastCard = index === numCards - 1;
@@ -191,34 +225,54 @@ export default function CapabilitiesSection() {
           // Card is incoming - viewport-relative slide from bottom edge
           const incomingProgress = 1 + depth; // 0 to 1 as card enters
 
-          // Calculate slide from bottom of viewport to stack position
-          const viewportHeight = window.innerHeight;
-          const containerTop = containerRect.top;
-
-          // Start position: bottom of viewport relative to container
-          const startY = viewportHeight - Math.max(0, containerTop);
+          // Calculate slide from bottom of viewport to stack position (use cached values)
+          const startY = viewportHeight - Math.max(0, currentContainerTop);
           // End position: stack position (0)
           const targetY = 0;
 
           // Interpolate between start and target based on scroll progress
           const currentY = startY - (incomingProgress * startY);
 
-          cardRef.style.transform = `translateY(${currentY}px)`;
+          cardRef.style.transform = `translate3d(0, ${currentY}px, 0)`;
           cardRef.style.opacity = '1'; // Always full opacity - no fade
         } else {
           // Card is off-screen below (depth <= -1)
-          cardRef.style.transform = `translateY(100vh)`;
+          cardRef.style.transform = `translate3d(0, 100vh, 0)`;
           cardRef.style.opacity = '0';
         }
       });
+
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
+    // PERFORMANCE: Debounced resize handler (iOS address bar hide/show fires constantly)
+    const handleResize = () => {
+      // Clear previous resize timeout
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+
+      // Debounce 100ms to prevent iOS address bar thrashing
+      resizeTimeout = setTimeout(() => {
+        updateViewportCache();
+        handleScroll(); // Recalculate positions
+      }, 100);
+    };
+
+    // Initialize cache
+    updateViewportCache();
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    updateParallax(); // Initial call
+    window.addEventListener('resize', handleResize, { passive: true });
+    handleScroll(); // Initial call
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', handleResize);
+      if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
+      if (resizeTimeout) clearTimeout(resizeTimeout);
+      disableGPULayers(); // Cleanup: remove GPU layers on unmount
     };
   }, [capabilities.length]);
 

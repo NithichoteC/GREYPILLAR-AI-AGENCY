@@ -3070,23 +3070,23 @@ body {
     }
 
     .capabilities-cards-wrapper {
-        min-height: auto !important;  /* No tall scrolling container on mobile */
+        min-height: 400vh;  /* Enough height for mobile parallax scrolling */
         display: block;
     }
 
     .capabilities-cards {
-        position: static !important;  /* Disable sticky positioning */
-        top: auto !important;
-        height: auto !important;
+        position: relative;  /* Change from sticky to relative for mobile */
+        top: 0;  /* Reset top positioning */
+        height: auto;  /* Let JavaScript control height */
         display: block;
     }
 
     .capability-card {
-        position: relative !important;  /* Force override JavaScript positioning */
-        inset: auto !important;
-        margin-bottom: var(--space-xl);
-        transform: none !important;
-        opacity: 1 !important;  /* Always visible on mobile */
+        position: absolute;  /* Keep absolute for JavaScript parallax control */
+        inset: auto;  /* Let JavaScript control positioning */
+        margin-bottom: 0;  /* No margin - JavaScript controls spacing */
+        /* Remove transform: none - let JavaScript handle transforms */
+        /* Remove opacity override - let JavaScript handle visibility */
     }
 
     .capability-card-content {

@@ -134,8 +134,8 @@ export default function CapabilitiesSection() {
       // Clear previous idle timeout
       if (scrollIdleTimeout) clearTimeout(scrollIdleTimeout);
 
-      // Disable GPU layers after 150ms of no scrolling (battery optimization)
-      scrollIdleTimeout = setTimeout(disableGPULayers, 150);
+      // Disable GPU layers after 2000ms of no scrolling (prevent layer thrashing flickering)
+      scrollIdleTimeout = setTimeout(disableGPULayers, 2000);
 
       if (!ticking) {
         window.requestAnimationFrame((timestamp) => {

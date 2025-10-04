@@ -3103,15 +3103,15 @@ body {
         padding-bottom: var(--space-xl); /* Add extra padding buffer */
     }
 
-    /* MOBILE: Optimized parallax settings */
+    /* MOBILE: Reference implementation parallax settings */
     .capabilities-cards-wrapper {
-        min-height: 400vh; /* Comfortable reading pace - 100vh per card */
+        min-height: 300vh; /* 75vh per card with proper multiplier */
         margin-top: var(--space-2xl); /* Add top margin to prevent overlap */
     }
 
-    /* MOBILE: Adjusted sticky position to prevent overlap */
+    /* MOBILE: Sticky position matching reference */
     .capabilities-cards {
-        top: 200px !important; /* Increased from 100px to prevent overlap with intro */
+        top: 100px !important; /* Standard sticky position */
     }
 
     /* MOBILE: Optimized card sizing and removed conflicts */

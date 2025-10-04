@@ -86,25 +86,62 @@ export default function CapabilitiesSection() {
   ];
 
   useEffect(() => {
+    // Check if mobile on mount
+    const isMobile = window.innerWidth <= 768;
+
+    // MOBILE: Simple fade-in with IntersectionObserver (no parallax)
+    if (isMobile) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const card = entry.target as HTMLElement;
+            if (entry.isIntersecting) {
+              // Add visible class for CSS transition
+              card.classList.add('card-visible');
+              // Once visible, don't need to observe anymore
+              observer.unobserve(card);
+            }
+          });
+        },
+        {
+          threshold: 0.2, // Trigger when 20% visible
+          rootMargin: '0px 0px -50px 0px' // Trigger slightly before fully in view
+        }
+      );
+
+      // Observe all cards
+      cardRefs.current.forEach((card) => {
+        if (card) {
+          // Start with cards invisible
+          card.classList.add('card-mobile-hidden');
+          observer.observe(card);
+        }
+      });
+
+      // Cleanup
+      return () => {
+        cardRefs.current.forEach((card) => {
+          if (card) observer.unobserve(card);
+        });
+      };
+    }
+
+    // DESKTOP: Full parallax system (existing code)
     let ticking = false;
     let lastScrollTime = 0;
-    let scrollIdleTimeout: NodeJS.Timeout | null = null;
     let resizeTimeout: NodeJS.Timeout | null = null;
 
-    // PERFORMANCE: Cache viewport AND container dimensions
+    // Cache viewport AND container dimensions
     let viewportHeight = window.innerHeight;
-    let isMobile = window.innerWidth <= 768;
-    let cachedDocumentTop = 0; // Container's offset from document top (not viewport)
+    let cachedDocumentTop = 0;
     let cachedScrollableHeight = 0;
 
     const updateCache = () => {
       viewportHeight = window.innerHeight;
-      isMobile = window.innerWidth <= 768;
 
       // Cache container's absolute position in document
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        // This is the container's offset from document top (stable value)
         cachedDocumentTop = rect.top + window.scrollY;
         cachedScrollableHeight = containerRef.current.scrollHeight - viewportHeight;
       }
@@ -113,9 +150,9 @@ export default function CapabilitiesSection() {
     // PERFORMANCE: Set will-change once on init (no toggling to prevent jitter)
 
     const handleScroll = () => {
-      // THROTTLE: Check timing BEFORE scheduling RAF (prevents jitter)
+      // THROTTLE: Desktop only at 60fps
       const now = performance.now();
-      const throttleTime = isMobile ? 33 : 16; // 30fps mobile, 60fps desktop
+      const throttleTime = 16; // 60fps desktop only
 
       if (now - lastScrollTime < throttleTime) {
         return; // Skip this frame entirely
@@ -142,9 +179,9 @@ export default function CapabilitiesSection() {
           const numCards = capabilities.length;
           const activeCardFloat = progress * (numCards + 1.0); // EXTENDED: +1.0 gives first card smoother exit (was +0.5 too abrupt)
 
-          // Parallax constants - mobile optimized
+          // Parallax constants - desktop only
           const STACK_SCALE = 0.9;
-          const Y_OFFSET_PER_LEVEL = isMobile ? 2 : 4; // Reduced on mobile for better visibility
+          const Y_OFFSET_PER_LEVEL = 4; // Desktop spacing
           const MAX_VISIBLE_STACK_CARDS = 3;
 
       cardRefs.current.forEach((cardRef, index) => {

@@ -136,17 +136,25 @@ export default function CapabilitiesSection() {
               return;
             }
 
+            // CRITICAL: Update cache if not initialized (same bug from Part 9)
+            if (cachedScrollableHeight <= 0 || isMobile !== currentIsMobile) {
+              updateCache();
+            }
+
             const scrollY = window.scrollY;
             const containerViewportTop = cachedDocumentTop - scrollY;
             let progress = -containerViewportTop / cachedScrollableHeight;
             progress = Math.max(0, Math.min(1, progress));
 
-            // Slower progression: 40% slower than desktop
+            // FIX: Ensure all cards become active - progress from 0 to (numCards - 1)
             const numCards = capabilities.length;
-            const activeCardFloat = progress * (numCards * 0.6);
+            const activeCardFloat = progress * (numCards - 1);
 
             cardRefs.current.forEach((cardRef, index) => {
               if (!cardRef) return;
+
+              // FIX: Set zIndex for proper layering
+              cardRef.style.zIndex = String(index);
 
               const depth = activeCardFloat - index;
 
@@ -160,8 +168,9 @@ export default function CapabilitiesSection() {
                 // CARDS BELOW: Gentle slide up as they enter
                 cardRef.classList.remove('active-card');
                 const distance = Math.abs(depth);
-                const translateY = Math.min(distance * 30, 100); // Max 100vh, gentler than before
-                const opacity = Math.max(0, 1 - distance * 0.5); // Fade out gently
+                const translateY = Math.min(distance * 40, 100); // Max 100vh
+                // FIX: Min opacity 0.3 so new cards aren't too transparent
+                const opacity = Math.max(0.3, 1 - distance * 0.3);
 
                 cardRef.style.transform = `translate3d(0, ${translateY}vh, 0)`;
                 cardRef.style.opacity = String(opacity);
@@ -169,8 +178,9 @@ export default function CapabilitiesSection() {
                 // CARDS ABOVE: Gentle fade out
                 cardRef.classList.remove('active-card');
                 const distance = depth;
-                const translateY = -Math.min(distance * 10, 30); // Max 30vh upward, subtle
-                const opacity = Math.max(0, 1 - distance * 0.3); // Slower fade
+                const translateY = -Math.min(distance * 10, 30); // Max 30vh upward
+                // FIX: Min opacity 0.2 so cards don't disappear completely
+                const opacity = Math.max(0.2, 1 - distance * 0.3);
 
                 cardRef.style.transform = `translate3d(0, ${translateY}vh, 0)`;
                 cardRef.style.opacity = String(opacity);

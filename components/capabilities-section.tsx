@@ -54,7 +54,6 @@ export default function CapabilitiesSection() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
   const [isMobile, setIsMobile] = useState(false);
-  const [hasSwiped, setHasSwiped] = useState(false);
 
   const capabilities = [
     {
@@ -87,72 +86,19 @@ export default function CapabilitiesSection() {
     }
   ];
 
-  // Mobile detection and horizontal swipe setup
+  // Mobile detection (no longer needed for swipe, but kept for potential future use)
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    // Check on mount
     checkMobile();
-
-    // Check on resize
     window.addEventListener('resize', checkMobile);
-
-    // Detect first swipe to hide hint
-    const handleScroll = () => {
-      if (containerRef.current && !hasSwiped) {
-        if (containerRef.current.scrollLeft > 10) {
-          setHasSwiped(true);
-        }
-      }
-    };
-
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-    }
 
     return () => {
       window.removeEventListener('resize', checkMobile);
-      if (container) {
-        container.removeEventListener('scroll', handleScroll);
-      }
     };
-  }, [hasSwiped]);
-
-  // Intersection Observer for mobile active card detection
-  useEffect(() => {
-    if (!isMobile || !containerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-            // Remove active-card from all cards
-            cardRefs.current.forEach((card) => {
-              if (card) card.classList.remove('active-card');
-            });
-            // Add active-card to the intersecting card
-            entry.target.classList.add('active-card');
-          }
-        });
-      },
-      {
-        root: containerRef.current,
-        threshold: 0.5, // Card must be 50% visible
-      }
-    );
-
-    // Observe all cards
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isMobile]);
+  }, []);
 
   useEffect(() => {
     // DESKTOP PARALLAX: Skip on mobile (horizontal swipe instead)
@@ -179,14 +125,66 @@ export default function CapabilitiesSection() {
     };
 
     const handleScroll = () => {
-      // SKIP ON MOBILE: Mobile uses horizontal swipe with Intersection Observer
       const currentIsMobile = window.innerWidth <= 768;
+
+      // MOBILE: Simplified parallax with minimal transforms
       if (currentIsMobile) {
-        return; // Skip all parallax calculations on mobile
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (!containerRef.current) {
+              ticking = false;
+              return;
+            }
+
+            const scrollY = window.scrollY;
+            const containerViewportTop = cachedDocumentTop - scrollY;
+            let progress = -containerViewportTop / cachedScrollableHeight;
+            progress = Math.max(0, Math.min(1, progress));
+
+            // Slower progression: 40% slower than desktop
+            const numCards = capabilities.length;
+            const activeCardFloat = progress * (numCards * 0.6);
+
+            cardRefs.current.forEach((cardRef, index) => {
+              if (!cardRef) return;
+
+              const depth = activeCardFloat - index;
+
+              // Simple 3-state logic: active, below, above
+              if (Math.abs(depth) < 0.5) {
+                // ACTIVE CARD: Fully visible, no transform
+                cardRef.style.transform = 'translate3d(0, 0, 0)';
+                cardRef.style.opacity = '1';
+                cardRef.classList.add('active-card');
+              } else if (depth < 0) {
+                // CARDS BELOW: Gentle slide up as they enter
+                cardRef.classList.remove('active-card');
+                const distance = Math.abs(depth);
+                const translateY = Math.min(distance * 30, 100); // Max 100vh, gentler than before
+                const opacity = Math.max(0, 1 - distance * 0.5); // Fade out gently
+
+                cardRef.style.transform = `translate3d(0, ${translateY}vh, 0)`;
+                cardRef.style.opacity = String(opacity);
+              } else {
+                // CARDS ABOVE: Gentle fade out
+                cardRef.classList.remove('active-card');
+                const distance = depth;
+                const translateY = -Math.min(distance * 10, 30); // Max 30vh upward, subtle
+                const opacity = Math.max(0, 1 - distance * 0.3); // Slower fade
+
+                cardRef.style.transform = `translate3d(0, ${translateY}vh, 0)`;
+                cardRef.style.opacity = String(opacity);
+              }
+            });
+
+            ticking = false;
+          });
+          ticking = true;
+        }
+        return; // Exit early for mobile
       }
 
-
-      // Desktop uses original complex calculations with throttling
+      // DESKTOP: Original complex calculations with throttling
       const now = performance.now();
       const throttleTime = 16; // 60fps for desktop
 
@@ -367,15 +365,7 @@ export default function CapabilitiesSection() {
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div ref={containerRef} className={`capabilities-cards-wrapper ${hasSwiped ? 'swiped' : ''}`}>
-          {/* Mobile swipe hint */}
-          {isMobile && !hasSwiped && (
-            <div className="mobile-swipe-hint">
-              <span>Swipe to explore</span>
-              <span className="arrow">→</span>
-            </div>
-          )}
-
+        <div ref={containerRef} className="capabilities-cards-wrapper">
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
               <CapabilityCard

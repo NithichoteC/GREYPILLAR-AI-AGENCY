@@ -115,16 +115,7 @@ export default function CapabilitiesSection() {
 
       // Mobile uses throttled calculations for smooth 120fps performance
       if (currentIsMobile) {
-        const now = performance.now();
-        const mobileThrottleTime = 8; // 120fps cap for smooth touch scrolling
-
-        // Throttle scroll events to prevent RAF call stacking
-        if (now - mobileLastScrollTime < mobileThrottleTime) {
-          return; // Skip this scroll event
-        }
-        mobileLastScrollTime = now;
-
-        // Ticking flag prevents multiple simultaneous RAF calls
+        // Ticking flag prevents multiple simultaneous RAF calls (CRITICAL for iOS performance)
         if (!ticking) {
           window.requestAnimationFrame(() => {
             if (!containerRef.current) {
@@ -132,7 +123,7 @@ export default function CapabilitiesSection() {
               return;
             }
 
-            // Update viewport height in real-time for iOS Safari address bar changes
+            // PERFORMANCE FIX: Read viewport height ONCE per frame, not on every scroll event
             viewportHeight = window.innerHeight;
 
             // CRITICAL: Always update cache on mobile to ensure proper initialization
@@ -159,7 +150,8 @@ export default function CapabilitiesSection() {
             cardRefs.current.forEach((cardRef, index) => {
               if (!cardRef) return;
 
-              cardRef.style.zIndex = String(index);
+              // PERFORMANCE FIX: Only set zIndex once on mount, not every frame
+              // (moved to initialization section below)
 
               const depth = activeCard - index;
 
@@ -337,10 +329,11 @@ export default function CapabilitiesSection() {
     // Initialize cache
     updateCache();
 
-    // Set will-change for all cards (initial positions set by handleScroll)
-    cardRefs.current.forEach((cardRef) => {
+    // PERFORMANCE: Set will-change and zIndex ONCE on mount (not every frame)
+    cardRefs.current.forEach((cardRef, index) => {
       if (cardRef) {
         cardRef.style.willChange = 'transform, opacity';
+        cardRef.style.zIndex = String(index); // Set once, never change
       }
     });
 

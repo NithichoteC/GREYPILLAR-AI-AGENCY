@@ -2706,6 +2706,7 @@ body {
     position: absolute;
     width: 100%; /* Fill parent (1136px = 1200px container - 64px padding) */
     will-change: transform; /* Optimize for JavaScript animations */
+    contain: layout style paint; /* PERFORMANCE: Isolate rendering for smooth iOS scrolling */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3103,9 +3104,9 @@ body {
         padding-bottom: var(--space-xl); /* Add extra padding buffer */
     }
 
-    /* MOBILE: Reference implementation parallax settings */
+    /* MOBILE: Extended scroll range for last card readability */
     .capabilities-cards-wrapper {
-        min-height: 300vh; /* 75vh per card with proper multiplier */
+        min-height: 400vh; /* 100vh per card - more scroll time to read content */
         margin-top: var(--space-2xl); /* Add top margin to prevent overlap */
     }
 

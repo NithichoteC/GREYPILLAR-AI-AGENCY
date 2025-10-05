@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 
 interface CapabilityCardProps {
@@ -53,6 +53,8 @@ export default function CapabilitiesSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevDepthsRef = useRef<number[]>([]); // Cache previous data-depth values
+  const [isMobile, setIsMobile] = useState(false);
+  const [hasSwiped, setHasSwiped] = useState(false);
 
   const capabilities = [
     {
@@ -85,8 +87,75 @@ export default function CapabilitiesSection() {
     }
   ];
 
+  // Mobile detection and horizontal swipe setup
   useEffect(() => {
-    // OPTIMIZED MOBILE PARALLAX: Throttled calculations for smooth 120fps performance
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    // Check on mount
+    checkMobile();
+
+    // Check on resize
+    window.addEventListener('resize', checkMobile);
+
+    // Detect first swipe to hide hint
+    const handleScroll = () => {
+      if (containerRef.current && !hasSwiped) {
+        if (containerRef.current.scrollLeft > 10) {
+          setHasSwiped(true);
+        }
+      }
+    };
+
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [hasSwiped]);
+
+  // Intersection Observer for mobile active card detection
+  useEffect(() => {
+    if (!isMobile || !containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+            // Remove active-card from all cards
+            cardRefs.current.forEach((card) => {
+              if (card) card.classList.remove('active-card');
+            });
+            // Add active-card to the intersecting card
+            entry.target.classList.add('active-card');
+          }
+        });
+      },
+      {
+        root: containerRef.current,
+        threshold: 0.5, // Card must be 50% visible
+      }
+    );
+
+    // Observe all cards
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isMobile]);
+
+  useEffect(() => {
+    // DESKTOP PARALLAX: Skip on mobile (horizontal swipe instead)
     let ticking = false;
     let lastScrollTime = 0; // Desktop throttling
     let mobileLastScrollTime = 0; // Mobile throttling (separate timer)
@@ -110,87 +179,12 @@ export default function CapabilitiesSection() {
     };
 
     const handleScroll = () => {
-      // Check mobile state in real-time to handle browser testing
+      // SKIP ON MOBILE: Mobile uses horizontal swipe with Intersection Observer
       const currentIsMobile = window.innerWidth <= 768;
-
-      // Mobile uses throttled calculations for smooth 120fps performance
       if (currentIsMobile) {
-        // Ticking flag prevents multiple simultaneous RAF calls (CRITICAL for iOS performance)
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            if (!containerRef.current) {
-              ticking = false;
-              return;
-            }
-
-            // PERFORMANCE FIX: Read viewport height ONCE per frame, not on every scroll event
-            viewportHeight = window.innerHeight;
-
-            // CRITICAL: Always update cache on mobile to ensure proper initialization
-            // Cache can be 0 legitimately, so we check scrollableHeight <= 0 as invalid state
-            if (cachedScrollableHeight <= 0 || isMobile !== currentIsMobile) {
-              updateCache();
-            }
-
-            // Mobile calculations using reference implementation
-            const scrollY = window.scrollY;
-            const containerTop = cachedDocumentTop - scrollY;
-            const progress = cachedScrollableHeight > 0
-              ? Math.max(0, Math.min(1, -containerTop / cachedScrollableHeight))
-              : 0;
-
-            // Reference implementation: progress * (numCards - 1)
-            const activeCard = progress * (capabilities.length - 1);
-
-            // Reference constants for smooth GPU-optimized animations
-            const STACK_SCALE = 0.9;
-            const Y_OFFSET_PER_LEVEL = 4; // in percent
-            const MAX_VISIBLE_STACK_CARDS = 3;
-
-            cardRefs.current.forEach((cardRef, index) => {
-              if (!cardRef) return;
-
-              // PERFORMANCE FIX: Only set zIndex once on mount, not every frame
-              // (moved to initialization section below)
-
-              const depth = activeCard - index;
-
-              // Reference implementation: cards that are stacking or in view
-              if (depth >= 0) {
-                const depthProgress = Math.min(depth, 1);
-                const adjustedDepth = Math.min(depth, MAX_VISIBLE_STACK_CARDS);
-                const scale = depth > 1 ? STACK_SCALE : 1 - depthProgress * (1 - STACK_SCALE);
-                const baseTranslateY = -adjustedDepth * Y_OFFSET_PER_LEVEL; // NEGATIVE to stack UP
-                const stackParallax = -depth * 4; // NEGATIVE parallax
-
-                // Convert percentages to pixels for iOS GPU compositing (subpixel precision for smooth animation)
-                const translateYPixels = ((baseTranslateY + stackParallax) / 100) * viewportHeight;
-                cardRef.style.transform = `scale(${scale}) translate3d(0, ${translateYPixels}px, 0)`;
-                cardRef.style.opacity = adjustedDepth >= MAX_VISIBLE_STACK_CARDS ? '0' : '1';
-
-              // Reference implementation: cards entering from bottom
-              } else if (depth > -1) {
-                const incomingProgress = 1 + depth;
-                const translateY = 100 - (incomingProgress * 100);
-                // Convert percentage to pixels for iOS GPU compositing (subpixel precision for smooth animation)
-                const translateYPixels = (translateY / 100) * viewportHeight;
-                cardRef.style.transform = `translate3d(0, ${translateYPixels}px, 0)`;
-                cardRef.style.opacity = '1';
-
-              // Cards off-screen
-              } else {
-                // Use translate3d for iOS GPU compositing
-                cardRef.style.transform = `translate3d(0, ${viewportHeight}px, 0)`;
-                cardRef.style.opacity = '0';
-              }
-            });
-
-            ticking = false; // Reset ticking flag after RAF completes
-          });
-          ticking = true; // Set ticking flag before RAF call
-        }
-        return; // Exit early for mobile
+        return; // Skip all parallax calculations on mobile
       }
+
 
       // Desktop uses original complex calculations with throttling
       const now = performance.now();
@@ -373,7 +367,15 @@ export default function CapabilitiesSection() {
           We've identified four critical domains where AI can stop revenue leaks and create a foundation for scalable growth. We apply our engineering mindset to build custom solutions in each of these areas, tailored to your specific bottlenecks.
         </p>
 
-        <div ref={containerRef} className="capabilities-cards-wrapper">
+        <div ref={containerRef} className={`capabilities-cards-wrapper ${hasSwiped ? 'swiped' : ''}`}>
+          {/* Mobile swipe hint */}
+          {isMobile && !hasSwiped && (
+            <div className="mobile-swipe-hint">
+              <span>Swipe to explore</span>
+              <span className="arrow">→</span>
+            </div>
+          )}
+
           <div className="capabilities-cards">
             {capabilities.map((capability, index) => (
               <CapabilityCard

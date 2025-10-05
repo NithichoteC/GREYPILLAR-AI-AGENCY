@@ -3104,28 +3104,88 @@ body {
         padding-bottom: var(--space-xl); /* Add extra padding buffer */
     }
 
-    /* MOBILE: Extended scroll range for last card readability */
+    /* MOBILE: Horizontal scroll container with snap */
     .capabilities-cards-wrapper {
-        min-height: 400vh; /* 100vh per card - more scroll time to read content */
-        margin-top: var(--space-2xl); /* Add top margin to prevent overlap */
+        overflow-x: scroll;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        height: 100vh;
+        position: relative;
+        margin-top: var(--space-2xl);
+        /* Hide scrollbar */
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
     }
 
-    /* MOBILE: Sticky position matching reference */
+    .capabilities-cards-wrapper::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+    /* MOBILE: Flex layout for horizontal cards */
     .capabilities-cards {
-        top: 100px !important; /* Standard sticky position */
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+        position: relative;
+        top: 0 !important; /* Reset sticky positioning */
     }
 
-    /* MOBILE: Optimized card sizing and removed conflicts */
+    /* MOBILE: Full-width horizontal cards with snap */
     .capability-card {
-        position: absolute !important; /* Ensure absolute positioning */
-        min-height: 320px !important; /* Optimal height for content */
-        /* Removed max-height to allow full content visibility */
-        height: auto !important; /* Allow natural height */
-        /* CRITICAL: No transforms or will-change - JavaScript controls everything */
-        /* Only GPU hints that don't interfere */
+        position: relative !important; /* Change from absolute */
+        min-width: 100vw; /* Full viewport width */
+        max-width: 100vw;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        flex-shrink: 0;
+        height: auto;
+        display: flex;
+        align-items: center;
+        padding: var(--space-xl) var(--space-lg);
+        transition: filter 0.3s ease; /* Smooth blur transition */
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
-        /* Removed will-change to prevent conflicts */
+    }
+
+    /* Blur non-active cards */
+    .capability-card:not(.active-card) {
+        filter: blur(4px);
+    }
+
+    /* Mobile swipe hint */
+    .mobile-swipe-hint {
+        position: absolute;
+        top: var(--space-xl);
+        right: var(--space-xl);
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        padding: var(--space-sm) var(--space-md);
+        border-radius: 100px;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: 500;
+        z-index: 1000;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .capabilities-cards-wrapper.swiped .mobile-swipe-hint {
+        opacity: 0;
+    }
+
+    .mobile-swipe-hint .arrow {
+        font-size: 1.25rem;
+        animation: swipe-arrow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes swipe-arrow {
+        0%, 100% { transform: translateX(0); }
+        50% { transform: translateX(8px); }
     }
 
     /* MOBILE: Smaller padding for more content space */
